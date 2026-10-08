@@ -1,0 +1,13 @@
+{
+  "name": "megamind-labs-ui",
+  "version": "0.1.0",
+  "description": "A black-and-white wireframe kit for fast, honest mockups.",
+  "style": "megamind-labs-ui.css",
+  "main": "megamind-labs-ui.css",
+  "files": ["megamind-labs-ui.css", "react/"],
+  "keywords": ["wireframe", "ui-kit", "mockup", "css", "design-system", "prototype"],
+  "license": "MIT",
+  "author": "Megamind Labs (https://megamindlabs.ai)",
+  "peerDependencies": { "react": ">=17" },
+  "peerDependenciesMeta": { "react": { "optional": true } }
+}

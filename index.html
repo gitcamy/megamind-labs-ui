@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Megamind Labs UI: a black-and-white wireframe kit</title>
+<meta name="description" content="A black-and-white wireframe kit for fast, honest mockups. One CSS file, no build step.">
+<link rel="stylesheet" href="megamind-labs-ui.css">
+<style>
+  body { margin: 0; background: var(--mm-wash); }
+  .doc { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+  .doc-side { position: sticky; top: 0; height: 100vh; padding: 32px 16px; border-right: var(--mm-border); background: var(--mm-paper); display: flex; flex-direction: column; gap: 24px; }
+  .doc-logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; padding: 0 12px; }
+  .doc-logo i { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--mm-ink); background: linear-gradient(135deg, transparent 49%, var(--mm-ink) 49%, var(--mm-ink) 51%, transparent 51%); }
+  .doc-main { padding: 64px 56px 120px; min-width: 0; }
+  .doc-section { margin-bottom: 96px; scroll-margin-top: 32px; }
+  .doc-section > header { max-width: 640px; margin-bottom: 32px; display: flex; flex-direction: column; gap: 8px; }
+  .doc-section > header h2 { font-size: 32px; font-weight: 600; letter-spacing: -0.02em; }
+  .doc-section > header p { color: var(--mm-ink-2); font-size: 15px; line-height: 1.55; }
+  .doc-hero { max-width: 720px; margin-bottom: 56px; display: flex; flex-direction: column; gap: 16px; }
+  .doc-hero h1 { font-size: 56px; font-weight: 600; letter-spacing: -0.035em; line-height: 1.02; }
+  .doc-hero p { font-size: 17px; line-height: 1.55; color: var(--mm-ink-2); max-width: 56ch; }
+  .doc-code { position: relative; font: 13px/1.6 ui-monospace, "SF Mono", Menlo, monospace; background: var(--mm-paper); border: var(--mm-border); border-radius: 12px; padding: 14px 84px 14px 16px; overflow-x: auto; white-space: pre; color: var(--mm-ink); }
+  .doc-code button { position: absolute; top: 8px; right: 8px; }
+  .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .doc-spec { background: var(--mm-paper); border: var(--mm-border); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .doc-spec > h3 { font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
+  .doc-spec > h3 code { font: 11px ui-monospace, Menlo, monospace; color: var(--mm-muted); font-weight: 400; }
+  .doc-spec--wide { grid-column: span 2; }
+  .doc-swatch { display: flex; flex-direction: column; gap: 8px; }
+  .doc-swatch > i { height: 72px; border-radius: 12px; border: var(--mm-border); }
+  .doc-swatch b { font-size: 13px; font-weight: 600; }
+  .doc-swatch span { font: 11px ui-monospace, Menlo, monospace; color: var(--mm-muted); }
+  .doc-type { display: grid; grid-template-columns: 120px 1fr; align-items: baseline; gap: 16px; padding: 12px 0; border-top: var(--mm-border); }
+  .doc-type > code { font: 11px ui-monospace, Menlo, monospace; color: var(--mm-muted); }
+  .doc-scale { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+  .doc-scale > div { display: flex; flex-direction: column; align-items: center; gap: 6px; font: 11px ui-monospace, Menlo, monospace; color: var(--mm-muted); }
+  .doc-scale i { display: block; background: var(--mm-ink); }
+  .doc-radius i { width: 56px; height: 56px; background: var(--mm-fill); border: 1.5px solid var(--mm-ink); }
+  .doc-principles { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+  .doc-principles > div { border-top: 1.5px solid var(--mm-ink); padding-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .doc-principles b { font-size: 15px; }
+  .doc-principles p { font-size: 14px; color: var(--mm-ink-2); line-height: 1.5; }
+  .doc-flowwrap { background: var(--mm-paper); border: var(--mm-border); border-radius: 20px; padding: 32px; margin-bottom: 24px; }
+  .doc-top { display: none; }
+  @media (max-width: 900px) {
+    .doc { grid-template-columns: 1fr; }
+    .doc-side { display: none; }
+    .doc-top { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: var(--mm-border); background: var(--mm-paper); position: sticky; top: 0; z-index: 20; }
+    .doc-main { padding: 40px 20px 80px; }
+    .doc-hero h1 { font-size: 40px; }
+    .doc-spec--wide { grid-column: auto; }
+    .doc-flowwrap { padding: 20px; }
+  }
+</style>
+</head>
+<body class="mm">
+
+<div class="doc-top"><div class="doc-logo"><i></i>Megamind Labs UI</div><button class="mm-btn mm-btn--sm mm-btn--secondary" data-theme-toggle>Invert</button></div>
+
+<div class="doc">
+  <aside class="doc-side">
+    <div class="doc-logo"><i></i>Megamind Labs UI</div>
+    <nav class="mm-sidenav" aria-label="Sections">
+      <a href="#start" aria-current="page">Get started</a>
+      <a href="#foundations">Foundations</a>
+      <a href="#components">Components</a>
+      <a href="#screens">Screens</a>
+    </nav>
+    <div class="mm-spacer"></div>
+    <div class="mm-stack mm-gap-2" style="padding: 0 12px">
+      <span class="mm-caption">Theme</span>
+      <div class="mm-segmented" role="group" aria-label="Theme">
+        <button aria-pressed="true" data-set-theme="light">Light</button>
+        <button aria-pressed="false" data-set-theme="dark">Inverted</button>
+      </div>
+      <span class="mm-caption">v0.1.0, MIT. By <a href="https://megamindlabs.ai">Megamind Labs</a></span>
+    </div>
+  </aside>
+
+  <main class="doc-main">
+
+    <!-- ================================================================ START -->
+    <section class="doc-section" id="start">
+      <div class="doc-hero">
+        <h1>Wireframes that look finished enough to argue about.</h1>
+        <p>Megamind Labs UI is a black-and-white kit for mockups. Seven greys, one typeface, and grey squares where icons and photos will go, so feedback stays on flow and hierarchy instead of color. One CSS file, no build step, works in plain HTML, React, or any AI tool that writes front-end code.</p>
+      </div>
+
+      <div class="doc-flowwrap">
+        <div class="mm-flow">
+          <div class="mm-artboard">
+            <div class="mm-artboard-name">Home</div>
+            <div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-statusbar"><span>9:41</span></div>
+              <span class="mm-caption">Good morning, Sam</span>
+              <div class="mm-chips"><button class="mm-chip" aria-pressed="true">Mine</button><button class="mm-chip">Team</button><button class="mm-chip">All</button></div>
+              <div class="mm-stat"><span class="mm-stat-label">Due this week</span><span class="mm-stat-value">14 tasks</span><span class="mm-stat-meta">Across 3 projects</span></div>
+              <div class="mm-card"><span class="mm-card-title">Two tasks are overdue</span><span class="mm-small">Both are in Website refresh, due last Friday.</span></div>
+              <div class="mm-card"><span class="mm-card-title">Website refresh, 34%</span><div class="mm-progress" style="--mm-value:34%"><span></span></div><span class="mm-small">12 of 35 tasks done</span></div>
+              <div class="mm-spacer"></div>
+              <div class="mm-inputbar"><input placeholder="Ask anything"><button>Send</button></div>
+              <nav class="mm-tabbar"><button class="mm-tab" aria-current="page">Home</button><button class="mm-tab">Projects</button><button class="mm-tab">Inbox</button><button class="mm-tab">Assistant</button></nav>
+            </div>
+          </div>
+          <div class="mm-artboard">
+            <div class="mm-artboard-name">Ask</div>
+            <div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-navbar"><button class="mm-back">Home</button><span class="mm-navbar-title">Assistant</span><span></span></div>
+              <div class="mm-screen-body">
+                <div class="mm-thread">
+                  <span class="mm-bubble-meta">Today 08:12</span>
+                  <div class="mm-bubble mm-bubble--me">Why are two tasks overdue?</div>
+                  <div class="mm-bubble">Both are waiting on copy review, and the reviewer has been out since Thursday.</div>
+                  <div class="mm-proposal">
+                    <span class="mm-card-title">Move both to next Tuesday?</span>
+                    <div class="mm-list">
+                      <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Homepage copy</span><span class="mm-list-sub">Due Oct 3</span></div><span class="mm-list-value">Tue</span></div>
+                      <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Pricing page</span><span class="mm-list-sub">Due Oct 3</span></div><span class="mm-list-value">Tue</span></div>
+                    </div>
+                    <div class="mm-row"><button class="mm-btn mm-btn--sm">Move both</button><button class="mm-btn mm-btn--sm mm-btn--ghost">Not now</button></div>
+                  </div>
+                </div>
+              </div>
+              <div class="mm-inputbar"><input placeholder="Message"><button>Send</button></div>
+            </div>
+          </div>
+          <div class="mm-artboard">
+            <div class="mm-artboard-name">Done</div>
+            <div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-navbar"><button class="mm-back">Home</button><span class="mm-navbar-title">This week</span><span></span></div>
+              <div class="mm-stat"><span class="mm-stat-label">Tasks completed</span><span class="mm-stat-value">23</span><span class="mm-stat-meta">6 more than last week</span></div>
+              <div class="mm-bars"><span style="--mm-value:40%"></span><span style="--mm-value:55%"></span><span style="--mm-value:35%"></span><span style="--mm-value:60%"></span><span style="--mm-value:48%"></span><span class="is-active" style="--mm-value:85%"></span></div>
+              <div class="mm-list mm-list--divided">
+                <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Homepage copy</span><span class="mm-list-sub">Moved to Tue, Oct 14</span></div><span class="mm-chevron"></span></div>
+                <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Pricing page</span><span class="mm-list-sub">Moved to Tue, Oct 14</span></div><span class="mm-chevron"></span></div>
+              </div>
+              <div class="mm-spacer"></div>
+              <div class="mm-toast"><span>Moved 2 tasks to Tuesday</span><button>Undo</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mm-stack mm-gap-3" style="max-width: 720px">
+        <h3 class="mm-heading">Use it</h3>
+        <p class="mm-body">Add one stylesheet, put <code>class="mm"</code> on a wrapper, and compose screens from the classes below.</p>
+        <div class="doc-code" id="snippet"><button class="mm-btn mm-btn--sm mm-btn--secondary" data-copy="snippet">Copy</button>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css"&gt;
+
+&lt;body class="mm mm-canvas"&gt;
+  &lt;div class="mm-screen mm-screen--phone"&gt;
+    &lt;h1 class="mm-title"&gt;Welcome back&lt;/h1&gt;
+    &lt;input class="mm-input" placeholder="Email address"&gt;
+    &lt;div class="mm-spacer"&gt;&lt;/div&gt;
+    &lt;button class="mm-btn mm-btn--block"&gt;Continue&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/body&gt;</div>
+      </div>
+    </section>
+
+    <!-- ================================================================ FOUNDATIONS -->
+    <section class="doc-section" id="foundations">
+      <header>
+        <h2>Foundations</h2>
+        <p>Everything is a CSS variable, so a team can retheme the kit in ten lines.</p>
+      </header>
+
+      <div class="doc-principles" style="margin-bottom: 40px">
+        <div><b>Grey means undecided</b><p>Fills stand in for anything not designed yet: icons, photos, charts, maps. If it is grey, nobody has to defend it.</p></div>
+        <div><b>Ink means it matters</b><p>Near-black is reserved for the one primary action, the active state, and the number the screen exists to show.</p></div>
+        <div><b>One line weight</b><p>Every border is 1px in the same grey. Emphasis comes from fill and type weight, never from thicker lines.</p></div>
+        <div><b>No color, even for errors</b><p>Danger is a dashed outline, errors are a bold message with a mark. Color decisions belong to the visual design pass.</p></div>
+      </div>
+
+      <div class="doc-grid" style="margin-bottom: 16px">
+        <div class="doc-spec doc-spec--wide">
+          <h3>Greyscale <code>--mm-*</code></h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px">
+            <div class="doc-swatch"><i style="background:var(--mm-ink)"></i><b>Ink</b><span>--mm-ink #1F1F1F</span></div>
+            <div class="doc-swatch"><i style="background:var(--mm-ink-2)"></i><b>Ink 2</b><span>--mm-ink-2 #404040</span></div>
+            <div class="doc-swatch"><i style="background:var(--mm-muted)"></i><b>Muted</b><span>--mm-muted #8C8C8C</span></div>
+            <div class="doc-swatch"><i style="background:var(--mm-line)"></i><b>Line</b><span>--mm-line #D1D1D1</span></div>
+            <div class="doc-swatch"><i style="background:var(--mm-fill)"></i><b>Fill</b><span>--mm-fill #EBEBEB</span></div>
+            <div class="doc-swatch"><i style="background:var(--mm-wash)"></i><b>Wash</b><span>--mm-wash #F5F5F5</span></div>
+            <div class="doc-swatch"><i style="background:var(--mm-paper)"></i><b>Paper</b><span>--mm-paper #FFFFFF</span></div>
+          </div>
+        </div>
+        <div class="doc-spec">
+          <h3>Spacing <code>--mm-1 to --mm-12</code></h3>
+          <div class="doc-scale">
+            <div><i style="width:4px;height:4px"></i>4</div><div><i style="width:8px;height:8px"></i>8</div><div><i style="width:12px;height:12px"></i>12</div><div><i style="width:16px;height:16px"></i>16</div><div><i style="width:20px;height:20px"></i>20</div><div><i style="width:24px;height:24px"></i>24</div><div><i style="width:32px;height:32px"></i>32</div><div><i style="width:48px;height:48px"></i>48</div>
+          </div>
+        </div>
+        <div class="doc-spec">
+          <h3>Radius <code>--mm-r-*</code></h3>
+          <div class="doc-scale doc-radius">
+            <div><i style="border-radius:4px"></i>xs 4</div><div><i style="border-radius:12px"></i>md 12</div><div><i style="border-radius:14px"></i>lg 14</div><div><i style="border-radius:24px"></i>2xl 24</div><div><i style="border-radius:32px"></i>screen 32</div>
+          </div>
+          <p class="mm-caption">Small parts are tight, containers get rounder. Pills use 999.</p>
+        </div>
+      </div>
+
+      <div class="doc-spec">
+        <h3>Type scale <code>Inter 400 / 500 / 600, tabular numbers on</code></h3>
+        <div>
+          <div class="doc-type"><code>.mm-display 36</code><span class="mm-display">1,284</span></div>
+          <div class="doc-type"><code>.mm-hero 32</code><span class="mm-hero">Meet your workspace</span></div>
+          <div class="doc-type"><code>.mm-title 22</code><span class="mm-title">Choose your language</span></div>
+          <div class="doc-type"><code>.mm-heading 16</code><span class="mm-heading">Recent activity</span></div>
+          <div class="doc-type"><code>.mm-body 14</code><span class="mm-body">You can change this any time in Settings.</span></div>
+          <div class="doc-type"><code>.mm-small 13</code><span class="mm-small">Updated 2 minutes ago by Sam.</span></div>
+          <div class="doc-type"><code>.mm-label 12</code><span class="mm-label">Due this week</span></div>
+          <div class="doc-type"><code>.mm-tab 11</code><span style="font-size:11px;font-weight:500;color:var(--mm-muted)">Projects</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ COMPONENTS -->
+    <section class="doc-section" id="components">
+      <header>
+        <h2>Components</h2>
+        <p>Forty-odd pieces, all plain HTML with a class. Interactive states use real attributes like <code>aria-pressed</code>, <code>aria-current</code> and <code>:checked</code>, so the mockup is also a decent accessibility sketch.</p>
+      </header>
+
+      <div class="doc-grid">
+        <div class="doc-spec"><h3>Buttons <code>.mm-btn</code></h3>
+          <div class="mm-stack mm-gap-2">
+            <button class="mm-btn mm-btn--block">Continue</button>
+            <button class="mm-btn mm-btn--block mm-btn--secondary">Sign in with email instead</button>
+            <div class="mm-row"><button class="mm-btn mm-btn--sm">Small</button><button class="mm-btn mm-btn--sm mm-btn--secondary">Secondary</button><button class="mm-btn mm-btn--sm mm-btn--ghost">Ghost</button></div>
+            <div class="mm-row"><button class="mm-btn mm-btn--danger mm-btn--sm">Delete project</button><button class="mm-btn mm-btn--icon" aria-label="More"></button><button class="mm-btn mm-btn--sm" disabled>Disabled</button></div>
+            <button class="mm-link" style="align-self:flex-start">I already have an account</button>
+          </div>
+        </div>
+
+        <div class="doc-spec"><h3>Fields <code>.mm-field .mm-input</code></h3>
+          <div class="mm-field"><label for="d-email">Email</label><input id="d-email" class="mm-input" placeholder="you@example.com"></div>
+          <div class="mm-field is-error"><label for="d-pw">Password</label><input id="d-pw" class="mm-input" type="password" value="short"><span class="mm-field-hint">Use at least 8 characters</span></div>
+          <div class="mm-field"><label for="d-sel">Country</label><select id="d-sel" class="mm-select"><option>United States</option><option>Spain</option></select></div>
+        </div>
+
+        <div class="doc-spec"><h3>Search and compose <code>.mm-search .mm-inputbar</code></h3>
+          <div class="mm-search"><input class="mm-input" placeholder="Search tasks"></div>
+          <div class="mm-inputbar"><input placeholder="Ask anything"><button>Send</button></div>
+          <div class="mm-field"><label for="d-ta">Note</label><textarea id="d-ta" class="mm-textarea" placeholder="Add a note for the team"></textarea></div>
+        </div>
+
+        <div class="doc-spec"><h3>Selection <code>.mm-chip .mm-segmented</code></h3>
+          <div class="mm-chips"><button class="mm-chip" aria-pressed="true">All</button><button class="mm-chip">Design</button><button class="mm-chip">Engineering</button><button class="mm-chip">+ Add</button></div>
+          <div class="mm-segmented"><button aria-pressed="true">Week</button><button>Month</button><button>Custom</button></div>
+          <input type="range" class="mm-slider" value="40" aria-label="Volume">
+        </div>
+
+        <div class="doc-spec"><h3>Controls <code>.mm-toggle .mm-check .mm-radio</code></h3>
+          <label class="mm-choice mm-between"><span>Push notifications</span><input type="checkbox" class="mm-toggle" checked></label>
+          <label class="mm-choice mm-between"><span>Email digest</span><input type="checkbox" class="mm-toggle"></label>
+          <hr class="mm-divider">
+          <label class="mm-choice"><input type="checkbox" class="mm-check" checked>Remember me</label>
+          <label class="mm-choice"><input type="checkbox" class="mm-check">Send me product updates</label>
+          <hr class="mm-divider">
+          <label class="mm-choice"><input type="radio" name="d-r" class="mm-radio" checked>Weekly</label>
+          <label class="mm-choice"><input type="radio" name="d-r" class="mm-radio">Monthly</label>
+        </div>
+
+        <div class="doc-spec"><h3>List rows <code>.mm-list-row</code></h3>
+          <div class="mm-list mm-list--divided">
+            <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Website refresh</span><span class="mm-list-sub">12 of 35 tasks</span></div><span class="mm-list-value">34%<small>Due Nov 1</small></span></div>
+            <div class="mm-list-row"><span class="mm-avatar">AR</span><div class="mm-list-text"><span class="mm-list-title">Alex Rivera</span><span class="mm-list-sub">Editor</span></div><span class="mm-chevron"></span></div>
+            <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Notifications</span></div><input type="checkbox" class="mm-toggle" checked aria-label="Notifications"></div>
+          </div>
+        </div>
+
+        <div class="doc-spec"><h3>Cards <code>.mm-card</code></h3>
+          <div class="mm-card"><span class="mm-card-title">Two tasks are overdue</span><span class="mm-small">Both are in Website refresh.</span></div>
+          <div class="mm-card mm-card--filled"><span class="mm-card-title">Filled</span><span class="mm-small">For grouping without another border.</span></div>
+          <div class="mm-card mm-card--ink"><span class="mm-card-title">Ink</span><span class="mm-small">One per screen, for the thing that matters most.</span></div>
+        </div>
+
+        <div class="doc-spec"><h3>Figures <code>.mm-stat .mm-ring .mm-bars</code></h3>
+          <div class="mm-row mm-between">
+            <div class="mm-stat"><span class="mm-stat-label">Active users</span><span class="mm-stat-value">1,284</span><span class="mm-delta mm-delta--up">96 this week</span></div>
+            <div class="mm-ring" style="--mm-value:68"><span>68%</span></div>
+          </div>
+          <div class="mm-bars"><span style="--mm-value:30%"></span><span style="--mm-value:52%"></span><span style="--mm-value:44%"></span><span style="--mm-value:70%"></span><span style="--mm-value:38%"></span><span style="--mm-value:61%"></span><span class="is-active" style="--mm-value:90%"></span></div>
+        </div>
+
+        <div class="doc-spec"><h3>Progress <code>.mm-progress .mm-steps .mm-dots</code></h3>
+          <div class="mm-progress" style="--mm-value:34%"><span></span></div>
+          <div class="mm-progress mm-progress--ink mm-progress--thin" style="--mm-value:72%"><span></span></div>
+          <div class="mm-steps"><span class="is-done"></span><span class="is-done"></span><span></span><span></span></div>
+          <div class="mm-dots"><span></span><span class="is-active"></span><span></span></div>
+          <div class="mm-row"><div class="mm-spinner"></div><span class="mm-caption">Uploading 3 files</span></div>
+        </div>
+
+        <div class="doc-spec"><h3>Placeholders <code>.mm-ph .mm-icon</code></h3>
+          <div class="mm-ph mm-ph--x mm-ph--wide">Photo, 16:9</div>
+          <div class="mm-grid-2"><div class="mm-ph">Chart</div><div class="mm-ph mm-ph--x">Map</div></div>
+          <div class="mm-row"><span class="mm-icon"></span><span class="mm-icon mm-icon--ink"></span><span class="mm-icon" style="--mm-size:32px"></span><span class="mm-avatars"><span class="mm-avatar">AR</span><span class="mm-avatar">SK</span><span class="mm-avatar">+2</span></span></div>
+        </div>
+
+        <div class="doc-spec"><h3>Tags <code>.mm-badge .mm-dot</code></h3>
+          <div class="mm-row mm-wrap"><span class="mm-badge">Draft</span><span class="mm-badge mm-badge--ink">New</span><span class="mm-badge mm-badge--outline">Private</span><span class="mm-badge">3</span></div>
+          <div class="mm-row"><span class="mm-dot"></span><span class="mm-small">Unread</span></div>
+          <div class="mm-section-head"><span>Recent activity</span><span>See all</span></div>
+        </div>
+
+        <div class="doc-spec"><h3>Details <code>.mm-kv .mm-accordion</code></h3>
+          <div class="mm-kv">
+            <div><span>Status</span><span>In review</span></div>
+            <div><span>Owner</span><span>Alex Rivera</span></div>
+            <div><span>Due</span><span>Oct 14</span></div>
+          </div>
+          <div class="mm-accordion">
+            <details open><summary>Who can see this?</summary><p>Everyone in the workspace. Private projects stay private.</p></details>
+            <details><summary>Can I undo changes?</summary><p>Yes, for 24 hours from Activity.</p></details>
+          </div>
+        </div>
+
+        <div class="doc-spec"><h3>Navigation <code>.mm-navbar .mm-tabbar</code></h3>
+          <div class="mm-navbar"><button class="mm-back">Back</button><span class="mm-navbar-title">Project</span><button class="mm-link">Edit</button></div>
+          <nav class="mm-tabbar"><button class="mm-tab">Home</button><button class="mm-tab" aria-current="page">Projects</button><button class="mm-tab">Inbox</button><button class="mm-tab">Profile</button></nav>
+          <div class="mm-week"><span><small>M</small>6</span><span class="is-active"><small>T</small>7</span><span><small>W</small>8</span><span><small>T</small>9</span><span><small>F</small>10</span><span><small>S</small>11</span><span><small>S</small>12</span></div>
+        </div>
+
+        <div class="doc-spec"><h3>Conversation <code>.mm-thread .mm-bubble</code></h3>
+          <div class="mm-thread">
+            <div class="mm-bubble mm-bubble--me">Can we ship by Friday?</div>
+            <div class="mm-bubble">Yes, if the two review tasks close by Wednesday.</div>
+            <div class="mm-typing"><span></span><span></span><span></span></div>
+          </div>
+          <div class="mm-suggestions"><button class="mm-chip">Show the plan</button><button class="mm-chip">What's blocking?</button></div>
+        </div>
+
+        <div class="doc-spec"><h3>Proposed action <code>.mm-proposal</code></h3>
+          <div class="mm-proposal">
+            <span class="mm-card-title">Reschedule the review to 3pm?</span>
+            <span class="mm-small">Two people on the invite are busy at 11.</span>
+            <div class="mm-row"><button class="mm-btn mm-btn--sm">Move to 3pm</button><button class="mm-btn mm-btn--sm mm-btn--ghost">Pick a time</button></div>
+          </div>
+          <div class="mm-wave"><span style="--mm-value:30%"></span><span style="--mm-value:60%"></span><span style="--mm-value:90%"></span><span style="--mm-value:50%"></span><span style="--mm-value:75%"></span><span style="--mm-value:40%"></span><span style="--mm-value:65%"></span><span style="--mm-value:25%"></span></div>
+        </div>
+
+        <div class="doc-spec"><h3>Feedback <code>.mm-banner .mm-toast</code></h3>
+          <div class="mm-banner"><div><strong>Calendar disconnected.</strong> Reconnect to keep due dates in sync.</div></div>
+          <div class="mm-toast"><span>3 tasks moved to Done</span><button>Undo</button></div>
+          <div class="mm-notification"><span class="mm-notification-app"><span>YOUR APP</span><span>now</span></span><strong>Review starts in 10 minutes</strong><span>Website refresh, with Alex and 2 others.</span></div>
+        </div>
+
+        <div class="doc-spec"><h3>Live status <code>.mm-live</code></h3>
+          <div class="mm-live"><div class="mm-row mm-between"><strong>Order on the way</strong><span>2 of 3</span></div><div class="mm-progress mm-progress--thin" style="--mm-value:66%"><span></span></div><span style="opacity:.7">Arriving in about 12 minutes</span></div>
+          <ol class="mm-timeline">
+            <li class="is-done"><span class="mm-strong">Order placed</span><br><span class="mm-caption">09:41</span></li>
+            <li class="is-done"><span class="mm-strong">Picked up</span><br><span class="mm-caption">10:02</span></li>
+            <li><span class="mm-strong">Delivered</span><br><span class="mm-caption">Around 10:15</span></li>
+          </ol>
+        </div>
+
+        <div class="doc-spec"><h3>Entry <code>.mm-keypad .mm-otp</code></h3>
+          <div class="mm-otp"><span>4</span><span>8</span><span class="is-active"></span><span></span><span></span><span></span></div>
+          <div class="mm-keypad"><button>1</button><button>2</button><button>3</button><button>4</button><button>5</button><button>6</button><button>7</button><button>8</button><button>9</button><button>.</button><button>0</button><button aria-label="Delete">&lsaquo;</button></div>
+        </div>
+
+        <div class="doc-spec"><h3>Overlays <code>.mm-sheet .mm-dialog .mm-menu</code></h3>
+          <div class="mm-sheet mm-sheet--static">
+            <span class="mm-heading">Share this project</span>
+            <div class="mm-segmented"><button aria-pressed="true">Can view</button><button>Can edit</button></div>
+            <button class="mm-btn mm-btn--block">Copy link</button>
+          </div>
+          <div class="mm-row mm-between" style="align-items:flex-start">
+            <div class="mm-menu"><button>Edit</button><button>Duplicate</button><hr><button>Archive</button></div>
+            <span class="mm-tooltip">Tap to rename</span>
+          </div>
+        </div>
+
+        <div class="doc-spec"><h3>Dialog <code>.mm-dialog--static</code></h3>
+          <div class="mm-dialog mm-dialog--static">
+            <span class="mm-heading">Delete this project?</span>
+            <span class="mm-small">Its 35 tasks are deleted too. This can't be undone.</span>
+            <button class="mm-btn mm-btn--block mm-btn--danger">Delete project</button>
+            <button class="mm-btn mm-btn--block mm-btn--ghost">Keep it</button>
+          </div>
+        </div>
+
+        <div class="doc-spec"><h3>Empty and loading <code>.mm-empty .mm-skeleton</code></h3>
+          <div class="mm-empty" style="padding:8px 0"><div class="mm-ph">Illustration</div><span class="mm-heading">No projects yet</span><p>Projects group related tasks so the whole team can follow along.</p><button class="mm-btn mm-btn--sm">Create a project</button></div>
+          <div class="mm-row mm-gap-3"><span class="mm-skeleton mm-skeleton--circle"></span><div class="mm-stack mm-gap-2 mm-grow"><span class="mm-skeleton" style="width:70%"></span><span class="mm-skeleton" style="width:40%"></span></div></div>
+        </div>
+
+        <div class="doc-spec doc-spec--wide"><h3>Table <code>.mm-table</code></h3>
+          <table class="mm-table">
+            <thead><tr><th>Task</th><th>Project</th><th>Status</th><th class="is-num">Due</th></tr></thead>
+            <tbody>
+              <tr><td>Homepage copy</td><td>Website refresh</td><td>In review</td><td class="is-num">Oct 14</td></tr>
+              <tr><td>Pricing page</td><td>Website refresh</td><td>In progress</td><td class="is-num">Oct 14</td></tr>
+              <tr><td>Onboarding emails</td><td>Launch</td><td>Not started</td><td class="is-num">Oct 21</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="doc-spec"><h3>Annotations <code>.mm-note .mm-notes</code></h3>
+          <div style="position:relative" class="mm-card"><span class="mm-note" style="top:-10px;right:-10px">1</span><span class="mm-card-title">Insight card</span><span class="mm-small">Swipe to dismiss.</span></div>
+          <ol class="mm-notes"><li data-n="1">Insight cards rotate daily. Show two at most.</li></ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================ SCREENS -->
+    <section class="doc-section" id="screens">
+      <header>
+        <h2>Screens</h2>
+        <p>Starter screens built only from the classes above. Copy any screen's markup, change the words, and you have a flow. Phone frames are 390 x 844, with a compact 390 x 640 frame for presenting, plus wide, tablet and desktop frames.</p>
+      </header>
+
+      <!-- Flow 1 -->
+      <div class="mm-flow-section">
+        <h2>Flow 1: Sign up</h2>
+        <p>Account, verify, preferences, permissions, invite.</p>
+        <div class="doc-flowwrap"><div class="mm-flow">
+
+          <div class="mm-artboard"><div class="mm-artboard-name">1.1 Welcome</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-spacer"></div>
+              <div class="mm-ph mm-ph--x" style="min-height:220px">Hero image or logo</div>
+              <h1 class="mm-hero">Plan the work. See it get done.</h1>
+              <p class="mm-body">Projects, tasks and your team in one place.</p>
+              <div class="mm-dots"><span class="is-active"></span><span></span><span></span></div>
+              <button class="mm-btn mm-btn--block">Get started</button>
+              <button class="mm-link" style="align-self:center;margin-bottom:8px">I already have an account</button>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">1.2 Create account</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-steps"><span class="is-done"></span><span></span><span></span><span></span></div>
+              <h1 class="mm-title">Create your account</h1>
+              <div class="mm-field"><label>Email</label><input class="mm-input" placeholder="you@example.com"></div>
+              <div class="mm-field"><label>Password</label><input class="mm-input" type="password" placeholder="At least 8 characters"><span class="mm-field-hint">Use a mix of letters and numbers.</span></div>
+              <div class="mm-spacer"></div>
+              <button class="mm-btn mm-btn--block">Continue</button>
+              <span class="mm-caption" style="text-align:center">By continuing you agree to the Terms and Privacy Policy.</span>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">1.3 Verify</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-steps"><span class="is-done"></span><span class="is-done"></span><span></span><span></span></div>
+              <h1 class="mm-title">Enter the 6-digit code</h1>
+              <p class="mm-small">Sent to you@example.com. <button class="mm-link" style="font-size:13px">Change</button></p>
+              <div class="mm-otp"><span>4</span><span>8</span><span>1</span><span class="is-active"></span><span></span><span></span></div>
+              <button class="mm-link" style="align-self:flex-start;font-size:13px">Resend in 0:24</button>
+              <div class="mm-spacer"></div>
+              <div class="mm-keypad"><button>1</button><button>2</button><button>3</button><button>4</button><button>5</button><button>6</button><button>7</button><button>8</button><button>9</button><button></button><button>0</button><button aria-label="Delete">&lsaquo;</button></div>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">1.4 Preferences</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-steps"><span class="is-done"></span><span class="is-done"></span><span class="is-done"></span><span></span></div>
+              <h1 class="mm-title">What will you use it for?</h1>
+              <p class="mm-small">We'll set up a starter workspace. You can change this later.</p>
+              <div class="mm-list mm-list--divided">
+                <label class="mm-list-row"><span class="mm-icon"></span><span class="mm-list-text"><span class="mm-list-title">Work</span><span class="mm-list-sub">Projects with a team</span></span><input type="radio" name="f14" class="mm-radio" checked></label>
+                <label class="mm-list-row"><span class="mm-icon"></span><span class="mm-list-text"><span class="mm-list-title">School</span><span class="mm-list-sub">Classes and assignments</span></span><input type="radio" name="f14" class="mm-radio"></label>
+                <label class="mm-list-row"><span class="mm-icon"></span><span class="mm-list-text"><span class="mm-list-title">Personal</span><span class="mm-list-sub">Just for me</span></span><input type="radio" name="f14" class="mm-radio"></label>
+              </div>
+              <div class="mm-spacer"></div>
+              <button class="mm-btn mm-btn--block">Continue</button>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">1.5 Permissions</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-steps"><span class="is-done"></span><span class="is-done"></span><span class="is-done"></span><span class="is-done"></span></div>
+              <div class="mm-spacer"></div>
+              <div class="mm-ph mm-ph--round" style="width:96px;align-self:center">Icon</div>
+              <h1 class="mm-title" style="text-align:center">Know when something needs you</h1>
+              <p class="mm-body" style="text-align:center">We only notify you about mentions, due dates and approvals.</p>
+              <div class="mm-spacer"></div>
+              <button class="mm-btn mm-btn--block">Turn on notifications</button>
+              <button class="mm-btn mm-btn--block mm-btn--ghost">Not now</button>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">1.6 Invite</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <h1 class="mm-title">Invite your team</h1>
+              <p class="mm-small">Work goes faster together. You choose what each person can do.</p>
+              <div class="mm-field"><label>Email addresses</label><input class="mm-input" placeholder="alex@example.com"></div>
+              <span class="mm-label">Default access</span>
+              <div class="mm-list mm-list--boxed mm-list--divided">
+                <div class="mm-list-row"><div class="mm-list-text"><span class="mm-list-title">Can edit</span><span class="mm-list-sub">Create and change tasks</span></div><input type="checkbox" class="mm-toggle" checked aria-label="Can edit"></div>
+                <div class="mm-list-row"><div class="mm-list-text"><span class="mm-list-title">Can invite others</span><span class="mm-list-sub">Add people to the workspace</span></div><input type="checkbox" class="mm-toggle" aria-label="Can invite others"></div>
+              </div>
+              <div class="mm-spacer"></div>
+              <button class="mm-btn mm-btn--block">Send invites</button>
+              <button class="mm-btn mm-btn--block mm-btn--ghost">Skip for now</button>
+            </div>
+          </div>
+
+        </div></div>
+      </div>
+
+      <!-- Flow 2 -->
+      <div class="mm-flow-section">
+        <h2>Flow 2: Browse and detail</h2>
+        <p>The everyday loop: home, search, a list, one item.</p>
+        <div class="doc-flowwrap"><div class="mm-flow">
+
+          <div class="mm-artboard"><div class="mm-artboard-name">2.1 Home</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-row mm-between"><div class="mm-stack mm-gap-1"><span class="mm-caption">Tuesday, Oct 7</span><span class="mm-title">Good morning</span></div><span class="mm-avatars"><span class="mm-avatar">SK</span><span class="mm-avatar">AR</span></span></div>
+              <div class="mm-card mm-card--ink">
+                <span class="mm-label">Open tasks</span>
+                <span class="mm-display">48</span>
+                <span class="mm-caption">Updated 2 minutes ago</span>
+              </div>
+              <div class="mm-section-head"><span>Needs a look</span><span>2</span></div>
+              <div class="mm-list mm-list--boxed mm-list--divided">
+                <div class="mm-list-row"><span class="mm-dot"></span><div class="mm-list-text"><span class="mm-list-title">Alex mentioned you</span><span class="mm-list-sub">In Homepage copy</span></div><span class="mm-chevron"></span></div>
+                <div class="mm-list-row"><span class="mm-dot"></span><div class="mm-list-text"><span class="mm-list-title">Approval requested</span><span class="mm-list-sub">Launch budget, from Jordan</span></div><span class="mm-chevron"></span></div>
+              </div>
+              <div class="mm-spacer"></div>
+              <nav class="mm-tabbar"><button class="mm-tab" aria-current="page">Home</button><button class="mm-tab">Search</button><button class="mm-tab">Inbox</button><button class="mm-tab">Profile</button></nav>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">2.2 Search</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-search"><input class="mm-input" value="review" aria-label="Search"></div>
+              <div class="mm-chips"><button class="mm-chip" aria-pressed="true">All</button><button class="mm-chip">Tasks</button><button class="mm-chip">Files</button><button class="mm-chip">This week</button></div>
+              <span class="mm-caption">7 results</span>
+              <div class="mm-screen-body">
+                <div class="mm-list mm-list--divided">
+                  <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Copy review</span><span class="mm-list-sub">Task, Website refresh</span></div><span class="mm-list-value">Oct 9</span></div>
+                  <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Design review notes</span><span class="mm-list-sub">File, Launch</span></div><span class="mm-list-value">Oct 6</span></div>
+                  <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Code review checklist</span><span class="mm-list-sub">File, Engineering</span></div><span class="mm-list-value">Oct 2</span></div>
+                  <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Quarterly review</span><span class="mm-list-sub">Task, Operations</span></div><span class="mm-list-value">Sep 30</span></div>
+                  <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Legal review</span><span class="mm-list-sub">Task, Launch</span></div><span class="mm-list-value">Sep 27</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">2.3 Detail</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-navbar"><button class="mm-back">Search</button><span></span><button class="mm-btn mm-btn--icon" aria-label="More"></button></div>
+              <div class="mm-stack mm-gap-2">
+                <span class="mm-badge" style="align-self:flex-start">In review</span>
+                <span class="mm-title">Copy review</span>
+                <span class="mm-small">Check the homepage and pricing copy against the brand voice guide.</span>
+              </div>
+              <div class="mm-kv">
+                <div><span>Project</span><span>Website refresh</span></div>
+                <div><span>Owner</span><span>Alex Rivera</span></div>
+                <div><span>Due</span><span>Oct 9</span></div>
+                <div><span>Attachments</span><span>2 files</span></div>
+              </div>
+              <div class="mm-spacer"></div>
+              <button class="mm-btn mm-btn--block">Mark complete</button>
+              <button class="mm-btn mm-btn--block mm-btn--secondary">Add a comment</button>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">2.4 Edit sheet</div><div class="mm-artboard-meta">Compact, 390 x 640, overlay</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-navbar"><button class="mm-back">Search</button><span></span><span></span></div>
+              <span class="mm-title">Copy review</span>
+              <div class="mm-scrim"></div>
+              <div class="mm-sheet">
+                <span class="mm-heading">Change due date</span>
+                <div class="mm-segmented"><button>Today</button><button aria-pressed="true">Tomorrow</button><button>Next week</button></div>
+                <div class="mm-kv"><div><span>New due date</span><span>Wed, Oct 8</span></div><div><span>Notify</span><span>Alex Rivera</span></div></div>
+                <label class="mm-choice"><input type="checkbox" class="mm-check" checked>Move dependent tasks too</label>
+                <button class="mm-btn mm-btn--block">Save date</button>
+              </div>
+            </div>
+          </div>
+
+        </div></div>
+      </div>
+
+      <!-- Flow 3 -->
+      <div class="mm-flow-section">
+        <h2>Flow 3: Assistant takes an action</h2>
+        <p>A notification becomes a proposal, the user approves, and the result stays undoable.</p>
+        <div class="doc-flowwrap"><div class="mm-flow">
+
+          <div class="mm-artboard"><div class="mm-artboard-name">3.1 Lock screen</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact" style="background:var(--mm-wash)">
+              <span class="mm-caption" style="text-align:center;margin-top:24px">Tuesday, October 7</span>
+              <span class="mm-display" style="text-align:center;font-size:64px">9:41</span>
+              <div class="mm-spacer"></div>
+              <div class="mm-notification" style="background:var(--mm-paper)"><span class="mm-notification-app"><span>YOUR APP</span><span>now</span></span><strong>Your 11:00 has a conflict</strong><span>Two people can't make it. Move the review to 3pm?</span></div>
+              <span class="mm-caption" style="text-align:center;margin-bottom:12px">Press and hold for options</span>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">3.2 Chat</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-navbar"><button class="mm-back">Home</button><span class="mm-navbar-title">Assistant</span><button class="mm-link">Call</button></div>
+              <div class="mm-screen-body"><div class="mm-thread">
+                <div class="mm-bubble">Alex and Jordan are both in another meeting at 11:00.</div>
+                <div class="mm-proposal">
+                  <span class="mm-card-title">Move the design review to 3pm?</span>
+                  <div class="mm-kv"><div><span>Now</span><span>Today, 11:00</span></div><div><span>New</span><span>Today, 15:00</span></div></div>
+                  <div class="mm-row"><button class="mm-btn mm-btn--sm">Review</button><button class="mm-btn mm-btn--sm mm-btn--ghost">Other times</button></div>
+                </div>
+                <div class="mm-bubble mm-bubble--me">Does 3pm work for everyone?</div>
+                <div class="mm-typing"><span></span><span></span><span></span></div>
+              </div></div>
+              <div class="mm-suggestions"><button class="mm-chip">Remind me later</button><button class="mm-chip">Ask Alex</button></div>
+              <div class="mm-inputbar"><input placeholder="Message"><button>Send</button></div>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">3.3 Confirm</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-navbar"><button class="mm-back">Chat</button><span class="mm-navbar-title">Reschedule</span><span></span></div>
+              <div class="mm-stat" style="align-items:center;text-align:center;padding:16px 0"><span class="mm-stat-label">New time</span><span class="mm-stat-value" style="font-size:48px">15:00</span></div>
+              <div class="mm-kv">
+                <div><span>Meeting</span><span>Design review</span></div>
+                <div><span>Attendees</span><span>4 people</span></div>
+                <div><span>Room</span><span>Unchanged</span></div>
+              </div>
+              <div class="mm-banner">Everyone on the invite gets an update.</div>
+              <div class="mm-spacer"></div>
+              <button class="mm-btn mm-btn--block">Send update</button>
+              <button class="mm-btn mm-btn--block mm-btn--ghost">Cancel</button>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">3.4 Done</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-spacer"></div>
+              <div class="mm-ring" style="--mm-value:100;--mm-size:72px;align-self:center"><span>Done</span></div>
+              <h1 class="mm-title" style="text-align:center">Review moved to 15:00</h1>
+              <p class="mm-small" style="text-align:center">All 4 attendees can make it.</p>
+              <ol class="mm-timeline" style="margin:8px auto 0;width:220px">
+                <li class="is-done"><span class="mm-strong">Conflict found</span><br><span class="mm-caption">09:41</span></li>
+                <li class="is-done"><span class="mm-strong">Approved</span><br><span class="mm-caption">09:42</span></li>
+                <li class="is-done"><span class="mm-strong">Invites updated</span><br><span class="mm-caption">09:42</span></li>
+              </ol>
+              <div class="mm-spacer"></div>
+              <div class="mm-toast"><span>Undo available for 24 hours</span><button>Undo</button></div>
+              <button class="mm-btn mm-btn--block mm-btn--secondary">Back to chat</button>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">3.5 Voice</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact" data-theme="dark">
+              <div class="mm-stack mm-gap-1" style="align-items:center;margin-top:24px"><span class="mm-caption">In conversation</span><span class="mm-heading">Assistant</span><span class="mm-caption">0:42</span></div>
+              <div class="mm-spacer"></div>
+              <div class="mm-wave"><span style="--mm-value:20%"></span><span style="--mm-value:45%"></span><span style="--mm-value:80%"></span><span style="--mm-value:100%"></span><span style="--mm-value:65%"></span><span style="--mm-value:90%"></span><span style="--mm-value:40%"></span><span style="--mm-value:70%"></span><span style="--mm-value:30%"></span></div>
+              <p class="mm-body" style="text-align:center">"You have three meetings today. The first one starts in 20 minutes."</p>
+              <div class="mm-spacer"></div>
+              <div class="mm-row" style="justify-content:center;--mm-gap:24px;margin-bottom:16px"><button class="mm-btn mm-btn--icon" aria-label="Mute"></button><button class="mm-btn" style="border-radius:999px;width:64px;height:64px;padding:0" aria-label="End">End</button><button class="mm-btn mm-btn--icon" aria-label="Show transcript"></button></div>
+            </div>
+          </div>
+
+        </div></div>
+      </div>
+
+      <!-- Flow 4 -->
+      <div class="mm-flow-section">
+        <h2>Flow 4: Book and pay</h2>
+        <p>A scheduling and checkout pattern for any service app.</p>
+        <div class="doc-flowwrap"><div class="mm-flow">
+
+          <div class="mm-artboard"><div class="mm-artboard-name">4.1 Pick a time</div><div class="mm-artboard-meta">Phone, 390 x 844</div>
+            <div class="mm-screen mm-screen--phone">
+              <div class="mm-statusbar"><span>9:41</span></div>
+              <div class="mm-navbar"><button class="mm-back">Back</button><span class="mm-navbar-title">Book a session</span><span></span></div>
+              <div class="mm-ph mm-ph--x mm-ph--wide">Photo</div>
+              <div class="mm-stack mm-gap-1"><span class="mm-title">Intro call, 30 min</span><span class="mm-small">Video call with a specialist</span></div>
+              <div class="mm-section-head"><span>October</span><span>Next week</span></div>
+              <div class="mm-week"><span><small>M</small>6</span><span class="is-active"><small>T</small>7</span><span><small>W</small>8</span><span><small>T</small>9</span><span><small>F</small>10</span><span><small>S</small>11</span><span><small>S</small>12</span></div>
+              <span class="mm-label">Available</span>
+              <div class="mm-chips"><button class="mm-chip">09:30</button><button class="mm-chip" aria-pressed="true">11:00</button><button class="mm-chip">13:30</button><button class="mm-chip">16:00</button><button class="mm-chip">17:30</button></div>
+              <div class="mm-field"><label>Anything we should know?</label><textarea class="mm-textarea" placeholder="Optional"></textarea></div>
+              <div class="mm-spacer"></div>
+              <button class="mm-btn mm-btn--block">Continue, Tue 7 at 11:00</button>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">4.2 Pay</div><div class="mm-artboard-meta">Phone, 390 x 844</div>
+            <div class="mm-screen mm-screen--phone">
+              <div class="mm-statusbar"><span>9:41</span></div>
+              <div class="mm-navbar"><button class="mm-back">Back</button><span class="mm-navbar-title">Pay</span><span></span></div>
+              <div class="mm-card mm-card--filled">
+                <div class="mm-row mm-between"><span class="mm-card-title">Intro call</span><span class="mm-strong">$45.00</span></div>
+                <span class="mm-small">Tue, Oct 7 at 11:00</span>
+              </div>
+              <span class="mm-label">Payment method</span>
+              <div class="mm-list mm-list--boxed mm-list--divided">
+                <label class="mm-list-row"><span class="mm-icon"></span><span class="mm-list-text"><span class="mm-list-title">Visa ending 4242</span><span class="mm-list-sub">Expires 08/28</span></span><input type="radio" name="f42" class="mm-radio" checked></label>
+                <label class="mm-list-row"><span class="mm-icon"></span><span class="mm-list-text"><span class="mm-list-title">Apple Pay</span></span><input type="radio" name="f42" class="mm-radio"></label>
+                <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Add a card</span></div><span class="mm-chevron"></span></div>
+              </div>
+              <div class="mm-field"><label>Promo code</label><div class="mm-inputbar"><input placeholder="Enter code"><button>Apply</button></div></div>
+              <div class="mm-kv">
+                <div><span>Subtotal</span><span>$45.00</span></div>
+                <div><span>Tax</span><span>$3.94</span></div>
+                <div><span class="mm-strong">Total</span><span class="mm-strong">$48.94</span></div>
+              </div>
+              <div class="mm-spacer"></div>
+              <button class="mm-btn mm-btn--block">Pay $48.94</button>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">4.3 Confirmed</div><div class="mm-artboard-meta">Phone, 390 x 844</div>
+            <div class="mm-screen mm-screen--phone">
+              <div class="mm-statusbar"><span>9:41</span></div>
+              <div class="mm-spacer"></div>
+              <div class="mm-ph mm-ph--round" style="width:96px;align-self:center">Icon</div>
+              <h1 class="mm-title" style="text-align:center">You're booked</h1>
+              <p class="mm-body" style="text-align:center">Tuesday, October 7 at 11:00.<br>We sent the link to you@example.com.</p>
+              <div class="mm-card">
+                <div class="mm-row mm-gap-3"><span class="mm-avatar mm-avatar--lg" style="--mm-size:44px">JP</span><div class="mm-stack mm-gap-1"><span class="mm-card-title">Jordan Park</span><span class="mm-small">Your specialist</span></div></div>
+              </div>
+              <div class="mm-spacer"></div>
+              <button class="mm-btn mm-btn--block">Add to calendar</button>
+              <button class="mm-btn mm-btn--block mm-btn--ghost">Done</button>
+            </div>
+          </div>
+
+        </div></div>
+      </div>
+
+      <!-- Flow 5 -->
+      <div class="mm-flow-section">
+        <h2>Flow 5: Account and system states</h2>
+        <p>Profile, settings, notifications, and what a screen looks like when it is empty, loading or broken.</p>
+        <div class="doc-flowwrap"><div class="mm-flow">
+
+          <div class="mm-artboard"><div class="mm-artboard-name">5.1 Profile</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-stack mm-gap-2" style="align-items:center;padding-top:8px"><span class="mm-avatar mm-avatar--lg">SK</span><span class="mm-title">Sam Kim</span><span class="mm-caption">Member since June 2026</span></div>
+              <div class="mm-grid-2">
+                <div class="mm-card mm-card--filled"><div class="mm-stat mm-stat--sm"><span class="mm-stat-label">Projects</span><span class="mm-stat-value">4</span></div></div>
+                <div class="mm-card mm-card--filled"><div class="mm-stat mm-stat--sm"><span class="mm-stat-label">Open tasks</span><span class="mm-stat-value">17</span></div></div>
+              </div>
+              <div class="mm-list mm-list--divided">
+                <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Team</span></div><span class="mm-list-value"><small>8 people</small></span><span class="mm-chevron"></span></div>
+                <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Settings</span></div><span class="mm-chevron"></span></div>
+                <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Help</span></div><span class="mm-chevron"></span></div>
+              </div>
+              <div class="mm-spacer"></div>
+              <nav class="mm-tabbar"><button class="mm-tab">Home</button><button class="mm-tab">Search</button><button class="mm-tab">Inbox</button><button class="mm-tab" aria-current="page">Profile</button></nav>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">5.2 Settings</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-navbar"><button class="mm-back">Profile</button><span class="mm-navbar-title">Settings</span><span></span></div>
+              <div class="mm-screen-body">
+                <span class="mm-label">Notifications</span>
+                <div class="mm-list mm-list--boxed mm-list--divided">
+                  <div class="mm-list-row"><div class="mm-list-text"><span class="mm-list-title">Push</span></div><input type="checkbox" class="mm-toggle" checked aria-label="Push"></div>
+                  <div class="mm-list-row"><div class="mm-list-text"><span class="mm-list-title">Email</span></div><input type="checkbox" class="mm-toggle" checked aria-label="Email"></div>
+                  <div class="mm-list-row"><div class="mm-list-text"><span class="mm-list-title">Weekly summary</span><span class="mm-list-sub">Sent on Mondays</span></div><input type="checkbox" class="mm-toggle" aria-label="Weekly summary"></div>
+                </div>
+                <span class="mm-label">Assistant permissions</span>
+                <div class="mm-list mm-list--boxed mm-list--divided">
+                  <label class="mm-list-row"><span class="mm-list-text"><span class="mm-list-title">Answer questions only</span></span><input type="radio" name="f52" class="mm-radio"></label>
+                  <label class="mm-list-row"><span class="mm-list-text"><span class="mm-list-title">Small edits</span><span class="mm-list-sub">Always undoable</span></span><input type="radio" name="f52" class="mm-radio" checked></label>
+                  <label class="mm-list-row"><span class="mm-list-text"><span class="mm-list-title">Always ask first</span></span><input type="radio" name="f52" class="mm-radio"></label>
+                </div>
+                <button class="mm-btn mm-btn--block mm-btn--danger">Delete account</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">5.3 Notifications</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-navbar"><button class="mm-back">Home</button><span class="mm-navbar-title">Inbox</span><button class="mm-link" style="font-size:12px">Mark read</button></div>
+              <div class="mm-segmented"><button aria-pressed="true">All</button><button>Needs action</button></div>
+              <div class="mm-list mm-list--divided">
+                <div class="mm-list-row"><span class="mm-dot"></span><div class="mm-list-text"><span class="mm-list-title">Alex commented</span><span class="mm-list-sub">"Looks good, one small change"</span></div><span class="mm-caption">2m</span></div>
+                <div class="mm-list-row"><span class="mm-dot"></span><div class="mm-list-text"><span class="mm-list-title">Approve a request</span><span class="mm-list-sub">Launch budget, from Jordan</span></div><span class="mm-caption">1h</span></div>
+                <div class="mm-list-row"><span class="mm-icon" style="--mm-size:8px;border-radius:50%;background:transparent"></span><div class="mm-list-text"><span class="mm-list-title">Task completed</span><span class="mm-list-sub">Pricing page, by Riley</span></div><span class="mm-caption">Mon</span></div>
+                <div class="mm-list-row"><span class="mm-icon" style="--mm-size:8px;border-radius:50%;background:transparent"></span><div class="mm-list-text"><span class="mm-list-title">Weekly summary</span><span class="mm-list-sub">Your team closed 23 tasks</span></div><span class="mm-caption">Sun</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">5.4 Empty</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-navbar"><span></span><span class="mm-navbar-title">Projects</span><span></span></div>
+              <div class="mm-empty"><div class="mm-ph">Illustration</div><span class="mm-heading">No projects yet</span><p>Projects group related tasks so the whole team can follow along.</p><button class="mm-btn mm-btn--sm">Create a project</button></div>
+              <nav class="mm-tabbar"><button class="mm-tab">Home</button><button class="mm-tab" aria-current="page">Projects</button><button class="mm-tab">Inbox</button><button class="mm-tab">Profile</button></nav>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">5.5 Loading</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <span class="mm-skeleton" style="width:30%"></span>
+              <span class="mm-skeleton mm-skeleton--title"></span>
+              <span class="mm-skeleton mm-skeleton--block"></span>
+              <div class="mm-row mm-gap-3"><span class="mm-skeleton mm-skeleton--circle"></span><div class="mm-stack mm-gap-2 mm-grow"><span class="mm-skeleton" style="width:70%"></span><span class="mm-skeleton" style="width:40%"></span></div></div>
+              <div class="mm-row mm-gap-3"><span class="mm-skeleton mm-skeleton--circle"></span><div class="mm-stack mm-gap-2 mm-grow"><span class="mm-skeleton" style="width:55%"></span><span class="mm-skeleton" style="width:35%"></span></div></div>
+              <div class="mm-row mm-gap-3"><span class="mm-skeleton mm-skeleton--circle"></span><div class="mm-stack mm-gap-2 mm-grow"><span class="mm-skeleton" style="width:65%"></span><span class="mm-skeleton" style="width:30%"></span></div></div>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">5.6 Error</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+            <div class="mm-screen mm-screen--compact">
+              <div class="mm-navbar"><button class="mm-back">Settings</button><span class="mm-navbar-title">Calendar</span><span></span></div>
+              <div class="mm-banner"><div><strong>Connection expired on Oct 5.</strong> Due dates shown are from that day. Reconnect to sync them.</div></div>
+              <div class="mm-stat"><span class="mm-stat-label">Last synced</span><span class="mm-stat-value mm-muted">Oct 5</span></div>
+              <div class="mm-spacer"></div>
+              <button class="mm-btn mm-btn--block">Reconnect calendar</button>
+              <button class="mm-btn mm-btn--block mm-btn--ghost">Disconnect</button>
+            </div>
+          </div>
+
+        </div></div>
+      </div>
+
+      <!-- Flow 6 -->
+      <div class="mm-flow-section">
+        <h2>Flow 6: Bigger screens</h2>
+        <p>The same parts, laid out for a two-pane screen and a desktop.</p>
+        <div class="doc-flowwrap"><div class="mm-flow">
+
+          <div class="mm-artboard"><div class="mm-artboard-name">6.1 Dashboard, two panes</div><div class="mm-artboard-meta">Wide, 780 x 640</div>
+            <div class="mm-screen mm-screen--wide">
+              <div class="mm-split">
+                <div class="mm-pane">
+                  <div class="mm-stat"><span class="mm-stat-label">Active users</span><span class="mm-stat-value">1,284</span><span class="mm-delta mm-delta--up">96 this week</span></div>
+                  <div class="mm-ph" style="min-height:150px">Active users over time</div>
+                  <span class="mm-label">This week</span>
+                  <div class="mm-list mm-list--divided">
+                    <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">New sign-ups</span></div><span class="mm-list-value">+214</span></div>
+                    <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Cancellations</span></div><span class="mm-list-value">-18</span></div>
+                  </div>
+                </div>
+                <div class="mm-pane">
+                  <span class="mm-label">Usage by feature</span>
+                  <div class="mm-segmented"><button aria-pressed="true">Week</button><button>Month</button><button>Custom</button></div>
+                  <div class="mm-row mm-gap-4"><div class="mm-ring" style="--mm-value:42;--mm-size:96px"><span>42%</span></div><div class="mm-stack mm-gap-1"><span class="mm-card-title">Tasks</span><span class="mm-small">540 of 1,284 users</span></div></div>
+                  <div class="mm-list mm-list--divided">
+                    <div class="mm-list-row"><div class="mm-list-text"><span class="mm-list-title">Comments</span><div class="mm-progress mm-progress--thin" style="--mm-value:62%"><span></span></div></div><span class="mm-list-value">796</span></div>
+                    <div class="mm-list-row"><div class="mm-list-text"><span class="mm-list-title">Files</span><div class="mm-progress mm-progress--thin" style="--mm-value:48%"><span></span></div></div><span class="mm-list-value">616</span></div>
+                    <div class="mm-list-row"><div class="mm-list-text"><span class="mm-list-title">Assistant</span><div class="mm-progress mm-progress--thin" style="--mm-value:20%"><span></span></div></div><span class="mm-list-value">257</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mm-artboard"><div class="mm-artboard-name">6.2 Tasks, desktop</div><div class="mm-artboard-meta">Desktop, 1280 x 800</div>
+            <div class="mm-screen mm-screen--desktop" style="padding:0;flex-direction:row;gap:0">
+              <aside style="width:220px;border-right:var(--mm-border);padding:24px 12px;display:flex;flex-direction:column;gap:24px">
+                <div class="mm-row" style="padding:0 12px"><span class="mm-icon mm-icon--ink"></span><span class="mm-strong">Your app</span></div>
+                <nav class="mm-sidenav"><a href="#screens">Home</a><a href="#screens">Projects</a><a href="#screens" aria-current="page">Tasks</a><a href="#screens">Inbox</a><a href="#screens">Assistant</a></nav>
+                <div class="mm-spacer"></div>
+                <div class="mm-row" style="padding:0 12px"><span class="mm-avatar mm-avatar--sm">SK</span><span class="mm-small">Sam Kim</span></div>
+              </aside>
+              <div style="flex:1;display:flex;flex-direction:column;gap:20px;padding:28px 32px;min-width:0">
+                <div class="mm-row mm-between"><h1 class="mm-title">Tasks</h1><div class="mm-row"><button class="mm-btn mm-btn--sm mm-btn--secondary">Export</button><button class="mm-btn mm-btn--sm">New task</button></div></div>
+                <div class="mm-row mm-gap-3"><div class="mm-search" style="width:320px"><input class="mm-input" placeholder="Search tasks"></div><div class="mm-chips"><button class="mm-chip" aria-pressed="true">All projects</button><button class="mm-chip">Assigned to me</button><button class="mm-chip">Status</button><button class="mm-chip">This week</button></div></div>
+                <div class="mm-grid-2" style="grid-template-columns:repeat(3,1fr)">
+                  <div class="mm-card"><div class="mm-stat mm-stat--sm"><span class="mm-stat-label">Open</span><span class="mm-stat-value">48</span></div></div>
+                  <div class="mm-card"><div class="mm-stat mm-stat--sm"><span class="mm-stat-label">In review</span><span class="mm-stat-value">9</span></div></div>
+                  <div class="mm-card mm-card--ink"><div class="mm-stat mm-stat--sm"><span class="mm-label">Overdue</span><span class="mm-stat-value">2</span></div></div>
+                </div>
+                <table class="mm-table">
+                  <thead><tr><th>Due</th><th>Task</th><th>Project</th><th>Status</th><th>Owner</th><th class="is-num">Comments</th></tr></thead>
+                  <tbody>
+                    <tr><td>Oct 3</td><td>Homepage copy</td><td>Website refresh</td><td><span class="mm-badge">Overdue</span></td><td>Alex</td><td class="is-num">4</td></tr>
+                    <tr><td>Oct 3</td><td>Pricing page</td><td>Website refresh</td><td><span class="mm-badge">Overdue</span></td><td>Riley</td><td class="is-num">2</td></tr>
+                    <tr><td>Oct 9</td><td>Copy review</td><td>Website refresh</td><td><span class="mm-badge">In review</span></td><td>Alex</td><td class="is-num">7</td></tr>
+                    <tr><td>Oct 10</td><td>Launch checklist</td><td>Launch</td><td><span class="mm-badge">In progress</span></td><td>Jordan</td><td class="is-num">1</td></tr>
+                    <tr><td>Oct 14</td><td>Onboarding emails</td><td>Launch</td><td><span class="mm-badge">Not started</span></td><td>Sam</td><td class="is-num">0</td></tr>
+                    <tr><td>Oct 21</td><td>Q4 planning</td><td>Operations</td><td><span class="mm-badge">Not started</span></td><td>Sam</td><td class="is-num">3</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Theme switch (docs only; the kit itself needs no JavaScript)
+  const setTheme = (t) => {
+    if (t === 'dark') document.body.setAttribute('data-theme', 'dark'); else document.body.removeAttribute('data-theme');
+    document.querySelectorAll('[data-set-theme]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.setTheme === t)));
+  };
+  document.querySelectorAll('[data-set-theme]').forEach(b => b.addEventListener('click', () => setTheme(b.dataset.setTheme)));
+  document.querySelector('[data-theme-toggle]').addEventListener('click', () => setTheme(document.body.dataset.theme === 'dark' ? 'light' : 'dark'));
+
+  // Pressed state for chips and segmented buttons in the demo
+  document.addEventListener('click', (e) => {
+    const seg = e.target.closest('.mm-segmented > button');
+    if (seg && !seg.dataset.setTheme) { seg.parentElement.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === seg))); }
+    const chip = e.target.closest('.mm-chip');
+    if (chip) chip.setAttribute('aria-pressed', String(chip.getAttribute('aria-pressed') !== 'true'));
+  });
+
+  // Copy snippet
+  document.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', () => {
+    const el = document.getElementById(btn.dataset.copy);
+    const text = [...el.childNodes].filter(n => n !== btn).map(n => n.textContent).join('');
+    navigator.clipboard?.writeText(text.trim());
+    btn.textContent = 'Copied';
+    setTimeout(() => (btn.textContent = 'Copy'), 1500);
+  }));
+
+  // Sidebar active link
+  const links = [...document.querySelectorAll('.doc-side .mm-sidenav a')];
+  const io = new IntersectionObserver((entries) => entries.forEach(en => {
+    if (en.isIntersecting) links.forEach(a => a.setAttribute('aria-current', a.getAttribute('href') === '#' + en.target.id ? 'page' : 'false'));
+  }), { rootMargin: '-40% 0px -55% 0px' });
+  document.querySelectorAll('.doc-section').forEach(s => io.observe(s));
+</script>
+</body>
+</html>
