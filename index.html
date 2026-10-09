@@ -29,7 +29,7 @@
   .doc-steps li::before { content: counter(step); width: 28px; height: 28px; border-radius: 50%; border: var(--mm-border); display: grid; place-items: center; font-size: 13px; font-weight: 600; color: var(--mm-ink); }
   .doc-steps b { color: var(--mm-ink); font-weight: 600; }
   @media (max-width: 900px) { .doc-start { grid-template-columns: 1fr; gap: 32px; } }
-  .doc-code { position: relative; font: 13px/1.6 ui-monospace, "SF Mono", Menlo, monospace; background: var(--mm-paper); border: var(--mm-border); border-radius: 12px; padding: 14px 84px 14px 16px; overflow-x: auto; white-space: pre; color: var(--mm-ink); }
+  .doc-code { position: relative; font: 13px/1.6 ui-monospace, "SF Mono", Menlo, monospace; background: var(--mm-paper); border: var(--mm-border); border-radius: 12px; padding: 14px 84px 14px 16px; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--mm-ink); }
   .doc-code button { position: absolute; top: 8px; right: 8px; }
   .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
   .doc-spec { background: var(--mm-paper); border: var(--mm-border); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
@@ -65,11 +65,11 @@
 </head>
 <body class="mm">
 
-<div class="doc-top"><div class="doc-logo"><svg class="doc-mark" viewBox="0 0 340 340" aria-hidden="true"><path d="M226.178 0L113.089 0V18.8481L75.3926 18.8481V37.6963L37.6963 37.6963L37.6963 75.3926H18.8481L18.8481 94.2407H0L0 207.33H18.8481L18.8481 245.026H37.6963V263.874H56.5444V282.722H94.2407V301.57L188.481 301.57V282.722H226.178L226.178 263.874H245.026V226.178H263.874L263.874 131.937H245.026V113.089H226.178V94.2407L207.33 94.2407L207.33 75.3926L113.089 75.3926V94.2407H94.2407V113.089H75.3926L75.3926 188.481L94.2407 188.481V207.33H113.089L113.089 226.178H169.633V207.33H188.481V150.785H150.785V188.481H113.089L113.089 131.937H131.937V113.089L188.481 113.089V131.937H207.33V150.785H226.178V226.178H207.33V245.026H188.481V263.874L94.2407 263.874V245.026L75.3926 245.026V226.178H56.5444V207.33H37.6963L37.6963 113.089L56.5444 113.089L56.5444 75.3926H75.3926V56.5444L113.089 56.5444L113.089 37.6963L207.33 37.6963V56.5444L245.026 56.5444V75.3926H263.874V94.2407H282.722V131.937H301.57L301.57 245.026H282.722V263.874H263.874V301.57H245.026V310.994V320.418H226.202V339.267H245.05H263.898V320.418H282.722V301.57H301.57V282.722H320.418V245.026H339.267L339.267 113.089H320.418V75.3926L301.57 75.3926V56.5444L282.722 56.5444V37.6963H263.874V18.8481L226.178 18.8481V0Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/></svg>Megamind Labs UI</div><button class="mm-btn mm-btn--sm mm-btn--secondary" data-theme-toggle>Invert</button></div>
+<div class="doc-top"><div class="doc-logo"><svg class="doc-mark" viewBox="0 0 340 340" aria-hidden="true"><path d="M226.178 0L113.089 0V18.8481L75.3926 18.8481V37.6963L37.6963 37.6963L37.6963 75.3926H18.8481L18.8481 94.2407H0L0 207.33H18.8481L18.8481 245.026H37.6963V263.874H56.5444V282.722H94.2407V301.57L188.481 301.57V282.722H226.178L226.178 263.874H245.026V226.178H263.874L263.874 131.937H245.026V113.089H226.178V94.2407L207.33 94.2407L207.33 75.3926L113.089 75.3926V94.2407H94.2407V113.089H75.3926L75.3926 188.481L94.2407 188.481V207.33H113.089L113.089 226.178H169.633V207.33H188.481V150.785H150.785V188.481H113.089L113.089 131.937H131.937V113.089L188.481 113.089V131.937H207.33V150.785H226.178V226.178H207.33V245.026H188.481V263.874L94.2407 263.874V245.026L75.3926 245.026V226.178H56.5444V207.33H37.6963L37.6963 113.089L56.5444 113.089L56.5444 75.3926H75.3926V56.5444L113.089 56.5444L113.089 37.6963L207.33 37.6963V56.5444L245.026 56.5444V75.3926H263.874V94.2407H282.722V131.937H301.57L301.57 245.026H282.722V263.874H263.874V301.57H245.026V310.994V320.418H226.202V339.267H245.05H263.898V320.418H282.722V301.57H301.57V282.722H320.418V245.026H339.267L339.267 113.089H320.418V75.3926L301.57 75.3926V56.5444L282.722 56.5444V37.6963H263.874V18.8481L226.178 18.8481V0Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/></svg>Megamind Labs UI Kit</div><button class="mm-btn mm-btn--sm mm-btn--secondary" data-theme-toggle>Invert</button></div>
 
 <div class="doc">
   <aside class="doc-side">
-    <div class="doc-logo"><svg class="doc-mark" viewBox="0 0 340 340" aria-hidden="true"><path d="M226.178 0L113.089 0V18.8481L75.3926 18.8481V37.6963L37.6963 37.6963L37.6963 75.3926H18.8481L18.8481 94.2407H0L0 207.33H18.8481L18.8481 245.026H37.6963V263.874H56.5444V282.722H94.2407V301.57L188.481 301.57V282.722H226.178L226.178 263.874H245.026V226.178H263.874L263.874 131.937H245.026V113.089H226.178V94.2407L207.33 94.2407L207.33 75.3926L113.089 75.3926V94.2407H94.2407V113.089H75.3926L75.3926 188.481L94.2407 188.481V207.33H113.089L113.089 226.178H169.633V207.33H188.481V150.785H150.785V188.481H113.089L113.089 131.937H131.937V113.089L188.481 113.089V131.937H207.33V150.785H226.178V226.178H207.33V245.026H188.481V263.874L94.2407 263.874V245.026L75.3926 245.026V226.178H56.5444V207.33H37.6963L37.6963 113.089L56.5444 113.089L56.5444 75.3926H75.3926V56.5444L113.089 56.5444L113.089 37.6963L207.33 37.6963V56.5444L245.026 56.5444V75.3926H263.874V94.2407H282.722V131.937H301.57L301.57 245.026H282.722V263.874H263.874V301.57H245.026V310.994V320.418H226.202V339.267H245.05H263.898V320.418H282.722V301.57H301.57V282.722H320.418V245.026H339.267L339.267 113.089H320.418V75.3926L301.57 75.3926V56.5444L282.722 56.5444V37.6963H263.874V18.8481L226.178 18.8481V0Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/></svg>Megamind Labs UI</div>
+    <div class="doc-logo"><svg class="doc-mark" viewBox="0 0 340 340" aria-hidden="true"><path d="M226.178 0L113.089 0V18.8481L75.3926 18.8481V37.6963L37.6963 37.6963L37.6963 75.3926H18.8481L18.8481 94.2407H0L0 207.33H18.8481L18.8481 245.026H37.6963V263.874H56.5444V282.722H94.2407V301.57L188.481 301.57V282.722H226.178L226.178 263.874H245.026V226.178H263.874L263.874 131.937H245.026V113.089H226.178V94.2407L207.33 94.2407L207.33 75.3926L113.089 75.3926V94.2407H94.2407V113.089H75.3926L75.3926 188.481L94.2407 188.481V207.33H113.089L113.089 226.178H169.633V207.33H188.481V150.785H150.785V188.481H113.089L113.089 131.937H131.937V113.089L188.481 113.089V131.937H207.33V150.785H226.178V226.178H207.33V245.026H188.481V263.874L94.2407 263.874V245.026L75.3926 245.026V226.178H56.5444V207.33H37.6963L37.6963 113.089L56.5444 113.089L56.5444 75.3926H75.3926V56.5444L113.089 56.5444L113.089 37.6963L207.33 37.6963V56.5444L245.026 56.5444V75.3926H263.874V94.2407H282.722V131.937H301.57L301.57 245.026H282.722V263.874H263.874V301.57H245.026V310.994V320.418H226.202V339.267H245.05H263.898V320.418H282.722V301.57H301.57V282.722H320.418V245.026H339.267L339.267 113.089H320.418V75.3926L301.57 75.3926V56.5444L282.722 56.5444V37.6963H263.874V18.8481L226.178 18.8481V0Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/></svg>Megamind Labs UI Kit</div>
     <nav class="mm-sidenav" aria-label="Sections">
       <a href="#start" aria-current="page">Get started</a>
       <a href="#foundations">Foundations</a>
@@ -112,9 +112,9 @@
       <div class="mm-stack mm-gap-3" style="max-width: 720px">
         <h3 class="mm-heading">Set it up</h3>
         <ol class="doc-steps">
-          <li><b>Link the stylesheet.</b> Add the link below to the head of your page. It is the only file you need.</li>
-          <li><b>Set up the canvas.</b> Put <code>class="mm mm-canvas"</code> on your body, then wrap each screen in <code>class="mm-screen mm-screen--phone"</code>.</li>
-          <li><b>Build your screens.</b> Compose them from the components below, or give <code>PROMPT.md</code> to your AI tool so it builds with the same classes.</li>
+          <li><span><b>Link the stylesheet.</b> Add the link below to the head of your page. It is the only file you need.</span></li>
+          <li><span><b>Set up the canvas.</b> Put <code>class="mm mm-canvas"</code> on your body, then wrap each screen in <code>class="mm-screen mm-screen--phone"</code>.</span></li>
+          <li><span><b>Build your screens.</b> Compose them from the components below, or give <code>PROMPT.md</code> to your AI tool so it builds with the same classes.</span></li>
         </ol>
         <div class="doc-code" id="snippet"><button class="mm-btn mm-btn--sm mm-btn--secondary" data-copy="snippet">Copy</button>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css"&gt;
 
@@ -133,14 +133,23 @@
     <section class="doc-section" id="foundations">
       <header>
         <h2>Foundations</h2>
-        <p>Everything is a CSS variable, so a team can retheme the kit in ten lines.</p>
+        <p>Every color, space, radius, and type size in the kit is a named CSS variable, such as <code>--mm-ink</code> or <code>--mm-r-md</code>. Components never hard-code a value. They read the variable by name, so changing one variable updates every button, border, and label that uses it.</p>
+        <p>That is what makes the kit easy to retheme. A team does not edit the components. They override a handful of variables at the top of their own stylesheet, and the rest of the kit follows.</p>
       </header>
 
-      <div class="doc-principles" style="margin-bottom: 40px">
-        <div><b>Grey means undecided</b><p>Fills stand in for anything not designed yet: icons, photos, charts, maps. If it is grey, nobody has to defend it.</p></div>
-        <div><b>Ink means it matters</b><p>Near-black is reserved for the one primary action, the active state, and the number the screen exists to show.</p></div>
-        <div><b>One line weight</b><p>Every border is 1px in the same grey. Emphasis comes from fill and type weight, never from thicker lines.</p></div>
-        <div><b>No color, even for errors</b><p>Danger is a dashed outline, errors are a bold message with a mark. Color decisions belong to the visual design pass.</p></div>
+      <div class="doc-spec" style="margin-bottom: 40px; max-width: 720px">
+        <h3>Retheme in ten lines <code>:root</code></h3>
+        <pre class="doc-code" style="margin: 0; white-space: pre; overflow-x: auto">:root {
+  --mm-ink: #1B3A2F;      /* text, primary button, active state */
+  --mm-ink-2: #3F5A4F;    /* secondary text */
+  --mm-muted: #7D9489;    /* captions and placeholders */
+  --mm-line: #C8D6CE;     /* borders and dividers */
+  --mm-fill: #E6EDE9;     /* subtle surfaces */
+  --mm-wash: #F2F6F4;     /* page background */
+  --mm-paper: #FFFFFF;    /* cards and sheets */
+  --mm-r-md: 8px;         /* default corner radius */
+}</pre>
+        <p class="mm-body">Dark mode uses the same names. <code>[data-theme="dark"]</code> redefines them with inverted values, so no component needs its own dark styles.</p>
       </div>
 
       <div class="doc-grid" style="margin-bottom: 16px">
@@ -169,9 +178,7 @@
           </div>
           <p class="mm-caption">Small parts are tight, containers get rounder. Pills use 999.</p>
         </div>
-      </div>
-
-      <div class="doc-spec">
+        <div class="doc-spec doc-spec--wide">
         <h3>Type scale <code>Inter 400 / 500 / 600, tabular numbers on</code></h3>
         <div>
           <div class="doc-type"><code>.mm-display 36</code><span class="mm-display">1,284</span></div>
@@ -183,6 +190,7 @@
           <div class="doc-type"><code>.mm-label 12</code><span class="mm-label">Due this week</span></div>
           <div class="doc-type"><code>.mm-tab 11</code><span style="font-size:11px;font-weight:500;color:var(--mm-muted)">Projects</span></div>
         </div>
+      </div>
       </div>
     </section>
 
