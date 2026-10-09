@@ -24,9 +24,16 @@
   .doc-start .doc-hero { margin-bottom: 0; }
   .doc-start .mm-screen { max-width: 100%; }
   .doc-steps { list-style: none; display: flex; flex-direction: column; gap: 14px; max-width: 720px; }
-  .doc-steps li { display: grid; grid-template-columns: 28px 1fr; gap: 12px; font-size: 15px; line-height: 1.55; color: var(--mm-ink-2); counter-increment: step; }
+  .doc-steps li { display: grid; grid-template-columns: 24px 1fr; gap: 12px; align-items: start; font-size: 15px; line-height: 1.55; color: var(--mm-ink-2); counter-increment: step; }
   .doc-steps { counter-reset: step; }
-  .doc-steps li::before { content: counter(step); width: 28px; height: 28px; border-radius: 50%; border: var(--mm-border); display: grid; place-items: center; font-size: 13px; font-weight: 600; color: var(--mm-ink); }
+  .doc-steps li > span { display: block; min-height: 24px; }
+  .doc-steps li::before { content: counter(step); width: 24px; height: 24px; border-radius: 50%; border: var(--mm-border); display: grid; place-items: center; font-size: 12px; line-height: 1; font-weight: 600; color: var(--mm-ink); }
+  .doc-steps code { font-size: 13px; line-height: 1; }
+  .doc-device { margin-bottom: 40px; }
+  #screens[data-device="phone"] .mm-screen { width: 390px; height: 844px; }
+  #screens[data-device="duo"] .mm-screen { width: 780px; height: 844px; }
+  #screens[data-device="tablet"] .mm-screen { width: 834px; height: 1194px; }
+  .doc-screens .mm-artboard-meta { display: none; }
   .doc-steps b { color: var(--mm-ink); font-weight: 600; }
   @media (max-width: 900px) { .doc-start { grid-template-columns: 1fr; gap: 32px; } }
   .doc-code { position: relative; font: 13px/1.6 ui-monospace, "SF Mono", Menlo, monospace; background: var(--mm-paper); border: var(--mm-border); border-radius: 12px; padding: 14px 84px 14px 16px; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--mm-ink); }
@@ -134,23 +141,7 @@
       <header>
         <h2>Foundations</h2>
         <p>Every color, space, radius, and type size in the kit is a named CSS variable, such as <code>--mm-ink</code> or <code>--mm-r-md</code>. Components never hard-code a value. They read the variable by name, so changing one variable updates every button, border, and label that uses it.</p>
-        <p>That is what makes the kit easy to retheme. A team does not edit the components. They override a handful of variables at the top of their own stylesheet, and the rest of the kit follows.</p>
       </header>
-
-      <div class="doc-spec" style="margin-bottom: 40px; max-width: 720px">
-        <h3>Retheme in ten lines <code>:root</code></h3>
-        <pre class="doc-code" style="margin: 0; white-space: pre; overflow-x: auto">:root {
-  --mm-ink: #1B3A2F;      /* text, primary button, active state */
-  --mm-ink-2: #3F5A4F;    /* secondary text */
-  --mm-muted: #7D9489;    /* captions and placeholders */
-  --mm-line: #C8D6CE;     /* borders and dividers */
-  --mm-fill: #E6EDE9;     /* subtle surfaces */
-  --mm-wash: #F2F6F4;     /* page background */
-  --mm-paper: #FFFFFF;    /* cards and sheets */
-  --mm-r-md: 8px;         /* default corner radius */
-}</pre>
-        <p class="mm-body">Dark mode uses the same names. <code>[data-theme="dark"]</code> redefines them with inverted values, so no component needs its own dark styles.</p>
-      </div>
 
       <div class="doc-grid" style="margin-bottom: 16px">
         <div class="doc-spec doc-spec--wide">
@@ -384,16 +375,18 @@
     </section>
 
     <!-- ================================================================ SCREENS -->
-    <section class="doc-section" id="screens">
+    <section class="doc-section doc-screens" id="screens" data-device="phone">
       <header>
         <h2>Screens</h2>
-        <p>Starter screens built only from the classes above. Copy any screen's markup, change the words, and you have a flow. Phone frames are 390 x 844, with a compact 390 x 640 frame for presenting, plus wide, tablet and desktop frames.</p>
+        <p>Five starter flows built only from the classes above. Pick a device to see every flow at that size: iPhone (390 x 844), iPhone Duo (780 x 844), or tablet (834 x 1194). Copy any screen's markup, change the words, and you have a flow.</p>
       </header>
+
+      <div class="mm-segmented doc-device" role="group" aria-label="Device"><button aria-pressed="true" data-device="phone">iPhone</button><button aria-pressed="false" data-device="duo">iPhone Duo</button><button aria-pressed="false" data-device="tablet">Tablet</button></div>
 
       <!-- Flow 1 -->
       <div class="mm-flow-section">
-        <h2>Flow 1: Sign up</h2>
-        <p>Account, verify, preferences, permissions, invite.</p>
+        <h2>Flow 1: Onboarding</h2>
+        <p>Sign up or log in, verify, set preferences, grant permissions, invite.</p>
         <div class="doc-flowwrap"><div class="mm-flow">
 
           <div class="mm-artboard"><div class="mm-artboard-name">1.1 Welcome</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
@@ -560,7 +553,7 @@
 
       <!-- Flow 3 -->
       <div class="mm-flow-section">
-        <h2>Flow 3: Assistant takes an action</h2>
+        <h2>Flow 3: Chatbot AI agent</h2>
         <p>A notification becomes a proposal, the user approves, and the result stays undoable.</p>
         <div class="doc-flowwrap"><div class="mm-flow">
 
@@ -795,71 +788,6 @@
         </div></div>
       </div>
 
-      <!-- Flow 6 -->
-      <div class="mm-flow-section">
-        <h2>Flow 6: Bigger screens</h2>
-        <p>The same parts, laid out for a two-pane screen and a desktop.</p>
-        <div class="doc-flowwrap"><div class="mm-flow">
-
-          <div class="mm-artboard"><div class="mm-artboard-name">6.1 Dashboard, two panes</div><div class="mm-artboard-meta">Wide, 780 x 640</div>
-            <div class="mm-screen mm-screen--wide">
-              <div class="mm-split">
-                <div class="mm-pane">
-                  <div class="mm-stat"><span class="mm-stat-label">Active users</span><span class="mm-stat-value">1,284</span><span class="mm-delta mm-delta--up">96 this week</span></div>
-                  <div class="mm-ph" style="min-height:150px">Active users over time</div>
-                  <span class="mm-label">This week</span>
-                  <div class="mm-list mm-list--divided">
-                    <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">New sign-ups</span></div><span class="mm-list-value">+214</span></div>
-                    <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Cancellations</span></div><span class="mm-list-value">-18</span></div>
-                  </div>
-                </div>
-                <div class="mm-pane">
-                  <span class="mm-label">Usage by feature</span>
-                  <div class="mm-segmented"><button aria-pressed="true">Week</button><button>Month</button><button>Custom</button></div>
-                  <div class="mm-row mm-gap-4"><div class="mm-ring" style="--mm-value:42;--mm-size:96px"><span>42%</span></div><div class="mm-stack mm-gap-1"><span class="mm-card-title">Tasks</span><span class="mm-small">540 of 1,284 users</span></div></div>
-                  <div class="mm-list mm-list--divided">
-                    <div class="mm-list-row"><div class="mm-list-text"><span class="mm-list-title">Comments</span><div class="mm-progress mm-progress--thin" style="--mm-value:62%"><span></span></div></div><span class="mm-list-value">796</span></div>
-                    <div class="mm-list-row"><div class="mm-list-text"><span class="mm-list-title">Files</span><div class="mm-progress mm-progress--thin" style="--mm-value:48%"><span></span></div></div><span class="mm-list-value">616</span></div>
-                    <div class="mm-list-row"><div class="mm-list-text"><span class="mm-list-title">Assistant</span><div class="mm-progress mm-progress--thin" style="--mm-value:20%"><span></span></div></div><span class="mm-list-value">257</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="mm-artboard"><div class="mm-artboard-name">6.2 Tasks, desktop</div><div class="mm-artboard-meta">Desktop, 1280 x 800</div>
-            <div class="mm-screen mm-screen--desktop" style="padding:0;flex-direction:row;gap:0">
-              <aside style="width:220px;border-right:var(--mm-border);padding:24px 12px;display:flex;flex-direction:column;gap:24px">
-                <div class="mm-row" style="padding:0 12px"><span class="mm-icon mm-icon--ink"></span><span class="mm-strong">Your app</span></div>
-                <nav class="mm-sidenav"><a href="#screens">Home</a><a href="#screens">Projects</a><a href="#screens" aria-current="page">Tasks</a><a href="#screens">Inbox</a><a href="#screens">Assistant</a></nav>
-                <div class="mm-spacer"></div>
-                <div class="mm-row" style="padding:0 12px"><span class="mm-avatar mm-avatar--sm">SK</span><span class="mm-small">Sam Kim</span></div>
-              </aside>
-              <div style="flex:1;display:flex;flex-direction:column;gap:20px;padding:28px 32px;min-width:0">
-                <div class="mm-row mm-between"><h1 class="mm-title">Tasks</h1><div class="mm-row"><button class="mm-btn mm-btn--sm mm-btn--secondary">Export</button><button class="mm-btn mm-btn--sm">New task</button></div></div>
-                <div class="mm-row mm-gap-3"><div class="mm-search" style="width:320px"><input class="mm-input" placeholder="Search tasks"></div><div class="mm-chips"><button class="mm-chip" aria-pressed="true">All projects</button><button class="mm-chip">Assigned to me</button><button class="mm-chip">Status</button><button class="mm-chip">This week</button></div></div>
-                <div class="mm-grid-2" style="grid-template-columns:repeat(3,1fr)">
-                  <div class="mm-card"><div class="mm-stat mm-stat--sm"><span class="mm-stat-label">Open</span><span class="mm-stat-value">48</span></div></div>
-                  <div class="mm-card"><div class="mm-stat mm-stat--sm"><span class="mm-stat-label">In review</span><span class="mm-stat-value">9</span></div></div>
-                  <div class="mm-card mm-card--ink"><div class="mm-stat mm-stat--sm"><span class="mm-label">Overdue</span><span class="mm-stat-value">2</span></div></div>
-                </div>
-                <table class="mm-table">
-                  <thead><tr><th>Due</th><th>Task</th><th>Project</th><th>Status</th><th>Owner</th><th class="is-num">Comments</th></tr></thead>
-                  <tbody>
-                    <tr><td>Oct 3</td><td>Homepage copy</td><td>Website refresh</td><td><span class="mm-badge">Overdue</span></td><td>Alex</td><td class="is-num">4</td></tr>
-                    <tr><td>Oct 3</td><td>Pricing page</td><td>Website refresh</td><td><span class="mm-badge">Overdue</span></td><td>Riley</td><td class="is-num">2</td></tr>
-                    <tr><td>Oct 9</td><td>Copy review</td><td>Website refresh</td><td><span class="mm-badge">In review</span></td><td>Alex</td><td class="is-num">7</td></tr>
-                    <tr><td>Oct 10</td><td>Launch checklist</td><td>Launch</td><td><span class="mm-badge">In progress</span></td><td>Jordan</td><td class="is-num">1</td></tr>
-                    <tr><td>Oct 14</td><td>Onboarding emails</td><td>Launch</td><td><span class="mm-badge">Not started</span></td><td>Sam</td><td class="is-num">0</td></tr>
-                    <tr><td>Oct 21</td><td>Q4 planning</td><td>Operations</td><td><span class="mm-badge">Not started</span></td><td>Sam</td><td class="is-num">3</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-        </div></div>
-      </div>
     </section>
 
   </main>
@@ -873,6 +801,13 @@
   };
   document.querySelectorAll('[data-set-theme]').forEach(b => b.addEventListener('click', () => setTheme(b.dataset.setTheme)));
   document.querySelector('[data-theme-toggle]').addEventListener('click', () => setTheme(document.body.dataset.theme === 'dark' ? 'light' : 'dark'));
+
+  // Device switch for the Screens flows
+  document.querySelectorAll('.doc-device [data-device]').forEach(b => b.addEventListener('click', () => {
+    const sec = document.getElementById('screens');
+    sec.dataset.device = b.dataset.device;
+    document.querySelectorAll('.doc-device [data-device]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  }));
 
   // Pressed state for chips and segmented buttons in the demo
   document.addEventListener('click', (e) => {
