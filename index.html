@@ -26,12 +26,15 @@
   .doc-steps { list-style: none; display: flex; flex-direction: column; gap: 14px; max-width: 720px; }
   .doc-steps li { display: grid; grid-template-columns: 24px 1fr; gap: 12px; align-items: start; font-size: 15px; line-height: 1.55; color: var(--mm-ink-2); counter-increment: step; }
   .doc-steps { counter-reset: step; }
-  .doc-steps li > span { display: block; min-height: 24px; }
+  .doc-steps li > div { min-height: 24px; }
   .doc-steps li::before { content: counter(step); width: 24px; height: 24px; border-radius: 50%; border: var(--mm-border); display: grid; place-items: center; font-size: 12px; line-height: 1; font-weight: 600; color: var(--mm-ink); }
   .doc-steps code { font-size: 13px; line-height: 1; }
-  .doc-device { margin-bottom: 40px; }
+  .doc-device { margin-bottom: 16px; }
+  .doc-duo { display: none; margin-bottom: 40px; }
+  #screens[data-device="duo"] .doc-duo { display: flex; }
   #screens[data-device="phone"] .mm-screen { width: 390px; height: 844px; }
-  #screens[data-device="duo"] .mm-screen { width: 780px; height: 844px; }
+  #screens[data-device="duo"][data-fold="collapsed"] .mm-screen { width: 390px; height: 844px; }
+  #screens[data-device="duo"][data-fold="expanded"] .mm-screen { width: 780px; height: 844px; }
   #screens[data-device="tablet"] .mm-screen { width: 834px; height: 1194px; }
   .doc-screens .mm-artboard-meta { display: none; }
   .doc-steps b { color: var(--mm-ink); font-weight: 600; }
@@ -119,20 +122,21 @@
       <div class="mm-stack mm-gap-3" style="max-width: 720px">
         <h3 class="mm-heading">Set it up</h3>
         <ol class="doc-steps">
-          <li><span><b>Link the stylesheet.</b> Add the link below to the head of your page. It is the only file you need.</span></li>
-          <li><span><b>Set up the canvas.</b> Put <code>class="mm mm-canvas"</code> on your body, then wrap each screen in <code>class="mm-screen mm-screen--phone"</code>.</span></li>
-          <li><span><b>Build your screens.</b> Compose them from the components below, or give <code>PROMPT.md</code> to your AI tool so it builds with the same classes.</span></li>
+          <li><div>
+            <b>Link the stylesheet.</b> Add this line inside the head of your HTML page.
+            <div class="doc-code" id="snippet-link"><button class="mm-btn mm-btn--sm mm-btn--secondary" data-copy="snippet-link">Copy</button>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css"&gt;</div>
+          </div></li>
+          <li><div>
+            <b>Set the body.</b> Add these classes to your body tag.
+            <div class="doc-code" id="snippet-body"><button class="mm-btn mm-btn--sm mm-btn--secondary" data-copy="snippet-body">Copy</button>&lt;body class="mm mm-canvas"&gt;</div>
+          </div></li>
+          <li><div>
+            <b>Build a screen.</b> Wrap your content in a screen frame, then fill it with the components below.
+            <div class="doc-code" id="snippet-screen"><button class="mm-btn mm-btn--sm mm-btn--secondary" data-copy="snippet-screen">Copy</button>&lt;div class="mm-screen mm-screen--phone"&gt;
+  ...
+&lt;/div&gt;</div>
+          </div></li>
         </ol>
-        <div class="doc-code" id="snippet"><button class="mm-btn mm-btn--sm mm-btn--secondary" data-copy="snippet">Copy</button>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css"&gt;
-
-&lt;body class="mm mm-canvas"&gt;
-  &lt;div class="mm-screen mm-screen--phone"&gt;
-    &lt;h1 class="mm-title"&gt;Welcome back&lt;/h1&gt;
-    &lt;input class="mm-input" placeholder="Email address"&gt;
-    &lt;div class="mm-spacer"&gt;&lt;/div&gt;
-    &lt;button class="mm-btn mm-btn--block"&gt;Continue&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/body&gt;</div>
       </div>
     </section>
 
@@ -375,13 +379,14 @@
     </section>
 
     <!-- ================================================================ SCREENS -->
-    <section class="doc-section doc-screens" id="screens" data-device="phone">
+    <section class="doc-section doc-screens" id="screens" data-device="phone" data-fold="collapsed">
       <header>
         <h2>Screens</h2>
         <p>Five starter flows built only from the classes above. Pick a device to see every flow at that size: iPhone (390 x 844), iPhone Duo (780 x 844), or tablet (834 x 1194). Copy any screen's markup, change the words, and you have a flow.</p>
       </header>
 
       <div class="mm-segmented doc-device" role="group" aria-label="Device"><button aria-pressed="true" data-device="phone">iPhone</button><button aria-pressed="false" data-device="duo">iPhone Duo</button><button aria-pressed="false" data-device="tablet">Tablet</button></div>
+      <div class="mm-segmented doc-duo" role="group" aria-label="iPhone Duo state"><button aria-pressed="true" data-fold="collapsed">Collapsed</button><button aria-pressed="false" data-fold="expanded">Expanded</button></div>
 
       <!-- Flow 1 -->
       <div class="mm-flow-section">
@@ -807,6 +812,13 @@
     const sec = document.getElementById('screens');
     sec.dataset.device = b.dataset.device;
     document.querySelectorAll('.doc-device [data-device]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+
+  // Folded or expanded state for iPhone Duo
+  document.querySelectorAll('.doc-duo [data-fold]').forEach(b => b.addEventListener('click', () => {
+    const sec = document.getElementById('screens');
+    sec.dataset.fold = b.dataset.fold;
+    document.querySelectorAll('.doc-duo [data-fold]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
   }));
 
   // Pressed state for chips and segmented buttons in the demo
