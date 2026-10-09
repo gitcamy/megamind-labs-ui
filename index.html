@@ -33,8 +33,8 @@
   .doc-duo { display: none; margin-bottom: 40px; }
   #screens[data-device="duo"] .doc-duo { display: flex; }
   #screens[data-device="phone"] .mm-screen { width: 390px; height: 844px; }
-  #screens[data-device="duo"][data-fold="collapsed"] .mm-screen { width: 390px; height: 844px; }
-  #screens[data-device="duo"][data-fold="expanded"] .mm-screen { width: 780px; height: 844px; }
+  #screens[data-device="duo"][data-fold="collapsed"] .mm-screen { width: 474px; height: 696px; }
+  #screens[data-device="duo"][data-fold="expanded"] .mm-screen { width: 904px; height: 640px; }
   #screens[data-device="tablet"] .mm-screen { width: 834px; height: 1194px; }
   .doc-screens .mm-artboard-meta { display: none; }
   .doc-steps b { color: var(--mm-ink); font-weight: 600; }
@@ -378,7 +378,7 @@
     <section class="doc-section doc-screens" id="screens" data-device="phone" data-fold="collapsed">
       <header>
         <h2>Screens</h2>
-        <p>Five starter flows built only from the classes above. Pick a device to see every flow at that size: iPhone (390 x 844), iPhone Duo (780 x 844), or tablet (834 x 1194). Copy any screen's markup, change the words, and you have a flow.</p>
+        <p>Five starter flows built only from the classes above. Pick a device to see every flow at that size: iPhone (390 x 844), iPhone Duo (474 x 696 folded, 904 x 640 open), or tablet (834 x 1194). Copy any screen's markup, change the words, and you have a flow.</p>
       </header>
 
       <div class="mm-segmented doc-device" role="group" aria-label="Device"><button aria-pressed="true" data-device="phone">iPhone</button><button aria-pressed="false" data-device="duo">iPhone Duo</button><button aria-pressed="false" data-device="tablet">Tablet</button></div>
