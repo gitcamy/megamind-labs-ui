@@ -1,6 +1,6 @@
 # Megamind Labs UI
 
-A black-and-white wireframe kit for fast, honest mockups.
+A minimalistic wireframe kit for starting projects and getting them working before you design them.
 
 Seven greys, one typeface, and grey squares where icons and photos will go. Feedback stays on flow and hierarchy instead of color and polish. One CSS file, no build step, no JavaScript required.
 

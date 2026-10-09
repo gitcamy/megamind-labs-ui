@@ -1,7 +1,7 @@
 {
   "name": "megamind-labs-ui",
   "version": "0.1.0",
-  "description": "A black-and-white wireframe kit for fast, honest mockups.",
+  "description": "A minimalistic wireframe kit for starting projects and getting them working before you design them.",
   "style": "megamind-labs-ui.css",
   "main": "megamind-labs-ui.css",
   "files": ["megamind-labs-ui.css", "react/"],

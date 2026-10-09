@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Megamind Labs UI: a black-and-white wireframe kit</title>
-<meta name="description" content="A black-and-white wireframe kit for fast, honest mockups. One CSS file, no build step.">
+<title>Megamind Labs UI</title>
+<meta name="description" content="A minimalistic wireframe kit for starting projects and getting them working before you design them.">
 <link rel="stylesheet" href="megamind-labs-ui.css">
 <style>
   body { margin: 0; background: var(--mm-wash); }
   .doc { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
   .doc-side { position: sticky; top: 0; height: 100vh; padding: 32px 16px; border-right: var(--mm-border); background: var(--mm-paper); display: flex; flex-direction: column; gap: 24px; }
   .doc-logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; padding: 0 12px; }
-  .doc-logo i { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--mm-ink); background: linear-gradient(135deg, transparent 49%, var(--mm-ink) 49%, var(--mm-ink) 51%, transparent 51%); }
+  .doc-logo .doc-mark { width: 22px; height: 22px; flex: none; color: var(--mm-ink); }
   .doc-main { padding: 64px 56px 120px; min-width: 0; }
   .doc-section { margin-bottom: 96px; scroll-margin-top: 32px; }
   .doc-section > header { max-width: 640px; margin-bottom: 32px; display: flex; flex-direction: column; gap: 8px; }
@@ -20,6 +20,15 @@
   .doc-hero { max-width: 720px; margin-bottom: 56px; display: flex; flex-direction: column; gap: 16px; }
   .doc-hero h1 { font-size: 56px; font-weight: 600; letter-spacing: -0.035em; line-height: 1.02; }
   .doc-hero p { font-size: 17px; line-height: 1.55; color: var(--mm-ink-2); max-width: 56ch; }
+  .doc-start { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px; align-items: center; margin-bottom: 56px; }
+  .doc-start .doc-hero { margin-bottom: 0; }
+  .doc-start .mm-screen { max-width: 100%; }
+  .doc-steps { list-style: none; display: flex; flex-direction: column; gap: 14px; max-width: 720px; }
+  .doc-steps li { display: grid; grid-template-columns: 28px 1fr; gap: 12px; font-size: 15px; line-height: 1.55; color: var(--mm-ink-2); counter-increment: step; }
+  .doc-steps { counter-reset: step; }
+  .doc-steps li::before { content: counter(step); width: 28px; height: 28px; border-radius: 50%; border: var(--mm-border); display: grid; place-items: center; font-size: 13px; font-weight: 600; color: var(--mm-ink); }
+  .doc-steps b { color: var(--mm-ink); font-weight: 600; }
+  @media (max-width: 900px) { .doc-start { grid-template-columns: 1fr; gap: 32px; } }
   .doc-code { position: relative; font: 13px/1.6 ui-monospace, "SF Mono", Menlo, monospace; background: var(--mm-paper); border: var(--mm-border); border-radius: 12px; padding: 14px 84px 14px 16px; overflow-x: auto; white-space: pre; color: var(--mm-ink); }
   .doc-code button { position: absolute; top: 8px; right: 8px; }
   .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
@@ -56,11 +65,11 @@
 </head>
 <body class="mm">
 
-<div class="doc-top"><div class="doc-logo"><i></i>Megamind Labs UI</div><button class="mm-btn mm-btn--sm mm-btn--secondary" data-theme-toggle>Invert</button></div>
+<div class="doc-top"><div class="doc-logo"><svg class="doc-mark" viewBox="0 0 340 340" aria-hidden="true"><path d="M226.178 0L113.089 0V18.8481L75.3926 18.8481V37.6963L37.6963 37.6963L37.6963 75.3926H18.8481L18.8481 94.2407H0L0 207.33H18.8481L18.8481 245.026H37.6963V263.874H56.5444V282.722H94.2407V301.57L188.481 301.57V282.722H226.178L226.178 263.874H245.026V226.178H263.874L263.874 131.937H245.026V113.089H226.178V94.2407L207.33 94.2407L207.33 75.3926L113.089 75.3926V94.2407H94.2407V113.089H75.3926L75.3926 188.481L94.2407 188.481V207.33H113.089L113.089 226.178H169.633V207.33H188.481V150.785H150.785V188.481H113.089L113.089 131.937H131.937V113.089L188.481 113.089V131.937H207.33V150.785H226.178V226.178H207.33V245.026H188.481V263.874L94.2407 263.874V245.026L75.3926 245.026V226.178H56.5444V207.33H37.6963L37.6963 113.089L56.5444 113.089L56.5444 75.3926H75.3926V56.5444L113.089 56.5444L113.089 37.6963L207.33 37.6963V56.5444L245.026 56.5444V75.3926H263.874V94.2407H282.722V131.937H301.57L301.57 245.026H282.722V263.874H263.874V301.57H245.026V310.994V320.418H226.202V339.267H245.05H263.898V320.418H282.722V301.57H301.57V282.722H320.418V245.026H339.267L339.267 113.089H320.418V75.3926L301.57 75.3926V56.5444L282.722 56.5444V37.6963H263.874V18.8481L226.178 18.8481V0Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/></svg>Megamind Labs UI</div><button class="mm-btn mm-btn--sm mm-btn--secondary" data-theme-toggle>Invert</button></div>
 
 <div class="doc">
   <aside class="doc-side">
-    <div class="doc-logo"><i></i>Megamind Labs UI</div>
+    <div class="doc-logo"><svg class="doc-mark" viewBox="0 0 340 340" aria-hidden="true"><path d="M226.178 0L113.089 0V18.8481L75.3926 18.8481V37.6963L37.6963 37.6963L37.6963 75.3926H18.8481L18.8481 94.2407H0L0 207.33H18.8481L18.8481 245.026H37.6963V263.874H56.5444V282.722H94.2407V301.57L188.481 301.57V282.722H226.178L226.178 263.874H245.026V226.178H263.874L263.874 131.937H245.026V113.089H226.178V94.2407L207.33 94.2407L207.33 75.3926L113.089 75.3926V94.2407H94.2407V113.089H75.3926L75.3926 188.481L94.2407 188.481V207.33H113.089L113.089 226.178H169.633V207.33H188.481V150.785H150.785V188.481H113.089L113.089 131.937H131.937V113.089L188.481 113.089V131.937H207.33V150.785H226.178V226.178H207.33V245.026H188.481V263.874L94.2407 263.874V245.026L75.3926 245.026V226.178H56.5444V207.33H37.6963L37.6963 113.089L56.5444 113.089L56.5444 75.3926H75.3926V56.5444L113.089 56.5444L113.089 37.6963L207.33 37.6963V56.5444L245.026 56.5444V75.3926H263.874V94.2407H282.722V131.937H301.57L301.57 245.026H282.722V263.874H263.874V301.57H245.026V310.994V320.418H226.202V339.267H245.05H263.898V320.418H282.722V301.57H301.57V282.722H320.418V245.026H339.267L339.267 113.089H320.418V75.3926L301.57 75.3926V56.5444L282.722 56.5444V37.6963H263.874V18.8481L226.178 18.8481V0Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/></svg>Megamind Labs UI</div>
     <nav class="mm-sidenav" aria-label="Sections">
       <a href="#start" aria-current="page">Get started</a>
       <a href="#foundations">Foundations</a>
@@ -82,72 +91,31 @@
 
     <!-- ================================================================ START -->
     <section class="doc-section" id="start">
-      <div class="doc-hero">
-        <h1>Wireframes that look finished enough to argue about.</h1>
-        <p>Megamind Labs UI is a black-and-white kit for mockups. Seven greys, one typeface, and grey squares where icons and photos will go, so feedback stays on flow and hierarchy instead of color. One CSS file, no build step, works in plain HTML, React, or any AI tool that writes front-end code.</p>
-      </div>
-
-      <div class="doc-flowwrap">
-        <div class="mm-flow">
-          <div class="mm-artboard">
-            <div class="mm-artboard-name">Home</div>
-            <div class="mm-artboard-meta">Compact, 390 x 640</div>
-            <div class="mm-screen mm-screen--compact">
-              <div class="mm-statusbar"><span>9:41</span></div>
-              <span class="mm-caption">Good morning, Sam</span>
-              <div class="mm-chips"><button class="mm-chip" aria-pressed="true">Mine</button><button class="mm-chip">Team</button><button class="mm-chip">All</button></div>
-              <div class="mm-stat"><span class="mm-stat-label">Due this week</span><span class="mm-stat-value">14 tasks</span><span class="mm-stat-meta">Across 3 projects</span></div>
-              <div class="mm-card"><span class="mm-card-title">Two tasks are overdue</span><span class="mm-small">Both are in Website refresh, due last Friday.</span></div>
-              <div class="mm-card"><span class="mm-card-title">Website refresh, 34%</span><div class="mm-progress" style="--mm-value:34%"><span></span></div><span class="mm-small">12 of 35 tasks done</span></div>
-              <div class="mm-spacer"></div>
-              <div class="mm-inputbar"><input placeholder="Ask anything"><button>Send</button></div>
-              <nav class="mm-tabbar"><button class="mm-tab" aria-current="page">Home</button><button class="mm-tab">Projects</button><button class="mm-tab">Inbox</button><button class="mm-tab">Assistant</button></nav>
-            </div>
-          </div>
-          <div class="mm-artboard">
-            <div class="mm-artboard-name">Ask</div>
-            <div class="mm-artboard-meta">Compact, 390 x 640</div>
-            <div class="mm-screen mm-screen--compact">
-              <div class="mm-navbar"><button class="mm-back">Home</button><span class="mm-navbar-title">Assistant</span><span></span></div>
-              <div class="mm-screen-body">
-                <div class="mm-thread">
-                  <span class="mm-bubble-meta">Today 08:12</span>
-                  <div class="mm-bubble mm-bubble--me">Why are two tasks overdue?</div>
-                  <div class="mm-bubble">Both are waiting on copy review, and the reviewer has been out since Thursday.</div>
-                  <div class="mm-proposal">
-                    <span class="mm-card-title">Move both to next Tuesday?</span>
-                    <div class="mm-list">
-                      <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Homepage copy</span><span class="mm-list-sub">Due Oct 3</span></div><span class="mm-list-value">Tue</span></div>
-                      <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Pricing page</span><span class="mm-list-sub">Due Oct 3</span></div><span class="mm-list-value">Tue</span></div>
-                    </div>
-                    <div class="mm-row"><button class="mm-btn mm-btn--sm">Move both</button><button class="mm-btn mm-btn--sm mm-btn--ghost">Not now</button></div>
-                  </div>
-                </div>
-              </div>
-              <div class="mm-inputbar"><input placeholder="Message"><button>Send</button></div>
-            </div>
-          </div>
-          <div class="mm-artboard">
-            <div class="mm-artboard-name">Done</div>
-            <div class="mm-artboard-meta">Compact, 390 x 640</div>
-            <div class="mm-screen mm-screen--compact">
-              <div class="mm-navbar"><button class="mm-back">Home</button><span class="mm-navbar-title">This week</span><span></span></div>
-              <div class="mm-stat"><span class="mm-stat-label">Tasks completed</span><span class="mm-stat-value">23</span><span class="mm-stat-meta">6 more than last week</span></div>
-              <div class="mm-bars"><span style="--mm-value:40%"></span><span style="--mm-value:55%"></span><span style="--mm-value:35%"></span><span style="--mm-value:60%"></span><span style="--mm-value:48%"></span><span class="is-active" style="--mm-value:85%"></span></div>
-              <div class="mm-list mm-list--divided">
-                <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Homepage copy</span><span class="mm-list-sub">Moved to Tue, Oct 14</span></div><span class="mm-chevron"></span></div>
-                <div class="mm-list-row"><span class="mm-icon"></span><div class="mm-list-text"><span class="mm-list-title">Pricing page</span><span class="mm-list-sub">Moved to Tue, Oct 14</span></div><span class="mm-chevron"></span></div>
-              </div>
-              <div class="mm-spacer"></div>
-              <div class="mm-toast"><span>Moved 2 tasks to Tuesday</span><button>Undo</button></div>
-            </div>
-          </div>
+      <div class="doc-start">
+        <div class="doc-hero">
+          <h1>Get started</h1>
+          <p>Megamind Labs UI is a minimalistic wireframe kit for starting projects and getting them working before you design them. Link one stylesheet and build screens with plain HTML, React, or any AI tool that writes front-end code.</p>
+        </div>
+        <div class="mm-screen mm-screen--compact">
+          <div class="mm-statusbar"><span>9:41</span></div>
+          <span class="mm-caption">Good morning, Sam</span>
+          <div class="mm-chips"><button class="mm-chip" aria-pressed="true">Mine</button><button class="mm-chip">Team</button><button class="mm-chip">All</button></div>
+          <div class="mm-stat"><span class="mm-stat-label">Due this week</span><span class="mm-stat-value">14 tasks</span><span class="mm-stat-meta">Across 3 projects</span></div>
+          <div class="mm-card"><span class="mm-card-title">Two tasks are overdue</span><span class="mm-small">Both are in Website refresh, due last Friday.</span></div>
+          <div class="mm-card"><span class="mm-card-title">Website refresh, 34%</span><div class="mm-progress" style="--mm-value:34%"><span></span></div><span class="mm-small">12 of 35 tasks done</span></div>
+          <div class="mm-spacer"></div>
+          <div class="mm-inputbar"><input placeholder="Ask anything"><button>Send</button></div>
+          <nav class="mm-tabbar"><button class="mm-tab" aria-current="page">Home</button><button class="mm-tab">Projects</button><button class="mm-tab">Inbox</button><button class="mm-tab">Assistant</button></nav>
         </div>
       </div>
 
       <div class="mm-stack mm-gap-3" style="max-width: 720px">
-        <h3 class="mm-heading">Use it</h3>
-        <p class="mm-body">Add one stylesheet, put <code>class="mm"</code> on a wrapper, and compose screens from the classes below.</p>
+        <h3 class="mm-heading">Set it up</h3>
+        <ol class="doc-steps">
+          <li><b>Link the stylesheet.</b> Add the link below to the head of your page. It is the only file you need.</li>
+          <li><b>Set up the canvas.</b> Put <code>class="mm mm-canvas"</code> on your body, then wrap each screen in <code>class="mm-screen mm-screen--phone"</code>.</li>
+          <li><b>Build your screens.</b> Compose them from the components below, or give <code>PROMPT.md</code> to your AI tool so it builds with the same classes.</li>
+        </ol>
         <div class="doc-code" id="snippet"><button class="mm-btn mm-btn--sm mm-btn--secondary" data-copy="snippet">Copy</button>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css"&gt;
 
 &lt;body class="mm mm-canvas"&gt;
