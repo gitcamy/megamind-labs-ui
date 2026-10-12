@@ -17,7 +17,14 @@ Made by [Megamind Labs](https://megamindlabs.ai), a design and product studio. W
 
 ## Quick start
 
-Link the stylesheet, add `class="mm"` to a wrapper, and build with the classes.
+**Claude Code:** install the skill, then ask for screens in plain words.
+
+```
+/plugin marketplace add gitcamy/megamind-labs-ui
+/plugin install megamind-labs-ui@megamind-labs-ui
+```
+
+**Plain HTML:** link the stylesheet, add `class="mm mm-canvas"` to `<body>`, and build with the classes.
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css">

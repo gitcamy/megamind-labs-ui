@@ -1,0 +1,15 @@
+{
+  "name": "megamind-labs-ui",
+  "owner": {
+    "name": "Megamind Labs",
+    "url": "https://megamindlabs.ai"
+  },
+  "plugins": [
+    {
+      "name": "megamind-labs-ui",
+      "source": "./plugins/megamind-labs-ui",
+      "description": "Build greyscale wireframe screens and flows with the Megamind Labs UI kit."
+    }
+  ],
+  "description": "Greyscale wireframe kit for Claude Code: builds screens and flows with the Megamind Labs UI classes."
+}
