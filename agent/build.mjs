@@ -8,7 +8,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const check = process.argv.includes("--check");
 
 // Change to a tag (e.g. "v0.1.0") when cutting a release, so generated screens don't break when main changes.
-const CDN_REF = "main";
+const CDN_REF = "v0.1.0";
 const CSS_URL = `https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@${CDN_REF}/megamind-labs-ui.css`;
 
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
