@@ -1,13 +1,12 @@
 # Megamind Labs UI
 
-When asked for wireframes, mockups, screens or flows, build them with the Megamind Labs UI kit in this repo. The full instructions are below; they are the same as the Claude skill in `.claude/skills/megamind-labs-ui/SKILL.md`.
-
-Use this skill when the user asks for wireframes, mockups, screens or flows in a project that uses Megamind Labs UI. Build greyscale wireframe screens with the kit. Output a single HTML file unless the project asks otherwise.
+Use this when the user asks for wireframes, mockups, screens or flows. Build greyscale wireframe screens with the Megamind Labs UI kit. Output a single HTML file unless the project asks otherwise.
 
 ## Setup
-- Never copy the CSS or paste markup from this kit into a project. Link the stylesheet from this repo instead: if the project sits next to this repo, use a relative path to `megamind-labs-ui/megamind-labs-ui.css`; otherwise use `https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css`. Add the link only if the project does not already load it.
+- Link the stylesheet from the CDN: `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css">`. Add it only if the project does not already load it.
+- Never copy the CSS or paste markup from the kit into a project.
 - Put `class="mm mm-canvas"` on `<body>`.
-- Use only `mm-*` classes and the CSS variables below. Do not write new CSS except small inline layout tweaks (width, alignment, margin).
+- Use only `mm-*` classes and the CSS variables listed in the reference at https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/reference/classes.md. Do not write new CSS except small inline layout tweaks (width, alignment, margin).
 
 ## Rules of the system
 - Greyscale only. Never introduce color, gradients, shadows or real icons.
