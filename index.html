@@ -1216,7 +1216,7 @@ ${code}`,
     claude: { logo: 'claude', hint: 'In Claude, open Settings > Connectors, choose Add custom connector, paste the URL above, then ask for a sign-up flow in a new chat.' },
     chatgpt: { logo: 'openai', hint: 'In ChatGPT, open Settings > Plugins > Browse directory > Add custom MCP server. Paste the URL above, choose No authentication, then Create as a plugin.' },
     cursor: { logo: 'cursor', hint: 'In Cursor, open Settings > Features > MCP, click Add New MCP Server (type: SSE), and paste the URL above.' },
-    codex: { logo: 'openai', hint: 'Run this command in your terminal, then ask Codex for screens:', cmd: `codex mcp add megamind-labs-ui --url ${MCP_URL}` },
+    codex: { logo: 'openai', hint: 'In the Codex app, open Settings > MCP servers, add a custom server (Streamable HTTP), paste the URL above and save. Using the Codex CLI? Run this instead:', cmd: `codex mcp add megamind-labs-ui --url ${MCP_URL}` },
     antigravity: { logo: 'gemini', hint: 'In Antigravity, open Settings > Customizations > Installed MCP Servers, click Add Server, paste the URL above and click Refresh.' },
   };
   const logos = [...document.querySelectorAll('.doc-agent-logo [data-logo]')];
