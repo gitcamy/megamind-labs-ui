@@ -20,8 +20,8 @@
   .doc-start .doc-hero { margin-bottom: 0; }
   .doc-start .mm-screen { max-width: 100%; }
   .doc-flow-links { margin-top: 8px; }
-  .doc-flow-links .mm-chip { text-decoration: none; }
-  .doc-flow-links .mm-chip:hover { background: var(--mm-wash); }
+  #screens .mm-flow-section[hidden] { display: none; }
+  .doc-flow-links .mm-chip:not([aria-pressed="true"]):hover { background: var(--mm-wash); }
   #screens .mm-flow-section { scroll-margin-top: 32px; }
   .doc-device { width: auto; min-width: 260px; background-color: var(--mm-paper); }
   #screens[data-device="phone"] .mm-screen { width: 390px; height: 844px; }
@@ -435,21 +435,21 @@
         </div>
         <p>Five starter flows built only from the classes above. Pick a screen size to see every flow at that size. Copy any screen's markup, change the words, and you have a flow.</p>
         <nav class="mm-chips doc-flow-links" aria-label="Flows">
-          <a class="mm-chip" href="#flow-onboarding">Onboarding</a>
-          <a class="mm-chip" href="#flow-browse-and-detail">Browse and detail</a>
-          <a class="mm-chip" href="#flow-chatbot-ai-agent">Chatbot AI agent</a>
-          <a class="mm-chip" href="#flow-book-and-pay">Book and pay</a>
-          <a class="mm-chip" href="#flow-account-and-system-states">Account and system states</a>
+          <button type="button" class="mm-chip" data-flow="flow-onboarding" aria-pressed="true">Onboarding</button>
+          <button type="button" class="mm-chip" data-flow="flow-browse-and-detail" aria-pressed="false">Browse and detail</button>
+          <button type="button" class="mm-chip" data-flow="flow-chatbot-ai-agent" aria-pressed="false">Chatbot AI agent</button>
+          <button type="button" class="mm-chip" data-flow="flow-book-and-pay" aria-pressed="false">Book and pay</button>
+          <button type="button" class="mm-chip" data-flow="flow-account-and-system-states" aria-pressed="false">Account and system states</button>
         </nav>
       </header>
 
       <!-- Flow 1 -->
       <div class="mm-flow-section" id="flow-onboarding">
-        <h2>Flow 1: Onboarding</h2>
+        <h2>Onboarding</h2>
         <p>Sign up or log in, verify, set preferences, grant permissions, invite.</p>
         <div class="doc-flowwrap"><div class="mm-flow">
 
-          <div class="mm-artboard"><div class="mm-artboard-name">1.1 Welcome</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Welcome</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-spacer"></div>
               <div class="mm-ph mm-ph--x" style="min-height:220px">Hero image or logo</div>
@@ -461,7 +461,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">1.2 Create account</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Create account</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-steps"><span class="is-done"></span><span></span><span></span><span></span></div>
               <h1 class="mm-title">Create your account</h1>
@@ -473,7 +473,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">1.3 Verify</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Verify</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-steps"><span class="is-done"></span><span class="is-done"></span><span></span><span></span></div>
               <h1 class="mm-title">Enter the 6-digit code</h1>
@@ -485,7 +485,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">1.4 Preferences</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Preferences</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-steps"><span class="is-done"></span><span class="is-done"></span><span class="is-done"></span><span></span></div>
               <h1 class="mm-title">What will you use it for?</h1>
@@ -500,7 +500,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">1.5 Permissions</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Permissions</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-steps"><span class="is-done"></span><span class="is-done"></span><span class="is-done"></span><span class="is-done"></span></div>
               <div class="mm-spacer"></div>
@@ -513,7 +513,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">1.6 Invite</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Invite</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <h1 class="mm-title">Invite your team</h1>
               <p class="mm-small">Work goes faster together. You choose what each person can do.</p>
@@ -534,11 +534,11 @@
 
       <!-- Flow 2 -->
       <div class="mm-flow-section" id="flow-browse-and-detail">
-        <h2>Flow 2: Browse and detail</h2>
+        <h2>Browse and detail</h2>
         <p>The everyday loop: home, search, a list, one item.</p>
         <div class="doc-flowwrap"><div class="mm-flow">
 
-          <div class="mm-artboard"><div class="mm-artboard-name">2.1 Home</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Home</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-row mm-between"><div class="mm-stack mm-gap-1"><span class="mm-caption">Tuesday, Oct 7</span><span class="mm-title">Good morning</span></div><span class="mm-avatars"><span class="mm-avatar">SK</span><span class="mm-avatar">AR</span></span></div>
               <div class="mm-card mm-card--ink">
@@ -556,7 +556,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">2.2 Search</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Search</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-search"><input class="mm-input" value="review" aria-label="Search"></div>
               <div class="mm-chips"><button class="mm-chip" aria-pressed="true">All</button><button class="mm-chip">Tasks</button><button class="mm-chip">Files</button><button class="mm-chip">This week</button></div>
@@ -573,7 +573,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">2.3 Detail</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Detail</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-navbar"><button class="mm-back">Search</button><span></span><button class="mm-btn mm-btn--icon" aria-label="More"></button></div>
               <div class="mm-stack mm-gap-2">
@@ -593,7 +593,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">2.4 Edit sheet</div><div class="mm-artboard-meta">Compact, 390 x 640, overlay</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Edit sheet</div><div class="mm-artboard-meta">Compact, 390 x 640, overlay</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-navbar"><button class="mm-back">Search</button><span></span><span></span></div>
               <span class="mm-title">Copy review</span>
@@ -613,11 +613,11 @@
 
       <!-- Flow 3 -->
       <div class="mm-flow-section" id="flow-chatbot-ai-agent">
-        <h2>Flow 3: Chatbot AI agent</h2>
+        <h2>Chatbot AI agent</h2>
         <p>A notification becomes a proposal, the user approves, and the result stays undoable.</p>
         <div class="doc-flowwrap"><div class="mm-flow">
 
-          <div class="mm-artboard"><div class="mm-artboard-name">3.1 Lock screen</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Lock screen</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact" style="background:var(--mm-wash)">
               <span class="mm-caption" style="text-align:center;margin-top:24px">Tuesday, October 7</span>
               <span class="mm-display" style="text-align:center;font-size:64px">9:41</span>
@@ -627,7 +627,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">3.2 Chat</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Chat</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-navbar"><button class="mm-back">Home</button><span class="mm-navbar-title">Assistant</span><button class="mm-link">Call</button></div>
               <div class="mm-screen-body"><div class="mm-thread">
@@ -645,7 +645,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">3.3 Confirm</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Confirm</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-navbar"><button class="mm-back">Chat</button><span class="mm-navbar-title">Reschedule</span><span></span></div>
               <div class="mm-stat" style="align-items:center;text-align:center;padding:16px 0"><span class="mm-stat-label">New time</span><span class="mm-stat-value" style="font-size:48px">15:00</span></div>
@@ -661,7 +661,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">3.4 Done</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Done</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-spacer"></div>
               <div class="mm-ring" style="--mm-value:100;--mm-size:72px;align-self:center"><span>Done</span></div>
@@ -678,7 +678,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">3.5 Voice</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Voice</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact" data-theme="dark">
               <div class="mm-stack mm-gap-1" style="align-items:center;margin-top:24px"><span class="mm-caption">In conversation</span><span class="mm-heading">Assistant</span><span class="mm-caption">0:42</span></div>
               <div class="mm-spacer"></div>
@@ -694,11 +694,11 @@
 
       <!-- Flow 4 -->
       <div class="mm-flow-section" id="flow-book-and-pay">
-        <h2>Flow 4: Book and pay</h2>
+        <h2>Book and pay</h2>
         <p>A scheduling and checkout pattern for any service app.</p>
         <div class="doc-flowwrap"><div class="mm-flow">
 
-          <div class="mm-artboard"><div class="mm-artboard-name">4.1 Pick a time</div><div class="mm-artboard-meta">Phone, 390 x 844</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Pick a time</div><div class="mm-artboard-meta">Phone, 390 x 844</div>
             <div class="mm-screen mm-screen--phone">
               <div class="mm-statusbar"><span>9:41</span></div>
               <div class="mm-navbar"><button class="mm-back">Back</button><span class="mm-navbar-title">Book a session</span><span></span></div>
@@ -714,7 +714,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">4.2 Pay</div><div class="mm-artboard-meta">Phone, 390 x 844</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Pay</div><div class="mm-artboard-meta">Phone, 390 x 844</div>
             <div class="mm-screen mm-screen--phone">
               <div class="mm-statusbar"><span>9:41</span></div>
               <div class="mm-navbar"><button class="mm-back">Back</button><span class="mm-navbar-title">Pay</span><span></span></div>
@@ -739,7 +739,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">4.3 Confirmed</div><div class="mm-artboard-meta">Phone, 390 x 844</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Confirmed</div><div class="mm-artboard-meta">Phone, 390 x 844</div>
             <div class="mm-screen mm-screen--phone">
               <div class="mm-statusbar"><span>9:41</span></div>
               <div class="mm-spacer"></div>
@@ -760,11 +760,11 @@
 
       <!-- Flow 5 -->
       <div class="mm-flow-section" id="flow-account-and-system-states">
-        <h2>Flow 5: Account and system states</h2>
+        <h2>Account and system states</h2>
         <p>Profile, settings, notifications, and what a screen looks like when it is empty, loading or broken.</p>
         <div class="doc-flowwrap"><div class="mm-flow">
 
-          <div class="mm-artboard"><div class="mm-artboard-name">5.1 Profile</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Profile</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-stack mm-gap-2" style="align-items:center;padding-top:8px"><span class="mm-avatar mm-avatar--lg">SK</span><span class="mm-title">Sam Kim</span><span class="mm-caption">Member since June 2026</span></div>
               <div class="mm-grid-2">
@@ -781,7 +781,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">5.2 Settings</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Settings</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-navbar"><button class="mm-back">Profile</button><span class="mm-navbar-title">Settings</span><span></span></div>
               <div class="mm-screen-body">
@@ -802,7 +802,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">5.3 Notifications</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Notifications</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-navbar"><button class="mm-back">Home</button><span class="mm-navbar-title">Inbox</span><button class="mm-link" style="font-size:12px">Mark read</button></div>
               <div class="mm-segmented"><button aria-pressed="true">All</button><button>Needs action</button></div>
@@ -815,7 +815,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">5.4 Empty</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Empty</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-navbar"><span></span><span class="mm-navbar-title">Projects</span><span></span></div>
               <div class="mm-empty"><div class="mm-ph">Illustration</div><span class="mm-heading">No projects yet</span><p>Projects group related tasks so the whole team can follow along.</p><button class="mm-btn mm-btn--sm">Create a project</button></div>
@@ -823,7 +823,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">5.5 Loading</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Loading</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <span class="mm-skeleton" style="width:30%"></span>
               <span class="mm-skeleton mm-skeleton--title"></span>
@@ -834,7 +834,7 @@
             </div>
           </div>
 
-          <div class="mm-artboard"><div class="mm-artboard-name">5.6 Error</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
+          <div class="mm-artboard"><div class="mm-artboard-name">Error</div><div class="mm-artboard-meta">Compact, 390 x 640</div>
             <div class="mm-screen mm-screen--compact">
               <div class="mm-navbar"><button class="mm-back">Settings</button><span class="mm-navbar-title">Calendar</span><span></span></div>
               <div class="mm-banner"><div><strong>Connection expired on Oct 5.</strong> Due dates shown are from that day. Reconnect to sync them.</div></div>
@@ -914,7 +914,7 @@
     const seg = e.target.closest('.mm-segmented > button');
     if (seg && !seg.dataset.setTheme) { seg.parentElement.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === seg))); }
     const chip = e.target.closest('.mm-chip');
-    if (chip) chip.setAttribute('aria-pressed', String(chip.getAttribute('aria-pressed') !== 'true'));
+    if (chip && !chip.dataset.flow) chip.setAttribute('aria-pressed', String(chip.getAttribute('aria-pressed') !== 'true'));
   });
 
   // Component pop-up: click one element in a component card to preview it alone,
@@ -1187,6 +1187,20 @@ ${code}`,
     if (en.isIntersecting) links.forEach(a => a.setAttribute('aria-current', a.getAttribute('href') === '#' + en.target.id ? 'page' : 'false'));
   }), { rootMargin: '-40% 0px -55% 0px' });
   document.querySelectorAll('.doc-section').forEach(s => io.observe(s));
+
+  // Flow pills: show one flow at a time, in place, without jumping.
+  (function () {
+    var chips = Array.prototype.slice.call(document.querySelectorAll('.doc-flow-links .mm-chip'));
+    function show(active) {
+      chips.forEach(function (c) {
+        c.setAttribute('aria-pressed', String(c === active));
+        var sec = document.getElementById(c.dataset.flow);
+        if (sec) sec.hidden = c !== active;
+      });
+    }
+    chips.forEach(function (chip) { chip.addEventListener('click', function () { show(chip); }); });
+    show(chips[0]);
+  })();
 </script>
 </body>
 </html>
