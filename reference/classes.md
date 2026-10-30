@@ -52,6 +52,10 @@ Stylesheet: https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-l
 
 `mm-accordion`
 
+### app
+
+`mm-app`, `mm-app-main`, `mm-app-side`
+
 ### artboard
 
 `mm-artboard`, `mm-artboard-meta`, `mm-artboard-name`
@@ -252,6 +256,10 @@ Stylesheet: https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-l
 
 `mm-otp`
 
+### page
+
+`mm-page-head`
+
 ### pane
 
 `mm-pane`
@@ -343,6 +351,10 @@ Stylesheet: https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-l
 ### stat
 
 `mm-stat`, `mm-stat-label`, `mm-stat-meta`, `mm-stat-value`
+
+### stats
+
+`mm-stats`
 
 ### statusbar
 

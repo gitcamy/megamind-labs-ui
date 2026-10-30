@@ -43,7 +43,7 @@ export function Screen({ device = "phone", theme, className, ...props }) {
 }
 
 export const ScreenBody = ({ className, ...p }) => <div className={cx("mm-screen-body", className)} {...p} />;
-export const Split = ({ wideLeft, className, ...p }) => <div className={cx("mm-split", wideLeft && "mm-split--wide-left", className)} {...p} />;
+export const Split = ({ wideLeft, side, className, ...p }) => <div className={cx("mm-split", wideLeft && "mm-split--wide-left", side && "mm-split--side", className)} {...p} />;
 export const Pane = ({ className, ...p }) => <div className={cx("mm-pane", className)} {...p} />;
 export const Spacer = () => <div className="mm-spacer" />;
 export const Stack = ({ gap, className, ...p }) => <div className={cx("mm-stack", gap && `mm-gap-${gap}`, className)} {...p} />;
@@ -187,10 +187,12 @@ export function List({ boxed, divided = true, className, ...p }) {
 }
 
 /** leading: "icon" | "dot" | an element (e.g. <Avatar/>). trailing: value text or any element. */
-export function ListRow({ title, sub, value, valueSub, leading = "icon", trailing, chevron, onClick }) {
+/** With onClick the row is a <button>; current marks the open one. */
+export function ListRow({ title, sub, value, valueSub, leading = "icon", trailing, chevron, onClick, current }) {
   const lead = leading === "icon" ? <span className="mm-icon" /> : leading === "dot" ? <span className="mm-dot" /> : leading;
+  const Tag = onClick ? "button" : "div";
   return (
-    <div className="mm-list-row" onClick={onClick} role={onClick ? "button" : undefined} tabIndex={onClick ? 0 : undefined}>
+    <Tag className="mm-list-row" onClick={onClick} type={onClick ? "button" : undefined} aria-current={current ? "true" : undefined}>
       {lead}
       <div className="mm-list-text">
         <span className="mm-list-title">{title}</span>
@@ -199,6 +201,27 @@ export function ListRow({ title, sub, value, valueSub, leading = "icon", trailin
       {value != null && <span className="mm-list-value">{value}{valueSub && <small>{valueSub}</small>}</span>}
       {trailing}
       {chevron && <span className="mm-chevron" />}
+    </Tag>
+  );
+}
+
+export const Stats = ({ className, ...p }) => <div className={cx("mm-stats", className)} {...p} />;
+
+export function PageHead({ title, caption, children }) {
+  return (
+    <header className="mm-page-head">
+      <div><h1 className="mm-title">{title}</h1>{caption && <span className="mm-caption">{caption}</span>}</div>
+      {children && <div className="mm-row">{children}</div>}
+    </header>
+  );
+}
+
+/** A full-page app for clickable prototypes: side holds the sidebar content, such as a <nav className="mm-sidenav">. */
+export function App({ side, className, children, ...p }) {
+  return (
+    <div className={cx("mm", "mm-app", className)} {...p}>
+      <aside className="mm-app-side">{side}</aside>
+      <main className="mm-app-main">{children}</main>
     </div>
   );
 }

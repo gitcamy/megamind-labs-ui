@@ -119,7 +119,7 @@
 .mm-stack { display: flex; flex-direction: column; gap: var(--mm-gap, var(--mm-3)); }
 .mm-row   { display: flex; align-items: center; gap: var(--mm-gap, var(--mm-2)); }
 .mm-wrap  { flex-wrap: wrap; }
-.mm-between { justify-content: space-between; }
+.mm-between { display: flex; align-items: center; justify-content: space-between; gap: var(--mm-gap, var(--mm-2)); }
 .mm-grow  { flex: 1 1 auto; min-width: 0; }
 .mm-spacer { flex: 1 1 auto; }
 .mm-gap-1 { --mm-gap: var(--mm-1); }
@@ -180,8 +180,26 @@
 /* Two-pane layout for wide, tablet and desktop screens */
 .mm-split { display: grid; grid-template-columns: 1fr 1fr; flex: 1 1 auto; min-height: 0; margin: calc(var(--mm-6) * -1) calc(var(--mm-5) * -1) calc(var(--mm-3) * -1); }
 .mm-split--wide-left { grid-template-columns: 1.4fr 1fr; }
+/* Desktop app shell: a fixed sidebar pane (mm-sidenav inside) and a main pane that scrolls */
+.mm-split--side { grid-template-columns: 240px minmax(0, 1fr); }
+.mm-split--side > .mm-pane:first-child { gap: var(--mm-4); }
 .mm-pane { display: flex; flex-direction: column; gap: var(--mm-3); padding: var(--mm-6) var(--mm-5) var(--mm-3); min-height: 0; overflow-y: auto; }
 .mm-pane + .mm-pane { border-left: var(--mm-border); }
+
+/* Full-page app for clickable prototypes outside artboards. Put mm-app on the body, holding mm-app-side and mm-app-main */
+.mm-app { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100vh; margin: 0; background: var(--mm-paper); color: var(--mm-ink); }
+.mm-app-side { display: flex; flex-direction: column; gap: var(--mm-4); padding: var(--mm-6) var(--mm-4); border-right: var(--mm-border); position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.mm-app-main { display: flex; flex-direction: column; gap: var(--mm-5); padding: var(--mm-8) var(--mm-8) var(--mm-12); min-width: 0; width: 100%; max-width: 1280px; }
+@media (max-width: 900px) {
+  .mm-app { grid-template-columns: minmax(0, 1fr); }
+  .mm-app-side { position: static; height: auto; border-right: 0; border-bottom: var(--mm-border); }
+  .mm-app-main { padding: var(--mm-5); }
+}
+
+/* Page header: title and caption on the left, actions on the right */
+.mm-page-head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--mm-4); flex-wrap: wrap; }
+.mm-page-head > :first-child { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.mm-page-head > :last-child:not(:first-child) { flex: none; }
 
 /* Annotation pin for presenting decisions on a mockup */
 .mm-note {
@@ -295,7 +313,7 @@
 
 /* Segmented control */
 .mm-segmented { display: flex; padding: 3px; background: var(--mm-fill); border-radius: 10px; gap: 2px; }
-.mm-segmented > button { flex: 1; padding: 7px var(--mm-2); border: 0; border-radius: 8px; background: transparent; font-size: var(--mm-text-xs); font-weight: 500; color: var(--mm-ink-2); cursor: pointer; }
+.mm-segmented > button { flex: 1; padding: 7px var(--mm-2); border: 0; border-radius: 8px; background: transparent; font-size: var(--mm-text-xs); font-weight: 500; color: var(--mm-ink-2); cursor: pointer; white-space: nowrap; }
 .mm-segmented > [aria-pressed="true"], .mm-segmented > .is-active { background: var(--mm-paper); color: var(--mm-ink); box-shadow: 0 1px 2px rgba(31,31,31,0.12); }
 
 /* Toggle switch: <input type="checkbox" class="mm-toggle"> */
@@ -381,6 +399,11 @@
 .mm-list-row { display: flex; align-items: center; gap: var(--mm-3); min-height: 55px; padding: 10px 0; text-decoration: none; color: inherit; }
 .mm-list-row > .mm-icon, .mm-list-row > .mm-avatar { --mm-size: 32px; }
 .mm-list-row > .mm-icon { border-radius: 50%; }
+/* Clickable rows, written as <button> or <a>. Mark the open one with aria-current="true". */
+:is(button, a).mm-list-row { width: 100%; padding: 10px var(--mm-3); border: 0; border-radius: var(--mm-r-md); background: none; font: inherit; text-align: left; cursor: pointer; }
+:is(button, a).mm-list-row:hover { background: var(--mm-wash); }
+.mm-list-row[aria-current]:not([aria-current="false"]), .mm-list-row.is-active { background: var(--mm-fill); }
+.mm-list--boxed:has(> :is(button, a).mm-list-row) { padding: var(--mm-1); }
 .mm-list-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .mm-list-title { font-size: var(--mm-text-md); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mm-list-sub { font-size: var(--mm-text-xs); color: var(--mm-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -394,6 +417,11 @@
 .mm-stat-value { font-size: var(--mm-text-3xl); font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
 .mm-stat--sm .mm-stat-value { font-size: var(--mm-text-xl); }
 .mm-stat-meta { font-size: var(--mm-text-xs); color: var(--mm-muted); }
+/* A row of key figures for a dashboard header, split by dividers */
+.mm-stats { display: flex; border: var(--mm-border); border-radius: var(--mm-r-lg); }
+.mm-stats > .mm-stat { flex: 1 1 0; min-width: 0; padding: var(--mm-3) var(--mm-4); }
+.mm-stats > .mm-stat + .mm-stat { border-left: var(--mm-border); }
+.mm-stats .mm-stat-value { font-size: var(--mm-text-xl); }
 .mm-delta { font-size: var(--mm-text-xs); font-weight: 600; }
 .mm-delta--up::before { content: "+ "; }
 .mm-delta--down::before { content: "- "; }

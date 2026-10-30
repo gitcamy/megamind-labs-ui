@@ -9,8 +9,8 @@ You are building greyscale wireframe mockups with Megamind Labs UI, a CSS-only k
 ## Setup
 - Link the stylesheet from the CDN: `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css">`. Add it only if the project does not already load it.
 - Never copy the CSS or paste markup from the kit into a project. The one exception is a page shown inside a chat app (Claude files and artifacts, ChatGPT canvas), whose previews can block outside stylesheets: there, embed the whole stylesheet in a `<style>` tag. The MCP's `get_starter` and `scaffold_flow` do this by default; keep that block as it is.
-- Put `class="mm mm-canvas"` on `<body>`.
-- Use only `mm-*` classes and the CSS variables listed in the reference at https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/reference/classes.md. Do not write new CSS except small inline layout tweaks (width, alignment, margin).
+- Put `class="mm mm-canvas"` on `<body>`. A clickable full-page prototype instead of artboards uses `class="mm mm-app"` (see Presenting).
+- Use only `mm-*` classes and the CSS variables listed in the reference at https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/reference/classes.md. Do not write new CSS except small inline layout tweaks (width, alignment, margin). Never restyle the kit's own classes in a `<style>` block; if a part looks wrong, you are using the wrong part.
 
 ## Rules of the system
 - Greyscale only. Never introduce color, gradients, shadows or real icons. The one exception is `--mm-accent`, which the kit applies by itself to badges, pressed chips, dots, steps and the active tab; never set it or any other color by hand.
@@ -37,20 +37,25 @@ Group screens into flows:
 ```
 Screen sizes: `mm-screen--phone` 390x844 (default), `--compact` 390x640, `--wide` 780x640, `--tablet` 820x1180, `--desktop` 1280x800. Two-pane layouts: `<div class="mm-split"><div class="mm-pane">...</div><div class="mm-pane">...</div></div>` as the only child of a wide screen.
 
+Desktop and tablet apps with a sidebar: `<div class="mm-split mm-split--side"><div class="mm-pane"><nav class="mm-sidenav">...</nav></div><main class="mm-pane">...</main></div>` as the only child of the screen. The sidebar pane is 240px and the main pane scrolls. Never restyle `mm-screen` itself (no inline padding, gap or flex-direction); a right-hand column goes in an `mm-row` inside the main pane. Desktop screens are wide, so give each flow of them its own `mm-flow-section` with two or three screens at most.
+
+A clickable prototype that fills the browser (no artboards): `<body class="mm mm-app"><aside class="mm-app-side">company switcher, then <nav class="mm-sidenav">...</nav></aside><main class="mm-app-main">...</main></body>`. Start each page in `mm-app-main` with an `mm-page-head`, and build the rest from the components below, with `mm-grid-2` or an `mm-row` holding an `mm-grow` column and a fixed-width column (`style="width:340px; flex:none"`) for a right-hand rail.
+
 A screen is a vertical flex column with 12px gaps. Use `<div class="mm-spacer"></div>` to push primary buttons and tab bars to the bottom.
 
 ## Components
 - Type: `mm-display` (36) `mm-hero` (32) `mm-title` (22) `mm-heading` (16) `mm-body` (14) `mm-small` (13) `mm-label` / `mm-caption` (12).
-- Layout: `mm-stack`, `mm-row`, `mm-between`, `mm-grid-2`, `mm-gap-1..6`, `mm-grow`, `mm-spacer`.
+- Layout: `mm-stack`, `mm-row`, `mm-between` (a row with its children pushed to both ends, like a title and its action), `mm-grid-2`, `mm-gap-1..6`, `mm-grow`, `mm-spacer`.
 - Top of screen: `mm-statusbar` (phone frames), `mm-navbar` with `<button class="mm-back">Label</button>`, `<span class="mm-navbar-title">Title</span>`, and a trailing element or `<span></span>`.
 - Bottom nav: `<nav class="mm-tabbar"><button class="mm-tab" aria-current="page">Home</button>...</nav>`. Desktop nav: `mm-sidenav` with links, active one `aria-current="page"`.
 - Progress through steps: `mm-steps` with `<span class="is-done">`. Carousel: `mm-dots`. Both are empty bars and dots; put step names in a separate row.
 - Buttons: `mm-btn` plus `--block`, `--secondary`, `--ghost`, `--danger`, `--sm`, `--icon`. Text links: `mm-link`.
 - Forms: `<div class="mm-field"><label>..</label><input class="mm-input"><span class="mm-field-hint">..</span></div>`. Also `mm-select`, `mm-textarea`, `mm-search` (wrapper around `mm-input`), `mm-inputbar` (input plus trailing text button), `mm-otp` (spans, current one `is-active`), `mm-keypad` (12 buttons), `mm-slider`.
 - Selection: `mm-chips` > `mm-chip` with `aria-pressed="true"`; `mm-segmented` > buttons with `aria-pressed`; `<input type="checkbox" class="mm-toggle">`; `mm-check`; `mm-radio`; wrap with `<label class="mm-choice">`.
-- Lists: `mm-list` (+ `mm-list--divided`, `mm-list--boxed`) > `mm-list-row` > leading `mm-icon` / `mm-avatar` / `mm-dot`, `mm-list-text` > `mm-list-title` + `mm-list-sub`, trailing `mm-list-value` (with optional `<small>`), `mm-chevron`, or a toggle.
+- Page header: `<header class="mm-page-head"><div><h1 class="mm-title">..</h1><span class="mm-caption">..</span></div><div class="mm-row">actions</div></header>`.
+- Lists: `mm-list` (+ `mm-list--divided`, `mm-list--boxed`) > `mm-list-row` > leading `mm-icon` / `mm-avatar` / `mm-dot`, `mm-list-text` > `mm-list-title` + `mm-list-sub`, trailing `mm-list-value` (with optional `<small>`), `mm-chevron`, or a toggle. Rows that open something are `<button class="mm-list-row">` or `<a class="mm-list-row">`; mark the open one `aria-current="true"` (a list beside its detail pane).
 - Cards: `mm-card` (`--filled`, `--ink`) with `mm-card-title`. Section titles: `mm-section-head` with two spans.
-- Data: `mm-stat` > `mm-stat-label` + `mm-stat-value` + `mm-stat-meta`; `mm-delta--up/--down`; `mm-progress` with `style="--mm-value:34%"` and an inner `<span>`; `mm-ring` with `style="--mm-value:68"`; `mm-bars` of spans with `--mm-value` heights (one `is-active`); `mm-kv` > `<div>` rows, each with a label span and a value span; `mm-table`; `mm-timeline` (ol, `li.is-done`); `mm-week` (seven spans with `<small>` weekday).
+- Data: `mm-stat` > `mm-stat-label` + `mm-stat-value` + `mm-stat-meta` (one key number); `mm-stats` around two to five `mm-stat` for a row of figures at the top of a dashboard; `mm-delta--up/--down`; `mm-progress` with `style="--mm-value:34%"` and an inner `<span>`; `mm-ring` with `style="--mm-value:68"`; `mm-bars` of spans with `--mm-value` heights (one `is-active`); `mm-kv` > `<div>` rows, each with a label span and a value span; `mm-table`; `mm-timeline` (ol, `li.is-done`); `mm-week` (seven spans with `<small>` weekday).
 - Conversation: `mm-thread` > `mm-bubble` / `mm-bubble--me` / `mm-bubble-meta`, `mm-typing` (three spans), `mm-proposal` (an assistant's suggested action with confirm and dismiss buttons), `mm-suggestions` (chips), `mm-wave` (voice).
 - Feedback: `mm-banner`, `mm-toast` (text plus button), `mm-notification` (with `mm-notification-app`), `mm-live`, `mm-empty`, `mm-skeleton` (`--title`, `--block`, `--square`, `--thumb`, `--circle`), `mm-spinner`.
 - Overlays inside a screen: `mm-scrim` then `mm-sheet` or `mm-dialog`. Menus: `mm-menu`. Tooltips: `mm-tooltip`.
