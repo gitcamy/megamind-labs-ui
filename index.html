@@ -16,7 +16,7 @@
   .doc-hero { max-width: 720px; margin-bottom: 56px; display: flex; flex-direction: column; gap: 16px; }
   .doc-hero h1 { font-size: 56px; font-weight: 600; letter-spacing: -0.035em; line-height: 1.02; }
   .doc-hero p { font-size: 17px; line-height: 1.55; color: var(--mm-ink-2); max-width: 56ch; }
-  .doc-start { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px; align-items: start; margin-bottom: 56px; }
+  .doc-start { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px; align-items: center; margin-bottom: 56px; }
   .doc-start .doc-hero { margin-bottom: 0; }
   .doc-start .mm-screen { max-width: 100%; }
   .doc-flow-links { margin-top: 8px; }
@@ -97,8 +97,9 @@
   .doc-copy .doc-check { display: none; }
   .doc-copy.is-copied .doc-check { display: block; }
   .doc-copy.is-copied .doc-clip { display: none; }
-  .doc-agent { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
-  .doc-agent .mm-card { width: min(560px, 100%); }
+  .doc-agent { position: relative; display: flex; flex-direction: column; align-items: flex-start; }
+  /* The panel hangs below the button without adding to the hero's height, so the title never moves */
+  .doc-agent .mm-card { position: absolute; top: calc(100% + 12px); left: 0; z-index: 2; width: min(560px, 100%); }
   .doc-agent .mm-card[hidden] { display: none; }
   .doc-agent-logo { position: relative; width: 16px; height: 16px; flex: none; }
   .doc-agent-logo svg { position: absolute; inset: 0; width: 16px; height: 16px; fill: currentColor; opacity: 0; transition: opacity .3s; }
@@ -1174,7 +1175,18 @@ ${code}`,
     agentPanel.hidden = !open;
     e.currentTarget.setAttribute('aria-expanded', String(open));
     if (open) showAgent(document.querySelector('#agent-tabs [aria-pressed="true"]').dataset.agent);
+    reserveAgentSpace();
   });
+  // The panel is out of flow, so push the content below down by however far it hangs past the hero row
+  const startRow = document.querySelector('.doc-start');
+  function reserveAgentSpace() {
+    startRow.style.paddingBottom = '';
+    if (agentPanel.hidden) return;
+    const over = agentPanel.getBoundingClientRect().bottom - startRow.getBoundingClientRect().bottom;
+    if (over > 0) startRow.style.paddingBottom = over + 'px';
+  }
+  window.addEventListener('resize', reserveAgentSpace);
+  document.querySelectorAll('#agent-tabs [data-agent]').forEach(b => b.addEventListener('click', reserveAgentSpace));
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
     let i = 0;
     setInterval(() => {
