@@ -1,8 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { loadKit } from "../lib/kit.js";
+import { readFileSync } from "node:fs";
+import { loadKit, useBundledKit } from "../lib/kit.js";
 import { validateScreen } from "../lib/validate.js";
 
+// Validate against the kit in this checkout, so new classes count before they reach the CDN.
+const local = (path) => readFileSync(new URL(`../../${path}`, import.meta.url), "utf8");
+useBundledKit({ rules: local("AGENTS.md"), reference: local("reference/classes.md"), starter: local("screens/starter.html"), css: local("megamind-labs-ui.css") });
 const kit = await loadKit();
 const rules = (r) => r.errors.map((e) => e.rule);
 
@@ -61,6 +65,40 @@ test("an inlined kit stylesheet counts as setup and is not new CSS", () => {
   const r = validateScreen(page, kit);
   assert.equal(r.ok, true);
   assert.deepEqual(r.warnings.filter((w) => w.rule === "css" || w.rule === "greyscale"), []);
+});
+
+test("a desktop frame restyled by hand is flagged, the sidebar split is not", () => {
+  const hand = `<div class="mm-screen mm-screen--desktop" style="flex-direction:row; padding:0; gap:0;">
+    <nav class="mm-sidenav"><a aria-current="page">Signals</a></nav>
+    <main class="mm-stack"><button class="mm-btn">Create task</button></main></div>`;
+  assert.deepEqual(validateScreen(hand, kit).warnings.map((w) => w.rule), ["layout"]);
+  const split = `<div class="mm-screen mm-screen--desktop"><div class="mm-split mm-split--side">
+    <div class="mm-pane"><nav class="mm-sidenav"><a aria-current="page">Signals</a></nav></div>
+    <main class="mm-pane"><div class="mm-between"><h1 class="mm-title">Signals</h1><button class="mm-btn">Create task</button></div></main></div></div>`;
+  const r = validateScreen(split, kit);
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.warnings, []);
+});
+
+test("a full-page app prototype passes without artboard screens", () => {
+  const page = `<!doctype html><html><head><link rel="stylesheet" href="https://cdn/megamind-labs-ui.css"></head>
+    <body class="mm mm-app"><aside class="mm-app-side"><nav class="mm-sidenav"><a aria-current="page">Outreach</a></nav></aside>
+    <main class="mm-app-main"><header class="mm-page-head"><div><h1 class="mm-title">Outreach</h1></div><button class="mm-btn">Copy next message</button></header>
+    <div class="mm-stats"><div class="mm-stat"><span class="mm-stat-label">Targets</span><span class="mm-stat-value">48</span></div></div>
+    <div class="mm-list mm-list--boxed"><button class="mm-list-row" aria-current="true"><div class="mm-list-text"><div class="mm-list-title">Positioning and voice</div></div></button></div>
+    </main></body></html>`;
+  const r = validateScreen(page, kit);
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.warnings, []);
+});
+
+test("a <style> block that restyles kit classes is an error, other CSS a warning", () => {
+  const screen = '<div class="mm-screen mm-screen--phone"><button class="mm-btn mm-btn--block">Pay $42</button></div>';
+  const restyled = validateScreen(`<style>.mm-table { display: block; }</style>${screen}`, kit);
+  assert.deepEqual(rules(restyled), ["css"]);
+  const own = validateScreen(`<style>.toast-wrap { position: fixed; }</style>${screen}`, kit);
+  assert.equal(own.ok, true);
+  assert.deepEqual(own.warnings.map((w) => w.rule), ["css"]);
 });
 
 test("squeezed placeholders and ink beside the primary are flagged", () => {

@@ -89,8 +89,8 @@ export function validateScreen(html, kit) {
   if (/<html[\s>]/i.test(html)) {
     if (!kitInline && !/megamind-labs-ui(\.min)?\.css/i.test(html)) add(errors, "setup", "The page does not link megamind-labs-ui.css.");
     const body = html.match(/<body([^>]*)>/i)?.[1] ?? "";
-    if (!/class\s*=\s*"[^"]*\bmm\b[^"]*\bmm-canvas\b|class\s*=\s*"[^"]*\bmm-canvas\b[^"]*\bmm\b/.test(body))
-      add(errors, "setup", 'Put class="mm mm-canvas" on <body>.');
+    if (!/class\s*=\s*"[^"]*\bmm\b[^"]*\bmm-(canvas|app)\b|class\s*=\s*"[^"]*\bmm-(canvas|app)\b[^"]*\bmm\b/.test(body))
+      add(errors, "setup", 'Put class="mm mm-canvas" on <body>, or class="mm mm-app" for a full-page prototype.');
   }
 
   // Only the kit's classes. Anything else means new CSS or a typo.
@@ -115,7 +115,10 @@ export function validateScreen(html, kit) {
   if (colors.length) add(errors, "greyscale", `Color found: ${colors.join(", ")}. Use the --mm-* grey tokens.`);
   if (/gradient\(/i.test(styles + sheets)) add(errors, "greyscale", "Gradients are not allowed.");
   if (/box-shadow\s*:/i.test(styles + sheets)) add(warnings, "greyscale", "Shadows are reserved for the kit's sheets and popovers.");
-  if (sheets.trim()) add(warnings, "css", "Avoid new CSS. Keep to the kit's classes plus small inline layout tweaks.");
+  const restyled = [...new Set([...sheets.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/\.(mm(?:-[a-z0-9]+)+)[^{}]*\{/gi)].map((m) => m[1]))];
+  if (restyled.length)
+    add(errors, "css", `A <style> block restyles the kit's own classes: ${restyled.slice(0, 8).join(", ")}. Use them as they are, or the kit part made for the job.`);
+  else if (sheets.trim()) add(warnings, "css", "Avoid new CSS. Keep to the kit's classes plus small inline layout tweaks.");
 
   // Placeholders instead of real images and icons.
   if (/<img\b/i.test(html)) add(errors, "placeholders", "Use mm-ph (add mm-ph--x for photos) instead of <img>.");
@@ -146,7 +149,8 @@ export function validateScreen(html, kit) {
 
   // Per screen: one ink card, one primary action.
   const starts = [...html.matchAll(/<div\b[^>]*\sclass\s*=\s*"[^"]*\bmm-screen\b(?!-)[^"]*"/gi)].map((m) => m.index);
-  if (!starts.length) add(errors, "screens", "No mm-screen found. Wrap each screen in <div class=\"mm-screen mm-screen--phone\">.");
+  const isApp = /\sclass\s*=\s*"[^"]*\bmm-app\b(?!-)/i.test(html);
+  if (!starts.length && !isApp) add(errors, "screens", "No mm-screen found. Wrap each screen in <div class=\"mm-screen mm-screen--phone\">.");
   starts.forEach((start, i) => {
     const chunk = html.slice(start, starts[i + 1] ?? html.length);
     const name = `Screen ${i + 1}`;
@@ -161,6 +165,10 @@ export function validateScreen(html, kit) {
     const inkBesidePrimary = elementsWithClass(chunk, "mm-card--ink").some((el) => isPrimary(el.after.match(/^\s*(<[^>]*>)/)?.[1] ?? ""));
     if (inkBesidePrimary)
       add(warnings, "ink", `${name} has an mm-card--ink right before the primary button, so two black blocks compete. Make the card mm-card--filled.`);
+    // A frame restyled by hand loses its padding and column, so content runs into the edges.
+    const frameStyle = chunk.match(/^<div\b[^>]*\sstyle\s*=\s*"([^"]*)"/i)?.[1] ?? "";
+    if (/(^|;)\s*(padding|flex-direction|gap)\s*:/i.test(frameStyle))
+      add(warnings, "layout", `${name} restyles mm-screen inline. Keep the frame as it is; for a sidebar use mm-split mm-split--side with mm-sidenav in the first mm-pane.`);
   });
 
   return { ok: errors.length === 0, screens: starts.length, errors, warnings };
