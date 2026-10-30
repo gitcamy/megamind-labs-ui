@@ -37,16 +37,16 @@ test("get_component finds modifiers and notes", async () => {
   assert.equal(miss.isError, true);
 });
 
-test("get_starter links the CDN stylesheet and validates", async () => {
-  const page = (await rpc("tools/call", { name: "get_starter", arguments: {} })).content[0].text;
+test("get_starter can link the CDN stylesheet and validates", async () => {
+  const page = (await rpc("tools/call", { name: "get_starter", arguments: { stylesheet: "link" } })).content[0].text;
   assert.match(page, /cdn\.jsdelivr\.net\/gh\/gitcamy\/megamind-labs-ui@/);
   const r = await rpc("tools/call", { name: "validate_screen", arguments: { html: page } });
   assert.equal(r.structuredContent.ok, true);
 });
 
-test("get_starter and scaffold_flow can inline the stylesheet", async () => {
-  const starter = (await rpc("tools/call", { name: "get_starter", arguments: { stylesheet: "inline" } })).content[0].text;
-  const flow = (await rpc("tools/call", { name: "scaffold_flow", arguments: { title: "Check out", summary: "Pay for a cart.", screens: [{ name: "Cart" }], stylesheet: "inline" } })).content[0].text;
+test("get_starter and scaffold_flow inline the stylesheet by default", async () => {
+  const starter = (await rpc("tools/call", { name: "get_starter", arguments: {} })).content[0].text;
+  const flow = (await rpc("tools/call", { name: "scaffold_flow", arguments: { title: "Check out", summary: "Pay for a cart.", screens: [{ name: "Cart" }] } })).content[0].text;
   for (const page of [starter, flow]) {
     assert.doesNotMatch(page, /<link rel="stylesheet"/);
     assert.match(page, /<style>[\s\S]*\.mm-screen/);
@@ -78,4 +78,15 @@ test("validate_screen suggests the nearest class", async () => {
 test("answers CORS preflight", async () => {
   const res = await OPTIONS(new Request("http://localhost/mcp", { method: "OPTIONS" }));
   assert.equal(res.status, 204);
+});
+
+test("bundled kit files are served instead of the CDN", async () => {
+  const { useBundledKit, loadKit } = await import("../lib/kit.js");
+  const real = await loadKit();
+  useBundledKit({ ...real, rules: real.rules + "\nBundled marker" });
+  try {
+    assert.match((await loadKit()).rules, /Bundled marker$/);
+  } finally {
+    useBundledKit(null);
+  }
 });

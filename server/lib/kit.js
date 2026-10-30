@@ -1,5 +1,6 @@
-// Loads the kit's agent files from the CDN, so the server always serves what the repo publishes.
-// Set KIT_CDN_REF to a tag (e.g. "v0.1.0") to pin it.
+// Loads the kit's agent files. The Worker bundles them at deploy time (see useBundledKit), so a deploy
+// serves exactly the repo it was built from. Elsewhere they come from the CDN; set KIT_CDN_REF to a tag
+// (e.g. "v0.1.0") to pin it.
 const REF = process.env.KIT_CDN_REF || "main";
 export const CDN = `https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@${REF}`;
 export const CSS_URL = `${CDN}/megamind-labs-ui.css`;
@@ -12,6 +13,13 @@ const FILES = {
 };
 const TTL = 10 * 60 * 1000;
 let cache = null;
+let bundled = null;
+
+// Serve these files instead of fetching them, as { rules, reference, starter, css }.
+export function useBundledKit(files) {
+  bundled = files;
+  cache = null;
+}
 
 async function fetchText(path) {
   const res = await fetch(`${CDN}/${path}`);
@@ -21,7 +29,7 @@ async function fetchText(path) {
 
 export async function loadKit() {
   if (cache && Date.now() - cache.at < TTL) return cache.kit;
-  const entries = await Promise.all(Object.entries(FILES).map(async ([k, p]) => [k, await fetchText(p)]));
+  const entries = await Promise.all(Object.entries(FILES).map(async ([k, p]) => [k, bundled?.[k] ?? (await fetchText(p))]));
   const kit = Object.fromEntries(entries);
 
   // Every class the stylesheet defines, grouped the same way reference/classes.md groups them.
@@ -42,10 +50,10 @@ export async function loadKit() {
   return kit;
 }
 
-// How a page loads the kit. "link" points at the CDN, for files opened in a browser or an editor preview.
-// "inline" embeds the whole stylesheet, for chat previews (like Claude artifacts) that block outside stylesheets.
-export const STYLESHEET_MODES = ["link", "inline"];
-export function stylesheetTag(kit, mode = "link") {
+// How a page loads the kit. "inline" embeds the whole stylesheet, so chat previews that block outside
+// stylesheets (Claude files and artifacts) still show it styled. "link" points at the CDN, for projects on disk.
+export const STYLESHEET_MODES = ["inline", "link"];
+export function stylesheetTag(kit, mode = "inline") {
   return mode === "inline" ? `<style>\n${kit.css.trim()}\n</style>` : `<link rel="stylesheet" href="${CSS_URL}">`;
 }
 

@@ -10,12 +10,12 @@ const INSTRUCTIONS = `Megamind Labs UI is a greyscale, CSS-only wireframe kit.
 When the user asks for wireframes, mockups, screens or flows, call get_rules before writing any markup and follow it exactly.
 Use list_components to see every part, get_component to look one up, and get_starter or scaffold_flow for a page skeleton.
 Before you show the result, call validate_screen with your HTML and fix every error it reports.
-If the page is shown in a chat preview, such as a Claude artifact, pass stylesheet: "inline" to get_starter or scaffold_flow, because those previews block outside stylesheets.`;
+get_starter and scaffold_flow embed the stylesheet by default, because chat previews (Claude files and artifacts, ChatGPT canvas) can block outside stylesheets. Keep that <style> block as it is. Pass stylesheet: "link" only when writing into a project on disk that the user opens in their own browser or editor.`;
 
 const STYLESHEET = z
   .enum(STYLESHEET_MODES)
   .optional()
-  .describe('"link" (default) for a file opened in a browser or editor. "inline" for chat previews like Claude artifacts, which block outside stylesheets.');
+  .describe('"inline" (default) embeds the stylesheet, so the page is styled in any chat preview. "link" points at the CDN, only for a project on disk that the user opens in their own browser or editor.');
 
 const text = (t) => ({ content: [{ type: "text", text: t }] });
 const READ_ONLY = { readOnlyHint: true, openWorldHint: false };

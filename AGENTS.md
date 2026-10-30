@@ -4,7 +4,7 @@ Use this when the user asks for wireframes, mockups, screens or flows. Build gre
 
 ## Setup
 - Link the stylesheet from the CDN: `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css">`. Add it only if the project does not already load it.
-- Never copy the CSS or paste markup from the kit into a project. The one exception is a chat preview that blocks outside stylesheets, such as a Claude artifact: there, embed the whole stylesheet in a `<style>` tag (the MCP's `get_starter` and `scaffold_flow` do this with `stylesheet: "inline"`).
+- Never copy the CSS or paste markup from the kit into a project. The one exception is a page shown inside a chat app (Claude files and artifacts, ChatGPT canvas), whose previews can block outside stylesheets: there, embed the whole stylesheet in a `<style>` tag. The MCP's `get_starter` and `scaffold_flow` do this by default; keep that block as it is.
 - Put `class="mm mm-canvas"` on `<body>`.
 - Use only `mm-*` classes and the CSS variables listed in the reference at https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/reference/classes.md. Do not write new CSS except small inline layout tweaks (width, alignment, margin).
 
