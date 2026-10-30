@@ -33,7 +33,7 @@ claude mcp add --transport http megamind-labs-ui https://megamind-labs-ui-mcp.me
 
 Then ask for screens: "Wireframe a sign-up flow with Megamind Labs UI."
 
-Tools: `get_rules`, `get_reference`, `get_component`, `get_starter`, `validate_screen`. There is also a `wireframe` prompt.
+Tools: `get_rules`, `get_reference`, `list_components`, `get_component`, `get_starter`, `scaffold_flow`, `validate_screen`. There is also a `wireframe` prompt.
 
 ### Deploy the MCP server to Cloudflare
 
