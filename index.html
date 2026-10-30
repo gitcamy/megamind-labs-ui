@@ -1140,7 +1140,7 @@ ${code}`,
   const MCP_URL = 'https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp';
   const AGENTS = {
     claude: { logo: 'claude', hint: 'In Claude, open Settings > Connectors, choose Add custom connector, paste this URL, then ask for a sign-up flow in a new chat:', text: MCP_URL },
-    chatgpt: { logo: 'openai', hint: 'In ChatGPT, go to chatgpt.com/plugins, select + then Add custom MCP server, paste this URL as the Server URL and choose No authentication. Install the plugin, then type @ and pick it in a new chat:', text: MCP_URL },
+    chatgpt: { logo: 'openai', hint: 'In ChatGPT, open Settings > Plugins > Browse directory > Add > Add custom MCP server. Paste this URL, choose No authentication, then Create as a plugin. In a new chat, type @ and pick it:', text: MCP_URL },
     cursor: { logo: 'cursor', hint: 'Add this to ~/.cursor/mcp.json, then ask Cursor for screens:', text: JSON.stringify({ mcpServers: { 'megamind-labs-ui': { url: MCP_URL } } }, null, 2) },
     codex: { logo: 'openai', hint: 'Run this in your terminal, then ask Codex for screens:', text: `codex mcp add megamind-labs-ui --url ${MCP_URL}` },
     gemini: { logo: 'gemini', hint: 'Run this in your terminal, then ask Gemini CLI for screens:', text: `gemini mcp add --transport http megamind-labs-ui ${MCP_URL}` },
