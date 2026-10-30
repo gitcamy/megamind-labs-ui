@@ -149,7 +149,7 @@
                 <button aria-pressed="false" data-agent="chatgpt">ChatGPT</button>
                 <button aria-pressed="false" data-agent="cursor">Cursor</button>
                 <button aria-pressed="false" data-agent="codex">Codex</button>
-                <button aria-pressed="false" data-agent="gemini">Gemini</button>
+                <button aria-pressed="false" data-agent="antigravity">Antigravity</button>
               </div>
               <span class="mm-small" id="agent-hint"></span>
               <div class="doc-code" id="snippet-agent"><button class="mm-btn mm-btn--sm mm-btn--secondary" data-copy="snippet-agent">Copy</button><span id="agent-text"></span></div>
@@ -1143,7 +1143,7 @@ ${code}`,
     chatgpt: { logo: 'openai', hint: 'In ChatGPT, open Settings > Plugins > Browse directory > Add > Add custom MCP server. Paste this URL, choose No authentication, then Create as a plugin. In a new chat, type @ and pick it:', text: MCP_URL },
     cursor: { logo: 'cursor', hint: 'Add this to ~/.cursor/mcp.json, then ask Cursor for screens:', text: JSON.stringify({ mcpServers: { 'megamind-labs-ui': { url: MCP_URL } } }, null, 2) },
     codex: { logo: 'openai', hint: 'Run this in your terminal, then ask Codex for screens:', text: `codex mcp add megamind-labs-ui --url ${MCP_URL}` },
-    gemini: { logo: 'gemini', hint: 'In gemini.google.com, click the Settings icon, then Connected Apps. Under Custom apps, paste this URL and click Next. In a chat, type @ and pick it. Needs a personal Google account:', text: MCP_URL },
+    antigravity: { logo: 'gemini', hint: 'Add this to ~/.gemini/config/mcp_config.json, then in Antigravity open Settings > Customizations > Installed MCP Servers and click Refresh:', text: JSON.stringify({ mcpServers: { 'megamind-labs-ui': { serverUrl: MCP_URL } } }, null, 2) },
   };
   const logos = [...document.querySelectorAll('.doc-agent-logo [data-logo]')];
   const showLogo = (logo) => logos.forEach(l => l.classList.toggle('is-active', l.dataset.logo === logo));

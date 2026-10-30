@@ -17,10 +17,10 @@ The MCP server is live at `https://megamind-labs-ui-mcp.megamind-labs.workers.de
 
 **Gemini (web app):** at [gemini.google.com](https://gemini.google.com), click the Settings icon, then Connected Apps. Under Custom apps, paste the URL above and click Next. Start a chat, type `@` and pick the app. Google's help page says this needs a personal Google account (work and school accounts aren't supported yet), is English only, and is available in the US for people 18 or older.
 
-**Gemini CLI:** `--scope user` makes it available in every folder. Without it Gemini only saves it for the current project, and refuses when you run it from your home folder.
+**Antigravity:** add this to `~/.gemini/config/mcp_config.json` (create it if it doesn't exist). Antigravity uses `serverUrl`, not `url`. Then open Settings → Customizations → Installed MCP Servers and click Refresh, or type `/mcp` in the `agy` CLI. No sign-in is needed.
 
-```bash
-gemini mcp add --scope user --transport http megamind-labs-ui https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp
+```json
+{ "mcpServers": { "megamind-labs-ui": { "serverUrl": "https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp" } } }
 ```
 
 **Claude Code:**
