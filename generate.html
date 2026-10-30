@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generate a screen · Megamind Labs UI</title>
+<meta name="description" content="Describe a screen in words or by voice and get a wireframe built from Megamind Labs UI components.">
+<link rel="stylesheet" href="megamind-labs-ui.css">
+<link rel="stylesheet" href="docs-shell.css">
+<style>
+  [hidden] { display: none !important; }
+  .doc { height: 100vh; }
+
+  /* Past screens, listed under the menu */
+  .gen-recent { display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+  .gen-recent .mm-caption { padding: 0 12px; }
+  .gen-recent .mm-sidenav { overflow-y: auto; scrollbar-width: thin; }
+  .gen-recent .mm-sidenav a { display: block; padding: 6px 12px; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .gen-recent .mm-sidenav a::before { content: none; }
+  .gen-recent .mm-sidenav a:hover { background: var(--mm-wash); color: var(--mm-ink); }
+
+  /* Working view: chat on the left, the screen on the right */
+  .gen { display: grid; grid-template-columns: 380px minmax(0, 1fr); height: 100vh; min-width: 0; }
+  .gen > * { min-width: 0; }
+  .gen-chat { display: flex; flex-direction: column; gap: 12px; min-height: 0; padding: 20px; border-right: var(--mm-border); background: var(--mm-paper); }
+  .gen-intro { display: none; }
+  .gen-thread { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 4px 0; scrollbar-width: thin; }
+  .gen-thread .mm-bubble { max-width: 88%; white-space: pre-wrap; }
+  .gen-compose { display: flex; flex-direction: column; gap: 8px; }
+  .gen-compose .mm-textarea { min-height: 84px; resize: none; }
+  .gen-compose .is-listening { border: 1.5px dashed var(--mm-ink); }
+  .gen-icon { display: inline-grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 1px solid transparent; border-radius: var(--mm-r-pill); background: none; color: var(--mm-ink-2); cursor: pointer; flex: none; }
+  .gen-icon:hover { background: var(--mm-wash); color: var(--mm-ink); }
+  .gen-icon[aria-pressed="true"] { background: var(--mm-ink); color: var(--mm-paper); }
+  .gen-icon svg { width: 18px; height: 18px; }
+  .gen-files { display: flex; flex-wrap: wrap; gap: 8px; }
+  .gen-file { position: relative; width: 56px; height: 56px; border-radius: var(--mm-r-md); border: var(--mm-border); overflow: hidden; background: var(--mm-wash); }
+  .gen-file img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gen-file button { position: absolute; top: 2px; right: 2px; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 50%; background: var(--mm-ink); color: var(--mm-paper); font-size: 13px; line-height: 20px; cursor: pointer; }
+  .gen-compose.is-drop { outline: 1.5px dashed var(--mm-ink); outline-offset: 2px; }
+  .gen-thread .mm-bubble img { display: block; max-width: 160px; max-height: 120px; border-radius: var(--mm-r-sm); margin-bottom: 6px; }
+  .gen-stage { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+  .gen-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 24px; border-bottom: var(--mm-border); background: var(--mm-paper); flex-wrap: wrap; }
+  .gen-bar .mm-row { flex-wrap: wrap; }
+  .gen-canvas { flex: 1 1 auto; min-height: 0; display: grid; place-items: center; padding: 32px; overflow: hidden; position: relative; }
+  .gen-frame { position: relative; }
+  .gen-frame iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; background: transparent; }
+  .gen-key { gap: 10px; }
+
+  /* Start view: no screen yet, so only the prompt, centred */
+  .gen.is-start { grid-template-columns: minmax(0, 1fr); place-items: center; overflow-y: auto; }
+  .gen.is-start .gen-stage, .gen.is-start .gen-thread { display: none; }
+  .gen.is-start .gen-chat { width: min(640px, 100%); padding: 40px 24px; border: 0; background: none; gap: 16px; }
+  .gen.is-start .gen-intro { display: flex; flex-direction: column; gap: 8px; }
+  .gen.is-start .gen-intro h1 { font-size: 32px; font-weight: 600; letter-spacing: -0.02em; }
+  .gen.is-start .gen-intro p { color: var(--mm-ink-2); font-size: 15px; line-height: 1.55; }
+  .gen.is-start .gen-compose { padding: 12px; border: var(--mm-border); border-radius: var(--mm-r-lg); background: var(--mm-paper); }
+  .gen.is-start .gen-compose .mm-textarea { border: 0; padding: 4px; min-height: 96px; background: none; }
+  .gen.is-start .mm-suggestions { flex-wrap: wrap; overflow: visible; }
+  .gen:not(.is-start) .mm-suggestions { display: none; }
+
+  @media (max-width: 900px) {
+    .doc { height: auto; }
+    .gen, .gen.is-start { grid-template-columns: minmax(0, 1fr); height: auto; }
+    .gen-chat { border-right: 0; border-bottom: var(--mm-border); }
+    .gen-thread { max-height: 40vh; }
+    .gen-stage { height: 80vh; }
+    .gen-bar { padding: 12px 16px; }
+    .gen-canvas { padding: 16px; }
+  }
+</style>
+</head>
+<body class="mm">
+
+<div class="doc-top"><a class="doc-logo" href="index.html"><svg class="doc-mark" viewBox="0 0 340 340" aria-hidden="true"><path d="M226.178 0L113.089 0V18.8481L75.3926 18.8481V37.6963L37.6963 37.6963L37.6963 75.3926H18.8481L18.8481 94.2407H0L0 207.33H18.8481L18.8481 245.026H37.6963V263.874H56.5444V282.722H94.2407V301.57L188.481 301.57V282.722H226.178L226.178 263.874H245.026V226.178H263.874L263.874 131.937H245.026V113.089H226.178V94.2407L207.33 94.2407L207.33 75.3926L113.089 75.3926V94.2407H94.2407V113.089H75.3926L75.3926 188.481L94.2407 188.481V207.33H113.089L113.089 226.178H169.633V207.33H188.481V150.785H150.785V188.481H113.089L113.089 131.937H131.937V113.089L188.481 113.089V131.937H207.33V150.785H226.178V226.178H207.33V245.026H188.481V263.874L94.2407 263.874V245.026L75.3926 245.026V226.178H56.5444V207.33H37.6963L37.6963 113.089L56.5444 113.089L56.5444 75.3926H75.3926V56.5444L113.089 56.5444L113.089 37.6963L207.33 37.6963V56.5444L245.026 56.5444V75.3926H263.874V94.2407H282.722V131.937H301.57L301.57 245.026H282.722V263.874H263.874V301.57H245.026V310.994V320.418H226.202V339.267H245.05H263.898V320.418H282.722V301.57H301.57V282.722H320.418V245.026H339.267L339.267 113.089H320.418V75.3926L301.57 75.3926V56.5444L282.722 56.5444V37.6963H263.874V18.8481L226.178 18.8481V0Z" fill="currentColor" fill-rule="evenodd"/></svg>Megamind Labs UI Kit</a><a class="mm-btn mm-btn--sm mm-btn--secondary" href="generate.html">New screen</a></div>
+
+<div class="doc">
+  <aside class="doc-side">
+    <a class="doc-logo" href="index.html"><svg class="doc-mark" viewBox="0 0 340 340" aria-hidden="true"><path d="M226.178 0L113.089 0V18.8481L75.3926 18.8481V37.6963L37.6963 37.6963L37.6963 75.3926H18.8481L18.8481 94.2407H0L0 207.33H18.8481L18.8481 245.026H37.6963V263.874H56.5444V282.722H94.2407V301.57L188.481 301.57V282.722H226.178L226.178 263.874H245.026V226.178H263.874L263.874 131.937H245.026V113.089H226.178V94.2407L207.33 94.2407L207.33 75.3926L113.089 75.3926V94.2407H94.2407V113.089H75.3926L75.3926 188.481L94.2407 188.481V207.33H113.089L113.089 226.178H169.633V207.33H188.481V150.785H150.785V188.481H113.089L113.089 131.937H131.937V113.089L188.481 113.089V131.937H207.33V150.785H226.178V226.178H207.33V245.026H188.481V263.874L94.2407 263.874V245.026L75.3926 245.026V226.178H56.5444V207.33H37.6963L37.6963 113.089L56.5444 113.089L56.5444 75.3926H75.3926V56.5444L113.089 56.5444L113.089 37.6963L207.33 37.6963V56.5444L245.026 56.5444V75.3926H263.874V94.2407H282.722V131.937H301.57L301.57 245.026H282.722V263.874H263.874V301.57H245.026V310.994V320.418H226.202V339.267H245.05H263.898V320.418H282.722V301.57H301.57V282.722H320.418V245.026H339.267L339.267 113.089H320.418V75.3926L301.57 75.3926V56.5444L282.722 56.5444V37.6963H263.874V18.8481L226.178 18.8481V0Z" fill="currentColor" fill-rule="evenodd"/></svg>Megamind Labs UI Kit</a>
+    <nav class="mm-sidenav" aria-label="Sections">
+      <a href="index.html#start">Get started</a>
+      <a href="index.html#foundations">Foundations</a>
+      <a href="index.html#components">Components</a>
+      <a href="index.html#screens">Screens</a>
+      <a href="generate.html" class="doc-gen" id="new-screen" aria-current="page">Generate a screen</a>
+    </nav>
+    <div class="gen-recent" id="recent" hidden>
+      <span class="mm-caption">Recent screens</span>
+      <nav class="mm-sidenav" aria-label="Recent screens" id="recent-list"></nav>
+    </div>
+    <div class="mm-spacer"></div>
+    <div class="mm-stack mm-gap-2" style="padding: 0 12px">
+      <span class="mm-caption">Theme</span>
+      <div class="mm-segmented" role="group" aria-label="Theme" id="page-theme">
+        <button aria-pressed="true" data-set-theme="light">Light</button>
+        <button aria-pressed="false" data-set-theme="dark">Dark</button>
+      </div>
+      <span class="mm-caption">v0.1.0, MIT. By <a href="https://megamindlabs.ai">Megamind Labs</a></span>
+    </div>
+  </aside>
+
+  <div class="gen is-start" id="gen">
+    <section class="gen-chat">
+      <header class="gen-intro">
+        <h1>Generate a screen</h1>
+        <p>Describe the screen you need by typing or speaking, and add a sketch or screenshot for context. Screens start light on a phone; ask for dark, tablet or desktop.</p>
+      </header>
+
+      <div class="mm-thread gen-thread" id="thread" aria-live="polite"></div>
+
+      <div class="mm-suggestions" id="suggestions">
+        <button class="mm-chip">Checkout page</button>
+        <button class="mm-chip">Sign in with an email code</button>
+        <button class="mm-chip">Order tracking</button>
+        <button class="mm-chip">Account settings</button>
+        <button class="mm-chip">Team analytics dashboard on desktop</button>
+      </div>
+
+      <div class="mm-card mm-card--filled gen-key" id="key-card" hidden>
+        <span class="mm-card-title">Add your Anthropic API key</span>
+        <span class="mm-small">The key stays in this browser and is only sent to api.anthropic.com. Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>.</span>
+        <div class="mm-field"><input class="mm-input" id="key-input" type="password" placeholder="sk-ant-..." autocomplete="off"></div>
+        <div class="mm-row"><button class="mm-btn mm-btn--sm" id="key-save">Save key</button><button class="mm-btn mm-btn--sm mm-btn--ghost" id="key-cancel">Cancel</button></div>
+      </div>
+
+      <form class="gen-compose" id="compose">
+        <div class="gen-files" id="files" hidden></div>
+        <textarea class="mm-textarea" id="prompt" placeholder="Describe a screen, like a checkout page with a saved card" rows="3"></textarea>
+        <div class="mm-row">
+          <button type="button" class="gen-icon" id="attach" aria-label="Add an image" title="Add an image, like a sketch or a screenshot"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 9.5l-6.2 6.2a4 4 0 0 1-5.7-5.7l6.6-6.6a2.7 2.7 0 0 1 3.8 3.8l-6.5 6.5a1.3 1.3 0 0 1-1.9-1.9l5.9-5.9"/></svg></button>
+          <input type="file" id="file-input" accept="image/png,image/jpeg,image/gif,image/webp" multiple hidden>
+          <span class="mm-caption mm-grow" id="key-status"></span>
+          <button type="button" class="gen-icon" id="mic" aria-label="Speak" aria-pressed="false" title="Speak your description"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7.25" y="2.5" width="5.5" height="9.5" rx="2.75"/><path d="M4.5 9.5a5.5 5.5 0 0 0 11 0M10 15v2.5"/></svg></button>
+          <button type="submit" class="mm-btn mm-btn--sm" id="send">Generate screen</button>
+        </div>
+      </form>
+    </section>
+
+    <main class="gen-stage">
+      <div class="gen-bar">
+        <div class="mm-stack mm-gap-1">
+          <span class="mm-heading" id="screen-title">Building your screen</span>
+          <span class="mm-caption" id="screen-meta">Built with Megamind Labs UI</span>
+        </div>
+        <div class="mm-row mm-gap-2" id="exports">
+          <button class="mm-btn mm-btn--sm mm-btn--secondary" data-export="markup" disabled>Copy markup</button>
+          <button class="mm-btn mm-btn--sm mm-btn--secondary" data-export="jsx" disabled>Copy React</button>
+          <button class="mm-btn mm-btn--sm mm-btn--secondary" data-export="html" disabled>Copy full HTML</button>
+          <button class="mm-btn mm-btn--sm" data-export="download" disabled>Download .html</button>
+        </div>
+      </div>
+      <div class="gen-canvas" id="canvas">
+        <div class="mm-spinner" id="empty" aria-label="Building your screen"></div>
+        <div class="gen-frame" id="frame" hidden><iframe id="preview" title="Generated screen preview"></iframe></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script type="module">
+  const CDN_CSS = 'https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css';
+  const CDN_AGENTS = 'https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/AGENTS.md';
+  const SDK_URL = 'https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@0.135.0/+esm';
+  const MODEL = 'claude-opus-5-5';
+  const DEVICES = {
+    phone: { cls: 'mm-screen--phone', w: 390, h: 844, label: 'Phone, 390 x 844' },
+    tablet: { cls: 'mm-screen--tablet', w: 820, h: 1180, label: 'Tablet, 820 x 1180' },
+    desktop: { cls: 'mm-screen--desktop', w: 1280, h: 800, label: 'Desktop, 1280 x 800' },
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} },
+  };
+
+  const state = {
+    id: null,         // which saved screen this is
+    history: [],      // Anthropic message params, user and assistant turns
+    markup: '',
+    title: '',
+    busy: false,
+    stream: null,
+  };
+
+  // ---------------------------------------------------------------- page theme
+  const setPageTheme = (t) => {
+    if (t === 'dark') document.body.setAttribute('data-theme', 'dark'); else document.body.removeAttribute('data-theme');
+    document.querySelectorAll('[data-set-theme]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.setTheme === t)));
+    store.set('mm-theme', t);
+  };
+  const initialTheme = store.get('mm-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  setPageTheme(initialTheme);
+  document.querySelectorAll('[data-set-theme]').forEach((b) => b.addEventListener('click', () => setPageTheme(b.dataset.setTheme)));
+
+  // ---------------------------------------------------------------- start view vs working view
+  const setStarted = (on) => $('gen').classList.toggle('is-start', !on);
+
+  // The frame and theme come from the markup itself, so asking in words is enough
+  const deviceOf = (m) => Object.values(DEVICES).find((x) => m.includes(x.cls));
+  const isDark = (m) => /^\s*<div\b[^>]*data-theme="dark"/.test(m);
+
+  // ---------------------------------------------------------------- thread
+  const thread = $('thread');
+  const bubble = (text, me = false, images = []) => {
+    const b = document.createElement('div');
+    b.className = me ? 'mm-bubble mm-bubble--me' : 'mm-bubble';
+    for (const im of images) b.append(Object.assign(document.createElement('img'), { src: `data:${im.type};base64,${im.data}`, alt: 'Attached image' }));
+    b.append(text);
+    thread.append(b);
+    thread.scrollTop = thread.scrollHeight;
+    return b;
+  };
+  const typing = () => {
+    const t = document.createElement('div');
+    t.className = 'mm-typing';
+    t.innerHTML = '<span></span><span></span><span></span>';
+    thread.append(t);
+    thread.scrollTop = thread.scrollHeight;
+    return t;
+  };
+
+  // ---------------------------------------------------------------- API key
+  const keyCard = $('key-card');
+  let pendingPrompt = null;
+  const updateKeyStatus = () => {
+    $('key-status').innerHTML = store.get('mm-anthropic-key')
+      ? 'Using your API key. <button type="button" class="mm-link" style="font-size:12px" id="key-change">Change</button>'
+      : '';
+    $('key-change')?.addEventListener('click', () => { keyCard.hidden = false; $('key-input').focus(); });
+  };
+  $('key-save').addEventListener('click', () => {
+    const v = $('key-input').value.trim();
+    if (!v) return $('key-input').focus();
+    store.set('mm-anthropic-key', v);
+    $('key-input').value = '';
+    keyCard.hidden = true;
+    updateKeyStatus();
+    const p = pendingPrompt; pendingPrompt = null;
+    if (p === 'resubmit') $('compose').requestSubmit();
+    else if (p) generate(p.prompt, p.images);
+  });
+  $('key-cancel').addEventListener('click', () => { keyCard.hidden = true; pendingPrompt = null; });
+  updateKeyStatus();
+
+  // ---------------------------------------------------------------- system prompt
+  let systemPrompt = null;
+  const loadRules = async () => {
+    for (const url of ['AGENTS.md', CDN_AGENTS]) {
+      try { const r = await fetch(url); if (r.ok) return await r.text(); } catch {}
+    }
+    throw new Error('Could not load the kit rules (AGENTS.md).');
+  };
+  const getSystem = async () => {
+    if (systemPrompt) return systemPrompt;
+    const rules = await loadRules();
+    systemPrompt = `${rules}
+
+## How to answer in this generator
+You are the screen generator inside the Megamind Labs UI docs. The person describes one screen; you build it from the kit.
+- The stylesheet is already loaded and the page wraps your screen. Do not output <html>, <head>, <body>, <link>, <style> or <script>.
+- Reply with one plain sentence saying what you built or changed, then one \`\`\`html code block.
+- The code block starts with <!-- title: Short screen name --> on its own line, then exactly one root element: <div class="mm-screen ..."> ... </div>.
+- Use a phone frame (mm-screen--phone) unless the person asks for tablet or desktop, or describes something that only works on a wide screen. Keep the frame across changes unless they ask to switch.
+- On a phone frame, start with mm-statusbar. On tablet and desktop frames, use mm-sidenav or mm-split where it helps.
+- When the person asks for a change, return the whole updated screen, not a diff.
+- Screens are light. Only when the person asks for dark, put data-theme="dark" on the root mm-screen element, and keep it across changes until they ask for light.`;
+    return systemPrompt;
+  };
+
+  // ---------------------------------------------------------------- parsing
+  const parseReply = (text) => {
+    const fence = text.indexOf('```html');
+    const summary = (fence === -1 ? text : text.slice(0, fence)).trim();
+    let code = '';
+    if (fence !== -1) {
+      code = text.slice(fence + 7);
+      const end = code.indexOf('```');
+      if (end !== -1) code = code.slice(0, end);
+    } else {
+      const start = text.indexOf('<div class="mm-screen');
+      if (start !== -1) code = text.slice(start);
+    }
+    code = code.trim();
+    const m = code.match(/<!--\s*title:\s*(.*?)\s*-->/i);
+    return { summary, code: code.replace(/<!--\s*title:.*?-->\s*/i, ''), title: m ? m[1] : '' };
+  };
+
+  // ---------------------------------------------------------------- preview
+  const iframe = $('preview');
+  let frameReady = new Promise((resolve) => {
+    iframe.addEventListener('load', resolve, { once: true });
+    const css = new URL('megamind-labs-ui.css', location.href).href;
+    iframe.srcdoc = `<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="${css}"><style>html,body{margin:0;background:transparent}body{display:inline-block}</style></head><body class="mm"></body></html>`;
+  });
+
+  const fit = () => {
+    const doc = iframe.contentDocument;
+    const screen = doc?.querySelector('.mm-screen');
+    const d = deviceOf(state.markup) || DEVICES.phone;
+    const w = screen?.offsetWidth || d.w;
+    const h = screen?.offsetHeight || d.h;
+    const box = $('canvas').getBoundingClientRect();
+    const pad = innerWidth < 900 ? 32 : 64;
+    const s = Math.min(1, (box.width - pad) / w, (box.height - pad) / h);
+    iframe.style.width = w + 'px';
+    iframe.style.height = h + 'px';
+    iframe.style.transform = `scale(${s})`;
+    $('frame').style.width = w * s + 'px';
+    $('frame').style.height = h * s + 'px';
+  };
+  new ResizeObserver(fit).observe($('canvas'));
+
+  let renderQueued = false;
+  const render = async () => {
+    await frameReady;
+    const body = iframe.contentDocument.body;
+    if (body.innerHTML !== state.markup) body.innerHTML = state.markup;
+    const has = !!state.markup;
+    $('frame').hidden = !has;
+    $('empty').hidden = has;
+    fit();
+  };
+  const queueRender = () => {
+    if (renderQueued) return;
+    renderQueued = true;
+    setTimeout(() => { renderQueued = false; render(); }, 250);
+  };
+
+  const setTitle = () => {
+    $('screen-title').textContent = state.title || (state.markup ? 'Untitled screen' : 'Building your screen');
+    const d = deviceOf(state.markup);
+    $('screen-meta').textContent = state.markup ? `${d ? d.label : 'Custom frame'}, ${isDark(state.markup) ? 'dark' : 'light'}` : 'Built with Megamind Labs UI';
+    document.querySelectorAll('[data-export]').forEach((b) => (b.disabled = !state.markup || state.busy));
+  };
+
+  // ---------------------------------------------------------------- generate
+  const setBusy = (busy) => {
+    state.busy = busy;
+    $('send').textContent = busy ? 'Stop' : 'Generate screen';
+    $('send').classList.toggle('mm-btn--secondary', busy);
+    setTitle();
+  };
+
+  let runId = 0;     // bumps when you switch screens, so a stopped run can't write into the next one
+  const generate = async (prompt, images = []) => {
+    const apiKey = store.get('mm-anthropic-key');
+    if (!apiKey) {
+      // Keep the draft and its images in the box; it sends once the key is saved
+      files = images; renderFiles();
+      pendingPrompt = 'resubmit';
+      keyCard.hidden = false;
+      $('key-input').focus();
+      return;
+    }
+
+    setStarted(true);
+    bubble(prompt, true, images);
+    $('prompt').value = '';
+    const wait = typing();
+    setBusy(true);
+
+    const run = ++runId;
+    const stale = () => run !== runId;
+    const previous = { markup: state.markup, title: state.title };
+    let text = '';
+    let reply = null;
+    try {
+      const [{ default: Anthropic }, system] = await Promise.all([import(SDK_URL), getSystem()]);
+      const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
+      const content = images.length
+        ? [...images.map((im) => ({ type: 'image', source: { type: 'base64', media_type: im.type, data: im.data } })), { type: 'text', text: prompt }]
+        : prompt;
+      const messages = [...state.history, { role: 'user', content }];
+
+      const stream = client.beta.messages.stream({
+        model: MODEL,
+        max_tokens: 32000,
+        output_config: { effort: 'medium' },
+        betas: ['server-side-fallback-2026-07-01'],
+        fallbacks: 'default',
+        system: [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }],
+        messages,
+      });
+      state.stream = stream;
+
+      stream.on('text', (delta) => {
+        if (stale()) return;
+        text += delta;
+        const p = parseReply(text);
+        if (p.summary) {
+          if (!reply) { wait.remove(); reply = bubble(''); }
+          reply.textContent = p.summary;
+        }
+        if (p.code) {
+          state.markup = p.code;
+          if (p.title) state.title = p.title;
+          setTitle();
+          queueRender();
+        }
+      });
+
+      const final = await stream.finalMessage();
+      if (stale()) return;
+      wait.remove();
+
+      if (final.stop_reason === 'refusal') {
+        throw new Error("Claude declined this request. Try describing the screen differently.");
+      }
+      const p = parseReply(text);
+      if (!p.code) throw new Error("No screen came back. Try describing it again with a little more detail.");
+      if (final.stop_reason === 'max_tokens') bubble('The screen ran long and was cut off. Ask for a simpler version, or for fewer sections.');
+
+      state.markup = p.code;
+      state.title = p.title || state.title;
+      if (!reply) bubble(p.summary || 'Here is your screen.');
+      state.history = [...messages, { role: 'assistant', content: text }];
+      render();
+      save(true);
+    } catch (err) {
+      if (stale()) return;
+      wait.remove();
+      const aborted = err?.name === 'APIUserAbortError' || /abort/i.test(err?.message || '');
+      state.markup = previous.markup;
+      state.title = previous.title;
+      render();
+      if (aborted) {
+        bubble('Stopped. Your last finished screen is still here.');
+      } else if (err?.status === 401) {
+        store.set('mm-anthropic-key', null);
+        updateKeyStatus();
+        bubble('That API key was rejected. Add a different key to keep going.');
+        pendingPrompt = { prompt, images };
+        keyCard.hidden = false;
+      } else if (err?.status === 429) {
+        bubble('Too many requests right now. Wait a moment, then try again.');
+      } else {
+        bubble(err?.message || 'Something went wrong. Try again.');
+      }
+    } finally {
+      if (!stale()) { state.stream = null; setBusy(false); }
+    }
+  };
+
+  $('compose').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (state.busy) { state.stream?.abort(); return; }
+    stopListening();
+    const images = takeFiles();
+    const p = $('prompt').value.trim() || (images.length ? 'Build a screen based on this image.' : '');
+    if (p) generate(p, images); else $('prompt').focus();
+  });
+  $('prompt').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('compose').requestSubmit(); }
+  });
+  $('suggestions').addEventListener('click', (e) => {
+    const c = e.target.closest('.mm-chip'); if (!c || state.busy) return;
+    generate(c.textContent);
+  });
+  const stopRun = () => {
+    runId++;
+    state.stream?.abort();
+    state.stream = null;
+    setBusy(false);
+  };
+  const clearScreen = () => {
+    stopRun();
+    Object.assign(state, { id: null, history: [], markup: '', title: '' });
+    thread.replaceChildren();
+    takeFiles();
+    setStarted(false);
+    render(); setTitle(); renderRecent();
+  };
+  $('new-screen').addEventListener('click', (e) => {
+    e.preventDefault();
+    clearScreen();
+    history.replaceState(null, '', 'generate.html');
+    $('prompt').focus();
+  });
+
+  // ---------------------------------------------------------------- images for context
+  // Pick, paste or drop an image. Large ones are scaled down before they're sent.
+  const MAX_FILES = 4;
+  const MAX_EDGE = 1568;
+  let files = [];
+  const renderFiles = () => {
+    $('files').hidden = !files.length;
+    $('files').replaceChildren(...files.map((im, i) => {
+      const box = document.createElement('div');
+      box.className = 'gen-file';
+      box.innerHTML = `<img alt="${im.name.replace(/"/g, '')}"><button type="button" aria-label="Remove image">×</button>`;
+      box.querySelector('img').src = `data:${im.type};base64,${im.data}`;
+      box.querySelector('button').addEventListener('click', () => { files.splice(i, 1); renderFiles(); });
+      return box;
+    }));
+  };
+  const takeFiles = () => { const out = files; files = []; renderFiles(); return out; };
+  const readImage = (file) => new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const scale = Math.min(1, MAX_EDGE / Math.max(img.naturalWidth, img.naturalHeight));
+      if (scale === 1 && file.size < 4_000_000) {
+        const r = new FileReader();
+        r.onload = () => resolve({ name: file.name, type: file.type, data: String(r.result).split(',')[1] });
+        r.onerror = reject;
+        return r.readAsDataURL(file);
+      }
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.naturalWidth * scale);
+      c.height = Math.round(img.naturalHeight * scale);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      resolve({ name: file.name, type: 'image/jpeg', data: c.toDataURL('image/jpeg', 0.85).split(',')[1] });
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('unreadable')); };
+    img.src = url;
+  });
+  const addFiles = async (list) => {
+    const imgs = [...list].filter((f) => /^image\/(png|jpeg|gif|webp)$/.test(f.type));
+    if (list.length && !imgs.length) return bubble('Only PNG, JPEG, GIF and WebP images can be added.');
+    for (const f of imgs) {
+      if (files.length >= MAX_FILES) { bubble(`You can add up to ${MAX_FILES} images at a time.`); break; }
+      try { files.push(await readImage(f)); } catch { bubble(`Couldn't read ${f.name}.`); }
+    }
+    renderFiles();
+  };
+  $('attach').addEventListener('click', () => $('file-input').click());
+  $('file-input').addEventListener('change', (e) => { addFiles(e.target.files); e.target.value = ''; });
+  $('prompt').addEventListener('paste', (e) => {
+    const pasted = [...(e.clipboardData?.files || [])];
+    if (pasted.length) { e.preventDefault(); addFiles(pasted); }
+  });
+  const compose = $('compose');
+  compose.addEventListener('dragover', (e) => { if (e.dataTransfer?.types.includes('Files')) { e.preventDefault(); compose.classList.add('is-drop'); } });
+  compose.addEventListener('dragleave', () => compose.classList.remove('is-drop'));
+  compose.addEventListener('drop', (e) => { e.preventDefault(); compose.classList.remove('is-drop'); addFiles(e.dataTransfer.files); });
+
+  // ---------------------------------------------------------------- speech to text
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let rec = null;
+  const stopListening = () => { if (rec) { rec.stop(); } };
+  if (!SR) {
+    $('mic').hidden = true;
+  } else {
+    $('mic').addEventListener('click', () => {
+      if (rec) return stopListening();
+      const base = $('prompt').value.trim();
+      rec = new SR();
+      rec.lang = navigator.language || 'en-US';
+      rec.continuous = true;
+      rec.interimResults = true;
+      rec.onresult = (e) => {
+        const said = [...e.results].map((r) => r[0].transcript).join('');
+        $('prompt').value = (base ? base + ' ' : '') + said.trim();
+      };
+      rec.onerror = (e) => { if (e.error === 'not-allowed') bubble('Microphone access was blocked. Allow it in your browser to dictate.'); };
+      rec.onend = () => {
+        rec = null;
+        $('mic').setAttribute('aria-pressed', 'false');
+        $('mic').title = 'Speak your description';
+        $('prompt').classList.remove('is-listening');
+        $('prompt').placeholder = 'Describe a screen, like a checkout page with a saved card';
+      };
+      rec.start();
+      $('mic').setAttribute('aria-pressed', 'true');
+      $('mic').title = 'Stop listening';
+      $('prompt').classList.add('is-listening');
+      $('prompt').placeholder = 'Listening. Describe the screen out loud.';
+    });
+  }
+
+  // ---------------------------------------------------------------- exports
+  const slug = () => (state.title || 'screen').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'screen';
+  const indent = (s, pad) => s.split('\n').map((l) => (l.trim() ? pad + l : l)).join('\n');
+
+  const fullHtml = () => {
+    const d = Object.values(DEVICES).find((x) => state.markup.includes(x.cls));
+    return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${state.title || 'Screen'}</title>
+<link rel="stylesheet" href="${CDN_CSS}">
+</head>
+<body class="mm mm-canvas" style="margin:0">
+  <div class="mm-artboard">
+    <div class="mm-artboard-name">${state.title || 'Screen'}</div>
+    <div class="mm-artboard-meta">${d ? d.label : 'Custom frame'}</div>
+${indent(state.markup.trim(), '    ')}
+  </div>
+</body>
+</html>
+`;
+  };
+
+  // HTML to JSX by walking the parsed DOM, so attributes and nesting stay correct.
+  const VOID = new Set(['area', 'br', 'col', 'hr', 'img', 'input', 'link', 'meta', 'source', 'wbr']);
+  const RENAME = { class: 'className', for: 'htmlFor', tabindex: 'tabIndex', readonly: 'readOnly', maxlength: 'maxLength', autocomplete: 'autoComplete', colspan: 'colSpan', rowspan: 'rowSpan', checked: 'defaultChecked', value: 'defaultValue', viewbox: 'viewBox', 'fill-rule': 'fillRule', 'clip-rule': 'clipRule' };
+  const BOOL = new Set(['disabled', 'checked', 'open', 'hidden', 'required', 'readonly', 'multiple', 'selected', 'autofocus']);
+  const styleToJsx = (css) => {
+    const parts = css.split(';').map((s) => s.trim()).filter(Boolean).map((decl) => {
+      const i = decl.indexOf(':');
+      let k = decl.slice(0, i).trim();
+      const v = decl.slice(i + 1).trim();
+      if (!k.startsWith('--')) k = k.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+      return `${/^[a-zA-Z]+$/.test(k) ? k : JSON.stringify(k)}: ${JSON.stringify(v)}`;
+    });
+    return `{{ ${parts.join(', ')} }}`;
+  };
+  const textToJsx = (t) => (/[{}<>]/.test(t) ? `{${JSON.stringify(t)}}` : t);
+  const nodeToJsx = (node, depth) => {
+    const pad = '  '.repeat(depth);
+    if (node.nodeType === 3) {
+      const t = node.textContent.replace(/\s+/g, ' ').trim();
+      return t ? pad + textToJsx(t) : '';
+    }
+    if (node.nodeType === 8) return pad + `{/* ${node.textContent.trim()} */}`;
+    if (node.nodeType !== 1) return '';
+    const tag = node.tagName.toLowerCase();
+    const attrs = [...node.attributes].map((a) => {
+      const name = RENAME[a.name] || a.name;
+      if (a.name === 'style') return `style=${styleToJsx(a.value)}`;
+      if (BOOL.has(a.name) && (a.value === '' || a.value === a.name)) return name;
+      return `${name}=${JSON.stringify(a.value)}`;
+    });
+    const open = `<${tag}${attrs.length ? ' ' + attrs.join(' ') : ''}`;
+    if (VOID.has(tag)) return `${pad}${open} />`;
+    const kids = [...node.childNodes].map((c) => nodeToJsx(c, depth + 1)).filter(Boolean);
+    if (!kids.length) return `${pad}${open}></${tag}>`;
+    if (kids.length === 1 && node.childNodes.length === 1 && node.firstChild.nodeType === 3 && (pad + open + kids[0].trim()).length < 100) {
+      return `${pad}${open}>${kids[0].trim()}</${tag}>`;
+    }
+    return `${pad}${open}>\n${kids.join('\n')}\n${pad}</${tag}>`;
+  };
+  const toJsx = () => {
+    const tpl = document.createElement('template');
+    tpl.innerHTML = state.markup;
+    const root = [...tpl.content.childNodes].find((n) => n.nodeType === 1);
+    const name = (state.title || 'Generated').replace(/[^a-zA-Z0-9 ]/g, ' ').split(/\s+/).filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1)).join('') + 'Screen';
+    return `// Load the kit once in your app:
+// <link rel="stylesheet" href="${CDN_CSS}">
+export default function ${/^[A-Z]/.test(name) ? name : 'Generated' + name}() {
+  return (
+${nodeToJsx(root, 2)}
+  );
+}
+`;
+  };
+
+  const flash = (btn, label) => {
+    const old = btn.textContent;
+    btn.textContent = label;
+    setTimeout(() => (btn.textContent = old), 1500);
+  };
+  const copy = async (btn, text) => {
+    try { await navigator.clipboard.writeText(text); flash(btn, 'Copied'); }
+    catch { flash(btn, 'Copy blocked'); }
+  };
+  $('exports').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-export]'); if (!btn || !state.markup) return;
+    const kind = btn.dataset.export;
+    if (kind === 'markup') copy(btn, state.markup.trim());
+    if (kind === 'jsx') copy(btn, toJsx());
+    if (kind === 'html') copy(btn, fullHtml());
+    if (kind === 'download') {
+      const url = URL.createObjectURL(new Blob([fullHtml()], { type: 'text/html' }));
+      const a = Object.assign(document.createElement('a'), { href: url, download: `${slug()}.html` });
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      flash(btn, 'Downloaded');
+    }
+  });
+
+  // ---------------------------------------------------------------- past screens
+  // Each finished screen is saved in this browser and listed under the menu.
+  const MAX_SAVED = 20;
+  const loadScreens = () => { try { return JSON.parse(store.get('mm-screens') || '[]'); } catch { return []; } };
+  const writeScreens = (list) => {
+    // Drop the oldest screens if the browser runs out of room
+    while (list.length) {
+      try { localStorage.setItem('mm-screens', JSON.stringify(list)); return; } catch { if (list.length === 1) return; list = list.slice(0, -1); }
+    }
+  };
+
+  function save(finished = false) {
+    if (!state.markup || (state.busy && !finished)) return;
+    if (!state.id) {
+      state.id = Date.now().toString(36);
+      history.replaceState(null, '', `generate.html?s=${state.id}`);
+    }
+    // Images stay in this session only; saved history keeps a note in their place
+    const lean = state.history.map((m) => (Array.isArray(m.content)
+      ? { ...m, content: m.content.map((b) => (b.type === 'image' ? { type: 'text', text: '(An image was attached for context.)' } : b)) }
+      : m));
+    const entry = { id: state.id, title: state.title, history: lean, markup: state.markup, updated: Date.now() };
+    writeScreens([entry, ...loadScreens().filter((x) => x.id !== state.id)].slice(0, MAX_SAVED));
+    renderRecent();
+  }
+  function renderRecent() {
+    const list = loadScreens();
+    $('recent').hidden = !list.length;
+    $('recent-list').replaceChildren(...list.map((x) => {
+      const a = document.createElement('a');
+      a.href = `generate.html?s=${x.id}`;
+      a.textContent = x.title || 'Untitled screen';
+      a.title = x.title || 'Untitled screen';
+      if (x.id === state.id) a.setAttribute('aria-current', 'page');
+      a.addEventListener('click', (e) => { e.preventDefault(); openScreen(x.id); });
+      return a;
+    }));
+    $('new-screen').setAttribute('aria-current', state.id || state.markup ? 'false' : 'page');
+  }
+
+  // Rebuild the conversation from the saved messages
+  const textOf = (content) => (Array.isArray(content) ? content.filter((b) => b.type === 'text' && !b.text.startsWith('(An image')).map((b) => b.text).join('\n') : String(content));
+  const promptOf = (content) => textOf(content).replace(/\n\n\(Frame: [^)]*\)\s*$/, '');
+  function openScreen(id) {
+    const x = loadScreens().find((s) => s.id === id);
+    if (!x) return clearScreen();
+    stopRun();
+    // Screens saved before the theme lived in the markup
+    const markup = x.theme === 'dark' && !isDark(x.markup) ? x.markup.replace(/<div class="mm-screen/, '<div data-theme="dark" class="mm-screen') : x.markup;
+    Object.assign(state, { id: x.id, title: x.title, history: x.history, markup });
+    thread.replaceChildren();
+    for (const m of state.history) {
+      if (m.role === 'user') {
+        const hadImage = Array.isArray(m.content) && m.content.some((b) => b.type === 'image' || b.text?.startsWith('(An image'));
+        bubble(promptOf(m.content) + (hadImage ? '\n(Image attached)' : ''), true);
+      }
+      else bubble(parseReply(String(m.content)).summary || 'Here is your screen.');
+    }
+    setStarted(true);
+    history.replaceState(null, '', `generate.html?s=${x.id}`);
+    render(); setTitle(); renderRecent();
+  }
+
+  // Bring a screen saved by the earlier one-screen version into the list
+  try {
+    const old = JSON.parse(store.get('mm-generator') || 'null');
+    if (old?.markup) writeScreens([{ ...old, id: 'earlier', updated: Date.now() }, ...loadScreens()]);
+    store.set('mm-generator', null);
+  } catch {}
+
+  const wanted = new URLSearchParams(location.search).get('s');
+  if (wanted) openScreen(wanted);
+  setTitle();
+  render();
+  renderRecent();
+</script>
+</body>
+</html>

@@ -21,6 +21,9 @@
   --mm-wash: #f5f5f5;       /* subtle surfaces, canvas */
   --mm-paper: #ffffff;      /* screens, cards */
   --mm-on-ink: #ffffff;     /* text on filled surfaces */
+  --mm-accent: #6d8eca;     /* details only: badges, pressed chips, dots, steps, active tab */
+  --mm-accent-soft: color-mix(in srgb, var(--mm-accent) 14%, transparent);
+  --mm-accent-line: color-mix(in srgb, var(--mm-accent) 40%, transparent);
 
   /* Type */
   --mm-font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -60,8 +63,12 @@
   --mm-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-/* Inverted theme. Add data-theme="dark" to any element. */
+/* Dark theme. Add data-theme="dark" to the body or any screen.
+   Components invert, and the accent switches to its dark value. */
 [data-theme="dark"] {
+  --mm-accent: #e3f988;
+  --mm-accent-soft: color-mix(in srgb, var(--mm-accent) 14%, transparent);
+  --mm-accent-line: color-mix(in srgb, var(--mm-accent) 40%, transparent);
   --mm-ink: #f0f0f0;
   --mm-ink-2: #c4c4c4;
   --mm-muted: #8c8c8c;
@@ -515,7 +522,25 @@
 [data-theme="dark"] .mm-live .mm-progress { background: rgba(0,0,0,0.2); }
 
 /* ==========================================================================
-   10. Motion preferences
+   10. Accent
+   A quiet highlight for details. Buttons, cards, inputs and text stay greyscale.
+   ========================================================================== */
+
+.mm-badge--ink,
+.mm-chip[aria-pressed="true"],
+.mm-chip.is-active { background: var(--mm-accent-soft); color: var(--mm-accent); border: 1px solid var(--mm-accent-line); }
+.mm-badge--outline { border-color: var(--mm-accent-line); color: var(--mm-accent); }
+.mm-dot,
+.mm-dots > .is-active,
+.mm-steps > .is-done { background: var(--mm-accent); }
+.mm-delta--up { color: var(--mm-accent); }
+.mm-note,
+.mm-notes li::before { background: var(--mm-accent); color: var(--mm-paper); }
+.mm-tab[aria-current="page"]::before,
+.mm-tab.is-active::before { background: var(--mm-accent); }
+
+/* ==========================================================================
+   11. Motion preferences
    ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {

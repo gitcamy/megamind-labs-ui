@@ -1,0 +1,38 @@
+/* Docs shell: the sidebar, logo and small-screen top bar shared by index.html and generate.html.
+   Part of the docs site only; the kit itself is megamind-labs-ui.css. */
+body { margin: 0; background: var(--mm-wash); }
+.doc { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+.doc-side { position: sticky; top: 0; height: 100vh; padding: 32px 16px; border-right: var(--mm-border); background: var(--mm-paper); display: flex; flex-direction: column; gap: 24px; }
+.doc-logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; padding: 0 12px; }
+.doc-logo .doc-mark { width: 22px; height: 22px; flex: none; color: var(--mm-ink); }
+.doc-top { display: none; }
+/* Generate link: a button with a light that travels around its border */
+@property --doc-glow { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+@keyframes doc-glow { to { --doc-glow: 360deg; } }
+.doc-side .mm-sidenav .doc-gen {
+  --doc-gen-bg: var(--mm-paper);
+  --doc-ring: conic-gradient(from var(--doc-glow), var(--mm-line) 0deg 280deg, var(--mm-accent) 330deg, var(--mm-line) 360deg);
+  --doc-halo: conic-gradient(from var(--doc-glow), transparent 0deg 280deg, var(--mm-accent) 330deg, transparent 360deg);
+  position: relative; isolation: isolate; margin-top: 8px; color: var(--mm-ink); font-weight: 600;
+  border: 1px solid transparent;
+  background: linear-gradient(var(--doc-gen-bg), var(--doc-gen-bg)) padding-box, var(--doc-ring) border-box;
+  animation: doc-glow 4s linear infinite;
+}
+/* Halo: a 2px band just outside the border, masked so it never reaches inside the button */
+.doc-side .mm-sidenav .doc-gen::after {
+  content: ""; position: absolute; inset: -3px; padding: 2px; z-index: -1; pointer-events: none;
+  border-radius: calc(var(--mm-r-md) + 2px); background: var(--doc-halo); filter: blur(1px); opacity: 0.5;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.doc-side .mm-sidenav .doc-gen::before { content: "\2726"; width: 16px; height: auto; background: none; font-size: 14px; line-height: 1; text-align: center; color: var(--mm-accent); }
+.doc-side .mm-sidenav .doc-gen:hover { --doc-gen-bg: var(--mm-wash); }
+@media (prefers-reduced-motion: reduce) { .doc-side .mm-sidenav .doc-gen { animation: none; } }
+a.doc-logo { color: inherit; text-decoration: none; }
+.doc-side .mm-sidenav .doc-gen[aria-current="page"] { --doc-gen-bg: var(--mm-fill); }
+
+@media (max-width: 900px) {
+  .doc { grid-template-columns: 1fr; }
+  .doc-side { display: none; }
+  .doc-top { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: var(--mm-border); background: var(--mm-paper); position: sticky; top: 0; z-index: 20; }
+}
