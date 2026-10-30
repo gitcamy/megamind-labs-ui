@@ -1,0 +1,19 @@
+{
+  "name": "megamind-labs-ui-server",
+  "private": true,
+  "type": "module",
+  "description": "MCP server and hosted screen generator for Megamind Labs UI. Deploys to Vercel.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@supabase/supabase-js": "^2.118.0",
+    "stripe": "^23.0.1",
+    "zod": "^4.6.7"
+  }
+}
