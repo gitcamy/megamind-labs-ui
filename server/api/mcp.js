@@ -13,7 +13,7 @@ async function handle(request) {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
 
   // No sessions: a fresh server per request keeps this safe to run on any number of instances.
-  const server = createMcpServer();
+  const server = createMcpServer(new URL(request.url).origin);
   const transport = new WebStandardStreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true });
   await server.connect(transport);
   const res = await transport.handleRequest(request);

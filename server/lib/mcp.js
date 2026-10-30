@@ -14,8 +14,10 @@ Before you show the result, call validate_screen with your HTML and fix every er
 const text = (t) => ({ content: [{ type: "text", text: t }] });
 const READ_ONLY = { readOnlyHint: true, openWorldHint: false };
 
-export function createMcpServer() {
-  const server = new McpServer({ name: "megamind-labs-ui", version: "0.1.0" }, { instructions: INSTRUCTIONS });
+// `origin` is where the icon is served from, like "https://mcp.example.com". Leave it out for no icon.
+export function createMcpServer(origin) {
+  const icons = origin ? [{ src: `${origin}/icon.png`, mimeType: "image/png", sizes: ["256x256"] }] : undefined;
+  const server = new McpServer({ name: "megamind-labs-ui", version: "0.1.0", icons }, { instructions: INSTRUCTIONS });
 
   server.registerTool(
     "get_rules",
