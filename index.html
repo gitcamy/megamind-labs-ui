@@ -19,6 +19,19 @@
   .doc-start { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px; align-items: center; margin-bottom: 56px; }
   .doc-start .doc-hero { margin-bottom: 0; }
   .doc-start .mm-screen { max-width: 100%; }
+  /* Hero deck: screens keep flying in from off the right edge and landing on top of the stack.
+     Each lands in one of four poses, so a new card covers the one four below it exactly (see script) */
+  .doc-main { overflow-x: clip; }
+  .doc-deck { display: grid; grid-template-columns: minmax(0, 390px); grid-template-rows: 640px; min-width: 0; padding: 24px 56px; }
+  .doc-deck > .mm-screen { grid-area: 1 / 1; transform: translate(var(--x, 0px), var(--y, 0px)) rotate(var(--r, 0deg)); }
+  .doc-deck > [data-pose="0"] { --i: 0; --x: -40px; --y: 12px; --r: -8deg; }
+  .doc-deck > [data-pose="1"] { --i: 1; --x: 36px; --y: 4px; --r: 6deg; }
+  .doc-deck > [data-pose="2"] { --i: 2; --x: -14px; --y: -6px; --r: -3deg; }
+  .doc-deck > [data-pose="3"] { --i: 3; }
+  .doc-deck.is-dealing > .mm-screen { animation: doc-deal 1.6s cubic-bezier(.22, 1.1, .36, 1) both; }
+  @keyframes doc-deal {
+    from { transform: translate(calc(var(--x, 0px) + 100vw), calc(var(--y, 0px) - 20vh + var(--i) * 12vh)) rotate(calc(var(--r, 0deg) + 28deg)); }
+  }
   .doc-flow-links { margin-top: 8px; }
   #screens .mm-flow-section[hidden] { display: none; }
   .doc-flow-links .mm-chip:not([aria-pressed="true"]):hover { background: var(--mm-wash); }
@@ -31,7 +44,7 @@
   .doc-screens .mm-artboard-meta { display: none; }
   /* Real device proportions, zoomed down so a whole screen fits the window */
   #screens .mm-screen { zoom: var(--doc-fit, 1); }
-  @media (max-width: 900px) { .doc-start { grid-template-columns: 1fr; gap: 32px; } }
+  @media (max-width: 900px) { .doc-start { grid-template-columns: minmax(0, 1fr); gap: 32px; } }
   /* Set it up: two matching step cards */
   .doc-code { position: relative; font: 13px/1.6 ui-monospace, "SF Mono", Menlo, monospace; background: var(--mm-paper); border: var(--mm-border); border-radius: 12px; padding: 14px 84px 14px 16px; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--mm-ink); }
   .doc-code button { position: absolute; top: 8px; right: 8px; }
@@ -99,6 +112,7 @@
   @media (max-width: 900px) {
     .doc-main { padding: 40px 20px 80px; }
     .doc-hero h1 { font-size: 40px; }
+    .doc-deck { padding: 16px 24px; justify-self: center; }
     .doc-spec--wide { grid-column: auto; }
     .doc-flowwrap { margin-right: -20px; }
     .doc-flowwrap .mm-flow { padding-right: 20px; }
@@ -159,7 +173,45 @@
             </div>
           </div>
         </div>
-        <div class="mm-screen mm-screen--compact">
+        <div class="doc-deck">
+        <div class="mm-screen mm-screen--compact" data-pose="0" aria-hidden="true" inert>
+          <div class="mm-statusbar"><span>9:41</span></div>
+          <div class="mm-ph" style="width:56px;height:56px">Logo</div>
+          <h1 class="mm-title">Sign in to Northwind</h1>
+          <div class="mm-field"><label>Work email</label><input class="mm-input" value="sam@northwind.co"></div>
+          <div class="mm-field"><label>Password</label><input class="mm-input" type="password" value="password"><span class="mm-field-hint">At least 8 characters</span></div>
+          <a class="mm-link" href="#">Forgot your password?</a>
+          <div class="mm-spacer"></div>
+          <button class="mm-btn mm-btn--block">Sign in</button>
+          <button class="mm-btn mm-btn--block mm-btn--ghost">Create an account</button>
+        </div>
+        <div class="mm-screen mm-screen--compact" data-pose="1" aria-hidden="true" inert>
+          <div class="mm-statusbar"><span>9:41</span></div>
+          <div class="mm-navbar"><span></span><span class="mm-navbar-title">Inbox</span><button class="mm-btn mm-btn--sm mm-btn--ghost">Edit</button></div>
+          <div class="mm-search"><input class="mm-input" placeholder="Search messages"></div>
+          <div class="mm-list mm-list--divided">
+            <div class="mm-list-row"><span class="mm-avatar">PK</span><div class="mm-list-text"><span class="mm-list-title">Priya Kapoor</span><span class="mm-list-sub">Homepage copy is ready for review</span></div><span class="mm-list-value"><small>9:12</small></span></div>
+            <div class="mm-list-row"><span class="mm-avatar">JL</span><div class="mm-list-text"><span class="mm-list-title">Jordan Lee</span><span class="mm-list-sub">Moved the launch to Thursday</span></div><span class="mm-list-value"><small>8:40</small></span></div>
+            <div class="mm-list-row"><span class="mm-avatar">MO</span><div class="mm-list-text"><span class="mm-list-title">Mia Ortiz</span><span class="mm-list-sub">Can you approve the invoice?</span></div><span class="mm-list-value"><small>Tue</small></span></div>
+            <div class="mm-list-row"><span class="mm-avatar">DR</span><div class="mm-list-text"><span class="mm-list-title">Design review</span><span class="mm-list-sub">3 new comments on Pricing page</span></div><span class="mm-list-value"><small>Mon</small></span></div>
+          </div>
+          <div class="mm-spacer"></div>
+          <button class="mm-btn mm-btn--block">New message</button>
+          <nav class="mm-tabbar"><button class="mm-tab">Home</button><button class="mm-tab">Projects</button><button class="mm-tab" aria-current="page">Inbox</button><button class="mm-tab">Assistant</button></nav>
+        </div>
+        <div class="mm-screen mm-screen--compact" data-pose="2" aria-hidden="true" inert>
+          <div class="mm-statusbar"><span>9:41</span></div>
+          <div class="mm-navbar"><button class="mm-back">Home</button><span class="mm-navbar-title">Assistant</span><span></span></div>
+          <div class="mm-thread">
+            <div class="mm-bubble mm-bubble--me">What's slipping on Website refresh?</div>
+            <div class="mm-bubble">Two tasks are overdue: the pricing page and the FAQ rewrite. Both are assigned to Jordan.</div>
+          </div>
+          <div class="mm-proposal"><span class="mm-card-title">Move both to next Friday?</span><span class="mm-small">Jordan gets a note with the new dates.</span><div class="mm-row mm-gap-2"><button class="mm-btn mm-btn--sm">Move tasks</button><button class="mm-btn mm-btn--sm mm-btn--ghost">Not now</button></div></div>
+          <div class="mm-spacer"></div>
+          <div class="mm-inputbar"><input placeholder="Ask anything"><button>Send</button></div>
+          <nav class="mm-tabbar"><button class="mm-tab">Home</button><button class="mm-tab">Projects</button><button class="mm-tab">Inbox</button><button class="mm-tab" aria-current="page">Assistant</button></nav>
+        </div>
+        <div class="mm-screen mm-screen--compact" data-pose="3">
           <div class="mm-statusbar"><span>9:41</span></div>
           <span class="mm-caption">Good morning, Sam</span>
           <div class="mm-chips"><button class="mm-chip" aria-pressed="true">Mine</button><button class="mm-chip">Team</button><button class="mm-chip">All</button></div>
@@ -169,6 +221,7 @@
           <div class="mm-spacer"></div>
           <div class="mm-inputbar"><input placeholder="Ask anything"><button>Send</button></div>
           <nav class="mm-tabbar"><button class="mm-tab" aria-current="page">Home</button><button class="mm-tab">Projects</button><button class="mm-tab">Inbox</button><button class="mm-tab">Assistant</button></nav>
+        </div>
         </div>
       </div>
     </section>
@@ -876,6 +929,24 @@
 </dialog>
 
 <script>
+  // Hero deck: deal the four screens onto the stack over and over. Card n lands in pose n % 4,
+  // exactly over card n - 4, so that one can be removed once it is covered and the stack never grows.
+  (function () {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var deck = document.querySelector('.doc-deck');
+    var cards = Array.prototype.slice.call(deck.children);
+    cards.forEach(function (c) { c.setAttribute('aria-hidden', 'true'); c.inert = true; c.remove(); });
+    deck.classList.add('is-dealing');
+    var n = 0;
+    function deal() {
+      if (deck.children.length > 4) deck.firstElementChild.remove();
+      deck.appendChild(cards[n % 4].cloneNode(true));
+      n++;
+    }
+    deal();
+    setInterval(deal, 1800);
+  })();
+
   // Theme switch (docs only; the kit itself needs no JavaScript)
   const setTheme = (t) => {
     if (t === 'dark') document.body.setAttribute('data-theme', 'dark'); else document.body.removeAttribute('data-theme');
@@ -1151,6 +1222,7 @@ ${code}`,
   const logos = [...document.querySelectorAll('.doc-agent-logo [data-logo]')];
   const showLogo = (logo) => logos.forEach(l => l.classList.toggle('is-active', l.dataset.logo === logo));
   const agentPanel = document.getElementById('agent-panel');
+  const startRow = document.querySelector('.doc-start');
   const showAgent = (key) => {
     const agent = AGENTS[key];
     document.getElementById('agent-hint').textContent = agent.hint;
@@ -1174,7 +1246,6 @@ ${code}`,
     reserveAgentSpace();
   });
   // The panel is out of flow, so push the content below down by however far it hangs past the hero row
-  const startRow = document.querySelector('.doc-start');
   function reserveAgentSpace() {
     startRow.style.paddingBottom = '';
     if (agentPanel.hidden) return;
