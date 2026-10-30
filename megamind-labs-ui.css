@@ -509,6 +509,8 @@
 .mm-skeleton { border-radius: var(--mm-r-xs); background: linear-gradient(90deg, var(--mm-fill) 25%, var(--mm-wash) 50%, var(--mm-fill) 75%); background-size: 200% 100%; animation: mm-shimmer 1.4s infinite linear; height: 12px; }
 .mm-skeleton--title { height: 20px; width: 60%; }
 .mm-skeleton--block { height: 96px; border-radius: var(--mm-r-md); }
+.mm-skeleton--square { width: 160px; height: 160px; border-radius: var(--mm-r-md); }
+.mm-skeleton--thumb { width: 56px; height: 56px; border-radius: var(--mm-r-sm); flex: none; }
 .mm-skeleton--circle { width: 32px; height: 32px; border-radius: 50%; flex: none; }
 @keyframes mm-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 

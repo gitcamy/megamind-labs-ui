@@ -77,7 +77,10 @@
   .doc-pop-head code { font: 11px ui-monospace, Menlo, monospace; color: var(--mm-muted); }
   .doc-pop-stage { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 140px; padding: 32px 24px; border-radius: var(--mm-r-lg); background: var(--mm-wash); overflow: auto; flex: none; }
   .doc-pop-stage > * { max-width: 100%; }
-  .doc-pop-stage > .mm-btn--block, .doc-pop-stage > .mm-field, .doc-pop-stage > .mm-search, .doc-pop-stage > .mm-inputbar, .doc-pop-stage > .mm-card, .doc-pop-stage > .mm-list-row, .doc-pop-stage > .mm-list, .doc-pop-stage > .mm-segmented, .doc-pop-stage > .mm-progress, .doc-pop-stage > .mm-steps, .doc-pop-stage > .mm-kv, .doc-pop-stage > .mm-accordion, .doc-pop-stage > .mm-navbar, .doc-pop-stage > .mm-tabbar, .doc-pop-stage > .mm-sheet, .doc-pop-stage > .mm-dialog, .doc-pop-stage > .mm-banner, .doc-pop-stage > .mm-toast, .doc-pop-stage > .mm-live, .doc-pop-stage > .mm-notification, .doc-pop-stage > .mm-thread, .doc-pop-stage > .mm-proposal, .doc-pop-stage > .mm-table, .doc-pop-stage > .mm-bars, .doc-pop-stage > .mm-keypad, .doc-pop-stage > .mm-otp, .doc-pop-stage > .mm-week, .doc-pop-stage > .mm-empty, .doc-pop-stage > .mm-skeleton, .doc-pop-stage > .mm-slider, .doc-pop-stage > .mm-divider, .doc-pop-stage > .mm-section-head, .doc-pop-stage > .mm-ph:not(.mm-ph--square):not(.mm-ph--round) { width: 100%; max-width: 340px; }
+  .doc-pop-stage > .mm-btn--block, .doc-pop-stage > .mm-field, .doc-pop-stage > .mm-search, .doc-pop-stage > .mm-inputbar, .doc-pop-stage > .mm-card, .doc-pop-stage > .mm-list-row, .doc-pop-stage > .mm-list, .doc-pop-stage > .mm-segmented, .doc-pop-stage > .mm-progress, .doc-pop-stage > .mm-steps, .doc-pop-stage > .mm-kv, .doc-pop-stage > .mm-accordion, .doc-pop-stage > .mm-navbar, .doc-pop-stage > .mm-tabbar, .doc-pop-stage > .mm-sheet, .doc-pop-stage > .mm-dialog, .doc-pop-stage > .mm-banner, .doc-pop-stage > .mm-toast, .doc-pop-stage > .mm-live, .doc-pop-stage > .mm-notification, .doc-pop-stage > .mm-thread, .doc-pop-stage > .mm-proposal, .doc-pop-stage > .mm-table, .doc-pop-stage > .mm-bars, .doc-pop-stage > .mm-keypad, .doc-pop-stage > .mm-otp, .doc-pop-stage > .mm-week, .doc-pop-stage > .mm-empty, .doc-pop-stage > .mm-skeleton, .doc-pop-stage > .mm-stack, .doc-pop-stage > .mm-row, .doc-pop-stage > .mm-slider, .doc-pop-stage > .mm-divider, .doc-pop-stage > .mm-section-head, .doc-pop-stage > .mm-ph:not(.mm-ph--square):not(.mm-ph--round) { width: 100%; max-width: 340px; }
+  .doc-pop-stage > .mm-skeleton--square { width: 160px; }
+  .doc-pop-stage > .mm-skeleton--thumb { width: 56px; }
+  .doc-pop-stage > .mm-skeleton--circle { width: 32px; }
   .doc-pop-box { position: relative; border: var(--mm-border); border-radius: var(--mm-r-md); background: var(--mm-wash); min-height: 0; display: flex; }
   .doc-pop-box pre { margin: 0; padding: 14px 48px 14px 16px; font: 12px/1.6 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre-wrap; overflow-wrap: anywhere; overflow: auto; max-height: 240px; color: var(--mm-ink-2); flex: 1; }
   .doc-copy { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; display: grid; place-items: center; border: var(--mm-border); border-radius: 8px; background: var(--mm-paper); color: var(--mm-ink-2); cursor: pointer; }
@@ -363,8 +366,10 @@
         </div>
 
         <div class="doc-spec"><h3>Entry <code>.mm-keypad .mm-otp</code></h3>
-          <div class="mm-otp"><span>4</span><span>8</span><span class="is-active"></span><span></span><span></span><span></span></div>
-          <div class="mm-keypad"><button>1</button><button>2</button><button>3</button><button>4</button><button>5</button><button>6</button><button>7</button><button>8</button><button>9</button><button>.</button><button>0</button><button aria-label="Delete">&lsaquo;</button></div>
+          <div class="mm-stack mm-gap-3" data-group="code entry with keypad">
+            <div class="mm-otp"><span>4</span><span>8</span><span class="is-active"></span><span></span><span></span><span></span></div>
+            <div class="mm-keypad"><button>1</button><button>2</button><button>3</button><button>4</button><button>5</button><button>6</button><button>7</button><button>8</button><button>9</button><button>.</button><button>0</button><button aria-label="Delete">&lsaquo;</button></div>
+          </div>
         </div>
 
         <div class="doc-spec"><h3>Overlays <code>.mm-sheet .mm-dialog .mm-menu</code></h3>
@@ -390,7 +395,11 @@
 
         <div class="doc-spec"><h3>Empty and loading <code>.mm-empty .mm-skeleton</code></h3>
           <div class="mm-empty" style="padding:8px 0"><div class="mm-ph">Illustration</div><span class="mm-heading">No projects yet</span><p>Projects group related tasks so the whole team can follow along.</p><button class="mm-btn mm-btn--sm">Create a project</button></div>
-          <div class="mm-row mm-gap-3"><span class="mm-skeleton mm-skeleton--circle"></span><div class="mm-stack mm-gap-2 mm-grow"><span class="mm-skeleton" style="width:70%"></span><span class="mm-skeleton" style="width:40%"></span></div></div>
+          <div class="mm-row mm-gap-3" data-group="loading list item"><span class="mm-skeleton mm-skeleton--circle"></span><div class="mm-stack mm-gap-2 mm-grow"><span class="mm-skeleton" style="width:70%"></span><span class="mm-skeleton" style="width:40%"></span></div></div>
+          <span class="mm-skeleton mm-skeleton--square"></span>
+          <div class="mm-stack mm-gap-2" data-group="loading paragraph"><span class="mm-skeleton"></span><span class="mm-skeleton"></span><span class="mm-skeleton"></span><span class="mm-skeleton" style="width:60%"></span></div>
+          <div class="mm-row mm-gap-3" data-group="loading media row"><span class="mm-skeleton mm-skeleton--thumb"></span><div class="mm-stack mm-gap-2 mm-grow"><span class="mm-skeleton mm-skeleton--title"></span><span class="mm-skeleton"></span><span class="mm-skeleton" style="width:50%"></span></div></div>
+          <div class="mm-stack mm-gap-2" data-group="loading card"><span class="mm-skeleton mm-skeleton--block"></span><span class="mm-skeleton mm-skeleton--title"></span><span class="mm-skeleton" style="width:80%"></span></div>
         </div>
 
         <div class="doc-spec doc-spec--wide"><h3>Table <code>.mm-table</code></h3>
@@ -948,6 +957,7 @@
     let inner = null, whole = null;
     for (let el = target; el && el !== card; el = el.parentElement) {
       if (el.tagName === 'H3') return null;
+      if (el.dataset?.group) { whole = el; continue; }
       if (labelledPart(el)) { whole = el; continue; }
       const b = baseOf(el);
       if (!b) continue;
@@ -958,6 +968,7 @@
   };
 
   const nameOf = (el) => {
+    if (el.dataset.group) return el.dataset.group;
     const part = labelledPart(el);
     if (part) return `${nameOf(part)} with label`;
     const base = baseOf(el);
@@ -1000,6 +1011,7 @@
     [clone, ...clone.querySelectorAll('*')].forEach(n => {
       n.removeAttribute('id');
       n.removeAttribute('data-pickable');
+      n.removeAttribute('data-group');
       n.classList.remove('doc-picked');
       if (n.getAttribute('class') === '') n.removeAttribute('class');
     });
@@ -1051,7 +1063,7 @@ ${code}`,
   };
 
   document.querySelectorAll('#components .doc-spec').forEach(card => {
-    card.querySelectorAll('[class*="mm-"]').forEach(el => { if (baseOf(el)) el.dataset.pickable = ''; });
+    card.querySelectorAll('[class*="mm-"], [data-group]').forEach(el => { if (baseOf(el) || el.dataset.group) el.dataset.pickable = ''; });
     card.addEventListener('mousemove', (e) => ringAround(pickAt(e, card)));
     card.addEventListener('mouseleave', () => ringAround(null));
     // Capture phase, so a click opens the pop-up instead of toggling the demo
