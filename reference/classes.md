@@ -16,6 +16,8 @@ Stylesheet: https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-l
 | `--mm-wash` | `#f5f5f5` | subtle surfaces, canvas |
 | `--mm-paper` | `#ffffff` | screens, cards |
 | `--mm-on-ink` | `#ffffff` | text on filled surfaces |
+| `--mm-accent` | `#6d8eca` | details only: badges, pressed chips, dots, steps, active tab |
+| `--mm-accent-soft` | `color-mix(in srgb, var(--mm-accent) 14%, transparent)` |  |
 | `--mm-font` | `"Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif` |  |
 | `--mm-text-xs` | `12px` | captions, labels, chips |
 | `--mm-text-sm` | `13px` | secondary body, bubbles |
