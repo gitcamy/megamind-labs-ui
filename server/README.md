@@ -13,6 +13,8 @@ The MCP server is live at `https://megamind-labs-ui-mcp.megamind-labs.workers.de
 
 **Claude (web and desktop):** Settings → Connectors → Add custom connector → paste `https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp`.
 
+**ChatGPT:** go to [chatgpt.com/plugins](https://chatgpt.com/plugins), select the plus button, then Add custom MCP server. Enter a name, paste the URL above as the Server URL, set authentication to No authentication, then select I understand and want to continue and Create as a plugin. Install it, start a new chat, type `@` and pick the plugin. Which ChatGPT plans can add custom MCP servers isn't stated in OpenAI's docs, and workspace policies may block it.
+
 **Claude Code:**
 
 ```bash
