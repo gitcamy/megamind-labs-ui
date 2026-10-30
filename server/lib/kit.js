@@ -42,6 +42,13 @@ export async function loadKit() {
   return kit;
 }
 
+// How a page loads the kit. "link" points at the CDN, for files opened in a browser or an editor preview.
+// "inline" embeds the whole stylesheet, for chat previews (like Claude artifacts) that block outside stylesheets.
+export const STYLESHEET_MODES = ["link", "inline"];
+export function stylesheetTag(kit, mode = "link") {
+  return mode === "inline" ? `<style>\n${kit.css.trim()}\n</style>` : `<link rel="stylesheet" href="${CSS_URL}">`;
+}
+
 // The usage notes and classes for one component, looked up by name ("card", "mm-list", "lists").
 export function describeComponent(kit, name) {
   const key = name.trim().toLowerCase().replace(/^mm-/, "").replace(/s$/, "").split("-")[0];

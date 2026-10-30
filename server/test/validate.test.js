@@ -36,3 +36,29 @@ test("a full page needs the stylesheet and body classes", () => {
   const r = validateScreen('<html><body><div class="mm-screen"><button class="mm-btn">Save</button></div></body></html>', kit);
   assert.deepEqual(rules(r), ["setup", "setup"]);
 });
+
+test("shapes stay empty", () => {
+  const html = `<div class="mm-screen mm-screen--desktop">
+    <div class="mm-steps"><span class="is-done">Cart</span><span>Information</span></div>
+    <div class="mm-row"><span class="mm-icon">Secure</span><span class="mm-small">Secure checkout</span></div>
+    <button class="mm-btn">Continue to checkout</button></div>`;
+  const r = validateScreen(html, kit);
+  assert.deepEqual(rules(r), ["shapes"]);
+  assert.match(r.errors[0].detail, /mm-icon, .*mm-steps|mm-steps.*mm-icon/);
+  const empty = html.replace(/>(Cart|Information|Secure)</g, "><");
+  assert.equal(validateScreen(empty, kit).ok, true);
+});
+
+test("mm-kv rows are divs of two", () => {
+  const good = '<div class="mm-screen"><div class="mm-kv"><div><span>Subtotal</span><span>€120.00</span></div></div><button class="mm-btn">Pay €120.00</button></div>';
+  assert.equal(validateScreen(good, kit).ok, true);
+  const loose = good.replace("<div><span>Subtotal</span><span>€120.00</span></div>", "<span>Subtotal</span><span>€120.00</span>");
+  assert.deepEqual(rules(validateScreen(loose, kit)), ["shapes"]);
+});
+
+test("an inlined kit stylesheet counts as setup and is not new CSS", () => {
+  const page = kit.starter.replace(/<link rel="stylesheet" href="\.\.\/megamind-labs-ui\.css">/, `<style>${kit.css}</style>`);
+  const r = validateScreen(page, kit);
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.warnings.filter((w) => w.rule === "css" || w.rule === "greyscale"), []);
+});

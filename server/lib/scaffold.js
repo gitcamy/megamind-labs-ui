@@ -9,7 +9,8 @@ export const SIZES = {
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-export function scaffoldFlow({ title, summary, screens }, cssUrl, flowNumber = 1) {
+// `stylesheet` is the <link> or <style> tag from stylesheetTag().
+export function scaffoldFlow({ title, summary, screens }, stylesheet, flowNumber = 1) {
   const boards = screens.map((s, i) => {
     const size = SIZES[s.size ?? "phone"];
     const cls = `mm-screen mm-screen--${s.size ?? "phone"}`;
@@ -30,7 +31,7 @@ ${size.phoneFrame ? '          <div class="mm-statusbar"><span>9:41</span></div>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
-<link rel="stylesheet" href="${cssUrl}">
+${stylesheet}
 </head>
 <body class="mm mm-canvas" style="margin:0">
 
