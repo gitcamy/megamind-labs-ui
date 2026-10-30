@@ -1124,7 +1124,7 @@ ${code}`,
   }));
 
   // Connect your agent: the logo rotates until it's opened, then each tab shows what to paste
-  const MCP_URL = 'https://YOUR-HOST/mcp'; // swap in the deployed MCP server
+  const MCP_URL = 'https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp';
   const AGENTS = {
     claude: { logo: 'claude', hint: 'In Claude, add a custom connector in Settings > Connectors, or paste this into a new chat:', text: `Add the Megamind Labs UI connector at ${MCP_URL}, then wireframe a sign-up flow for me.` },
     chatgpt: { logo: 'openai', hint: 'Add it as a connector in ChatGPT settings, or paste this into a new chat:', text: `Add the Megamind Labs UI connector at ${MCP_URL}, then wireframe a sign-up flow for me.` },

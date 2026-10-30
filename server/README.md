@@ -9,31 +9,42 @@ Both read `AGENTS.md`, `reference/classes.md` and the stylesheet from jsDelivr, 
 
 ## Connect the MCP server
 
-Replace `https://YOUR-HOST` with the deployment URL.
+The MCP server is live at `https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp`.
 
-**Claude (web and desktop):** Settings → Connectors → Add custom connector → paste `https://YOUR-HOST/mcp`.
+**Claude (web and desktop):** Settings → Connectors → Add custom connector → paste `https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp`.
 
 **Claude Code:**
 
 ```bash
-claude mcp add --transport http megamind-labs-ui https://YOUR-HOST/mcp
+claude mcp add --transport http megamind-labs-ui https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp
 ```
 
 **Cursor:** add to `~/.cursor/mcp.json`:
 
 ```json
-{ "mcpServers": { "megamind-labs-ui": { "url": "https://YOUR-HOST/mcp" } } }
+{ "mcpServers": { "megamind-labs-ui": { "url": "https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp" } } }
 ```
 
 **VS Code:** add to `.vscode/mcp.json`:
 
 ```json
-{ "servers": { "megamind-labs-ui": { "type": "http", "url": "https://YOUR-HOST/mcp" } } }
+{ "servers": { "megamind-labs-ui": { "type": "http", "url": "https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp" } } }
 ```
 
 Then ask for screens: "Wireframe a sign-up flow with Megamind Labs UI."
 
 Tools: `get_rules`, `get_reference`, `get_component`, `get_starter`, `validate_screen`. There is also a `wireframe` prompt.
+
+### Deploy the MCP server to Cloudflare
+
+The MCP endpoint also runs as a Cloudflare Worker (`worker/index.js`, config in `wrangler.toml`). It needs no environment variables.
+
+```bash
+npx wrangler login
+npm run worker:deploy
+```
+
+Test it locally with `npm run worker:dev`, then connect to `http://localhost:8787/mcp`. To use your own domain, add a custom domain to the Worker in the Cloudflare dashboard.
 
 ## Hosted generator plans
 
