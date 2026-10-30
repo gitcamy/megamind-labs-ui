@@ -15,6 +15,14 @@ The MCP server is live at `https://megamind-labs-ui-mcp.megamind-labs.workers.de
 
 **ChatGPT:** open Settings → Plugins → Browse directory → Add → Add custom MCP server. Enter a name, paste the URL above, set authentication to No authentication, then select I understand and want to continue and Create as a plugin. Start a new chat, type `@` and pick the plugin. Which ChatGPT plans can add custom MCP servers isn't stated in OpenAI's docs, and workspace policies may block it.
 
+**Gemini (web app):** at [gemini.google.com](https://gemini.google.com), click the Settings icon, then Connected Apps. Under Custom apps, paste the URL above and click Next. Start a chat, type `@` and pick the app. Google's help page says this needs a personal Google account (work and school accounts aren't supported yet), is English only, and is available in the US for people 18 or older.
+
+**Antigravity:** add this to `~/.gemini/config/mcp_config.json` (create it if it doesn't exist). Antigravity uses `serverUrl`, not `url`. Then open Settings → Customizations → Installed MCP Servers and click Refresh, or type `/mcp` in the `agy` CLI. No sign-in is needed.
+
+```json
+{ "mcpServers": { "megamind-labs-ui": { "serverUrl": "https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp" } } }
+```
+
 **Claude Code:**
 
 ```bash
