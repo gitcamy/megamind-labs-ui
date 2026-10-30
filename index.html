@@ -6,12 +6,8 @@
 <title>Megamind Labs UI</title>
 <meta name="description" content="A minimalistic wireframe kit for starting projects and getting them working before you design them.">
 <link rel="stylesheet" href="megamind-labs-ui.css">
+<link rel="stylesheet" href="docs-shell.css">
 <style>
-  body { margin: 0; background: var(--mm-wash); }
-  .doc { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
-  .doc-side { position: sticky; top: 0; height: 100vh; padding: 32px 16px; border-right: var(--mm-border); background: var(--mm-paper); display: flex; flex-direction: column; gap: 24px; }
-  .doc-logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; padding: 0 12px; }
-  .doc-logo .doc-mark { width: 22px; height: 22px; flex: none; color: var(--mm-ink); }
   .doc-main { padding: 64px 56px 120px; min-width: 0; }
   .doc-section { margin-bottom: 96px; scroll-margin-top: 32px; }
   .doc-section > header { max-width: 640px; margin-bottom: 32px; display: flex; flex-direction: column; gap: 8px; }
@@ -23,22 +19,31 @@
   .doc-start { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px; align-items: center; margin-bottom: 56px; }
   .doc-start .doc-hero { margin-bottom: 0; }
   .doc-start .mm-screen { max-width: 100%; }
-  .doc-steps { list-style: none; display: flex; flex-direction: column; gap: 14px; max-width: 720px; }
-  .doc-steps li { display: grid; grid-template-columns: 24px 1fr; gap: 12px; align-items: start; font-size: 15px; line-height: 1.55; color: var(--mm-ink-2); counter-increment: step; }
-  .doc-steps { counter-reset: step; }
-  .doc-steps li > div { min-height: 24px; }
-  .doc-steps li::before { content: counter(step); width: 24px; height: 24px; border-radius: 50%; border: var(--mm-border); display: grid; place-items: center; font-size: 12px; line-height: 1; font-weight: 600; color: var(--mm-ink); }
-  .doc-steps code { font-size: 13px; line-height: 1; }
-  .doc-device { margin-bottom: 16px; }
-  .doc-duo { display: none; margin-bottom: 40px; }
-  #screens[data-device="duo"] .doc-duo { display: flex; }
+  .doc-flow-links { margin-top: 8px; }
+  .doc-flow-links .mm-chip { text-decoration: none; }
+  .doc-flow-links .mm-chip:hover { background: var(--mm-wash); }
+  #screens .mm-flow-section { scroll-margin-top: 32px; }
+  .doc-device { width: auto; min-width: 260px; background-color: var(--mm-paper); }
   #screens[data-device="phone"] .mm-screen { width: 390px; height: 844px; }
   #screens[data-device="duo"][data-fold="collapsed"] .mm-screen { width: 474px; height: 696px; }
   #screens[data-device="duo"][data-fold="expanded"] .mm-screen { width: 904px; height: 640px; }
   #screens[data-device="tablet"] .mm-screen { width: 834px; height: 1194px; }
   .doc-screens .mm-artboard-meta { display: none; }
-  .doc-steps b { color: var(--mm-ink); font-weight: 600; }
+  /* Real device proportions, zoomed down so a whole screen fits the window */
+  #screens .mm-screen { zoom: var(--doc-fit, 1); }
   @media (max-width: 900px) { .doc-start { grid-template-columns: 1fr; gap: 32px; } }
+  /* Set it up: two matching step cards */
+  .doc-setup { display: flex; flex-direction: column; gap: 16px; }
+  .doc-setup-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .doc-setup-step { display: flex; flex-direction: column; gap: 12px; padding: 24px; background: var(--mm-paper); border: var(--mm-border); border-radius: 16px; }
+  .doc-setup-num { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--mm-fill); color: var(--mm-ink); font-size: 13px; font-weight: 600; }
+  .doc-setup-step h4 { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; color: var(--mm-ink); }
+  .doc-setup-step p { font-size: 14px; line-height: 1.55; color: var(--mm-ink-2); }
+  .doc-setup-step .doc-code { margin-top: 4px; font-size: 12px; padding-right: 72px; }
+  .doc-setup-foot { margin-top: auto; padding-top: 12px; border-top: var(--mm-border); font-size: 13px; line-height: 1.5; color: var(--mm-muted); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .doc-setup-foot a:not(.mm-btn) { color: var(--mm-ink-2); }
+  .doc-quote { margin-top: 4px; padding: 14px 16px; border-radius: 12px; background: var(--mm-wash); font-size: 14px; color: var(--mm-ink); }
+  @media (max-width: 900px) { .doc-setup-steps { grid-template-columns: minmax(0, 1fr); } }
   .doc-code { position: relative; font: 13px/1.6 ui-monospace, "SF Mono", Menlo, monospace; background: var(--mm-paper); border: var(--mm-border); border-radius: 12px; padding: 14px 84px 14px 16px; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--mm-ink); }
   .doc-code button { position: absolute; top: 8px; right: 8px; }
   .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
@@ -60,7 +65,38 @@
   .doc-principles > div { border-top: 1.5px solid var(--mm-ink); padding-top: 12px; display: flex; flex-direction: column; gap: 6px; }
   .doc-principles b { font-size: 15px; }
   .doc-principles p { font-size: 14px; color: var(--mm-ink-2); line-height: 1.5; }
-  .doc-flowwrap { background: var(--mm-paper); border: var(--mm-border); border-radius: 20px; padding: 32px; margin-bottom: 24px; }
+  /* Screens sit on the page itself and run off its right edge, so the row reads as scrollable */
+  .doc-flowwrap { margin: 0 -56px 32px 0; }
+  .doc-flowwrap .mm-flow { padding-right: 56px; scrollbar-width: thin; }
+  #screens .mm-artboard { gap: 12px; }
+  .doc-section > header.doc-head-wide { max-width: none; }
+  .doc-head-wide p { max-width: 640px; }
+  .doc-title-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .doc-comp-search { flex: 0 1 320px; min-width: 220px; }
+  #comp-none { margin-bottom: 20px; }
+  .doc-comp-search .mm-input { background: var(--mm-paper); border-color: var(--mm-line); }
+  #components .doc-spec[hidden] { display: none; }
+
+  /* Component pop-up: click one element in a card to preview it alone */
+  #components .doc-spec [data-pickable] { cursor: pointer; }
+  #components .doc-spec :disabled[data-pickable] { cursor: pointer; }
+  .doc-pick-ring { position: absolute; z-index: 30; pointer-events: none; border: 1.5px solid var(--mm-accent); border-radius: 10px; display: none; }
+  .doc-pop { width: min(480px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 0; border: var(--mm-border); border-radius: var(--mm-r-2xl); background: var(--mm-paper); color: var(--mm-ink); box-shadow: var(--mm-shadow); }
+  .doc-pop::backdrop { background: rgba(0, 0, 0, 0.4); }
+  .doc-pop[open] { display: flex; flex-direction: column; gap: 16px; padding: 16px 20px 20px; }
+  .doc-pop-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .doc-pop-head code { font: 11px ui-monospace, Menlo, monospace; color: var(--mm-muted); }
+  .doc-pop-stage { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 140px; padding: 32px 24px; border-radius: var(--mm-r-lg); background: var(--mm-wash); overflow: auto; flex: none; }
+  .doc-pop-stage > * { max-width: 100%; }
+  .doc-pop-stage > .mm-btn--block, .doc-pop-stage > .mm-field, .doc-pop-stage > .mm-search, .doc-pop-stage > .mm-inputbar, .doc-pop-stage > .mm-card, .doc-pop-stage > .mm-list-row, .doc-pop-stage > .mm-list, .doc-pop-stage > .mm-segmented, .doc-pop-stage > .mm-progress, .doc-pop-stage > .mm-steps, .doc-pop-stage > .mm-kv, .doc-pop-stage > .mm-accordion, .doc-pop-stage > .mm-navbar, .doc-pop-stage > .mm-tabbar, .doc-pop-stage > .mm-sheet, .doc-pop-stage > .mm-dialog, .doc-pop-stage > .mm-banner, .doc-pop-stage > .mm-toast, .doc-pop-stage > .mm-live, .doc-pop-stage > .mm-notification, .doc-pop-stage > .mm-thread, .doc-pop-stage > .mm-proposal, .doc-pop-stage > .mm-table, .doc-pop-stage > .mm-bars, .doc-pop-stage > .mm-keypad, .doc-pop-stage > .mm-otp, .doc-pop-stage > .mm-week, .doc-pop-stage > .mm-empty, .doc-pop-stage > .mm-skeleton, .doc-pop-stage > .mm-slider, .doc-pop-stage > .mm-divider, .doc-pop-stage > .mm-section-head, .doc-pop-stage > .mm-ph:not(.mm-ph--square):not(.mm-ph--round) { width: 100%; max-width: 340px; }
+  .doc-pop-box { position: relative; border: var(--mm-border); border-radius: var(--mm-r-md); background: var(--mm-wash); min-height: 0; display: flex; }
+  .doc-pop-box pre { margin: 0; padding: 14px 48px 14px 16px; font: 12px/1.6 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre-wrap; overflow-wrap: anywhere; overflow: auto; max-height: 240px; color: var(--mm-ink-2); flex: 1; }
+  .doc-copy { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; display: grid; place-items: center; border: var(--mm-border); border-radius: 8px; background: var(--mm-paper); color: var(--mm-ink-2); cursor: pointer; }
+  .doc-copy:hover { color: var(--mm-ink); }
+  .doc-copy svg { width: 15px; height: 15px; }
+  .doc-copy .doc-check { display: none; }
+  .doc-copy.is-copied .doc-check { display: block; }
+  .doc-copy.is-copied .doc-clip { display: none; }
   .doc-agent { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
   .doc-agent .mm-card { width: min(560px, 100%); }
   .doc-agent .mm-card[hidden] { display: none; }
@@ -69,19 +105,17 @@
   .doc-agent-logo svg.is-active { opacity: 1; }
   .doc-top { display: none; }
   @media (max-width: 900px) {
-    .doc { grid-template-columns: 1fr; }
-    .doc-side { display: none; }
-    .doc-top { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: var(--mm-border); background: var(--mm-paper); position: sticky; top: 0; z-index: 20; }
     .doc-main { padding: 40px 20px 80px; }
     .doc-hero h1 { font-size: 40px; }
     .doc-spec--wide { grid-column: auto; }
-    .doc-flowwrap { padding: 20px; }
+    .doc-flowwrap { margin-right: -20px; }
+    .doc-flowwrap .mm-flow { padding-right: 20px; }
   }
 </style>
 </head>
 <body class="mm">
 
-<div class="doc-top"><div class="doc-logo"><svg class="doc-mark" viewBox="0 0 340 340" aria-hidden="true"><path d="M226.178 0L113.089 0V18.8481L75.3926 18.8481V37.6963L37.6963 37.6963L37.6963 75.3926H18.8481L18.8481 94.2407H0L0 207.33H18.8481L18.8481 245.026H37.6963V263.874H56.5444V282.722H94.2407V301.57L188.481 301.57V282.722H226.178L226.178 263.874H245.026V226.178H263.874L263.874 131.937H245.026V113.089H226.178V94.2407L207.33 94.2407L207.33 75.3926L113.089 75.3926V94.2407H94.2407V113.089H75.3926L75.3926 188.481L94.2407 188.481V207.33H113.089L113.089 226.178H169.633V207.33H188.481V150.785H150.785V188.481H113.089L113.089 131.937H131.937V113.089L188.481 113.089V131.937H207.33V150.785H226.178V226.178H207.33V245.026H188.481V263.874L94.2407 263.874V245.026L75.3926 245.026V226.178H56.5444V207.33H37.6963L37.6963 113.089L56.5444 113.089L56.5444 75.3926H75.3926V56.5444L113.089 56.5444L113.089 37.6963L207.33 37.6963V56.5444L245.026 56.5444V75.3926H263.874V94.2407H282.722V131.937H301.57L301.57 245.026H282.722V263.874H263.874V301.57H245.026V310.994V320.418H226.202V339.267H245.05H263.898V320.418H282.722V301.57H301.57V282.722H320.418V245.026H339.267L339.267 113.089H320.418V75.3926L301.57 75.3926V56.5444L282.722 56.5444V37.6963H263.874V18.8481L226.178 18.8481V0Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/></svg>Megamind Labs UI Kit</div><button class="mm-btn mm-btn--sm mm-btn--secondary" data-theme-toggle>Invert</button></div>
+<div class="doc-top"><div class="doc-logo"><svg class="doc-mark" viewBox="0 0 340 340" aria-hidden="true"><path d="M226.178 0L113.089 0V18.8481L75.3926 18.8481V37.6963L37.6963 37.6963L37.6963 75.3926H18.8481L18.8481 94.2407H0L0 207.33H18.8481L18.8481 245.026H37.6963V263.874H56.5444V282.722H94.2407V301.57L188.481 301.57V282.722H226.178L226.178 263.874H245.026V226.178H263.874L263.874 131.937H245.026V113.089H226.178V94.2407L207.33 94.2407L207.33 75.3926L113.089 75.3926V94.2407H94.2407V113.089H75.3926L75.3926 188.481L94.2407 188.481V207.33H113.089L113.089 226.178H169.633V207.33H188.481V150.785H150.785V188.481H113.089L113.089 131.937H131.937V113.089L188.481 113.089V131.937H207.33V150.785H226.178V226.178H207.33V245.026H188.481V263.874L94.2407 263.874V245.026L75.3926 245.026V226.178H56.5444V207.33H37.6963L37.6963 113.089L56.5444 113.089L56.5444 75.3926H75.3926V56.5444L113.089 56.5444L113.089 37.6963L207.33 37.6963V56.5444L245.026 56.5444V75.3926H263.874V94.2407H282.722V131.937H301.57L301.57 245.026H282.722V263.874H263.874V301.57H245.026V310.994V320.418H226.202V339.267H245.05H263.898V320.418H282.722V301.57H301.57V282.722H320.418V245.026H339.267L339.267 113.089H320.418V75.3926L301.57 75.3926V56.5444L282.722 56.5444V37.6963H263.874V18.8481L226.178 18.8481V0Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/></svg>Megamind Labs UI Kit</div><button class="mm-btn mm-btn--sm mm-btn--secondary" data-theme-toggle>Dark</button></div>
 
 <div class="doc">
   <aside class="doc-side">
@@ -91,13 +125,14 @@
       <a href="#foundations">Foundations</a>
       <a href="#components">Components</a>
       <a href="#screens">Screens</a>
+      <a href="generate.html" class="doc-gen">Generate a screen</a>
     </nav>
     <div class="mm-spacer"></div>
     <div class="mm-stack mm-gap-2" style="padding: 0 12px">
       <span class="mm-caption">Theme</span>
       <div class="mm-segmented" role="group" aria-label="Theme">
         <button aria-pressed="true" data-set-theme="light">Light</button>
-        <button aria-pressed="false" data-set-theme="dark">Inverted</button>
+        <button aria-pressed="false" data-set-theme="dark">Dark</button>
       </div>
       <span class="mm-caption">v0.1.0, MIT. By <a href="https://megamindlabs.ai">Megamind Labs</a></span>
     </div>
@@ -110,7 +145,7 @@
       <div class="doc-start">
         <div class="doc-hero">
           <h1>Get started</h1>
-          <p>Megamind Labs UI is a minimalistic wireframe kit for starting projects and getting them working before you design them. Link one stylesheet and build screens with plain HTML, React, or any AI tool that writes front-end code.</p>
+          <p>Megamind Labs UI is a minimalistic wireframe kit for starting projects and getting them working before you design them. Add one stylesheet to your project, then build screens from its classes in HTML or React, or ask your AI tool to build them for you.</p>
           <div class="doc-agent">
             <button class="mm-btn mm-btn--secondary" id="agent-toggle" aria-expanded="false" aria-controls="agent-panel"><span class="doc-agent-logo"><svg viewBox="0 0 24 24" data-logo="claude" class="is-active" aria-hidden="true"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></svg><svg viewBox="0 0 24 24" data-logo="openai" aria-hidden="true"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"/></svg><svg viewBox="0 0 24 24" data-logo="cursor" aria-hidden="true"><path d="M11.503.131 1.891 5.678a.84.84 0 0 0-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 0 0 .998 0l9.61-5.55a.84.84 0 0 0 .42-.724V6.404a.84.84 0 0 0-.42-.726L12.497.131a1.01 1.01 0 0 0-.996 0M2.657 6.338h18.55c.263 0 .43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59 0 0 0-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23"/></svg></span>Connect your agent<span class="mm-chevron"></span></button>
             <div class="mm-card" id="agent-panel" hidden>
@@ -138,18 +173,24 @@
         </div>
       </div>
 
-      <div class="mm-stack mm-gap-3" style="max-width: 720px">
-        <h3 class="mm-heading">Set it up</h3>
-        <ol class="doc-steps">
-          <li><div>
-            <b>Install the skill.</b> In Claude Code, add the marketplace and install the plugin. Nothing to clone.
+      <div class="doc-setup">
+        <h3 class="mm-title">Set it up</h3>
+        <ol class="doc-setup-steps">
+          <li class="doc-setup-step">
+            <span class="doc-setup-num">1</span>
+            <h4>Install the skill</h4>
+            <p>In Claude Code, add the marketplace and install the plugin. Nothing to clone.</p>
             <div class="doc-code" id="snippet-install"><button class="mm-btn mm-btn--sm mm-btn--secondary" data-copy="snippet-install">Copy</button>/plugin marketplace add gitcamy/megamind-labs-ui
 /plugin install megamind-labs-ui@megamind-labs-ui</div>
-            Cursor, Codex and other tools: paste <a href="https://github.com/gitcamy/megamind-labs-ui/blob/main/PROMPT.md">PROMPT.md</a> into the chat, or point them at <a href="https://github.com/gitcamy/megamind-labs-ui/blob/main/AGENTS.md">AGENTS.md</a>.
-          </div></li>
-          <li><div>
-            <b>Ask for screens in plain words.</b> For example, "Build a three-screen sign-up flow." The tool links the stylesheet and builds with the kit's classes.
-          </div></li>
+            <div class="doc-setup-foot"><span>Cursor, Codex or another tool? Paste <a href="https://github.com/gitcamy/megamind-labs-ui/blob/main/PROMPT.md">PROMPT.md</a> into the chat, or point it at <a href="https://github.com/gitcamy/megamind-labs-ui/blob/main/AGENTS.md">AGENTS.md</a>.</span></div>
+          </li>
+          <li class="doc-setup-step">
+            <span class="doc-setup-num">2</span>
+            <h4>Make your screens</h4>
+            <p>Ask your AI tool in plain words. It links the stylesheet and builds with the kit's classes.</p>
+            <div class="doc-quote">"Build a three-screen sign-up flow."</div>
+            <div class="doc-setup-foot"><span>Or describe it here, then copy the code.</span><a class="mm-btn mm-btn--sm mm-btn--secondary" href="generate.html">Generate a screen</a></div>
+          </li>
         </ol>
       </div>
     </section>
@@ -172,7 +213,9 @@
             <div class="doc-swatch"><i style="background:var(--mm-fill)"></i><b>Fill</b><span>--mm-fill #EBEBEB</span></div>
             <div class="doc-swatch"><i style="background:var(--mm-wash)"></i><b>Wash</b><span>--mm-wash #F5F5F5</span></div>
             <div class="doc-swatch"><i style="background:var(--mm-paper)"></i><b>Paper</b><span>--mm-paper #FFFFFF</span></div>
+            <div class="doc-swatch"><i style="background:var(--mm-accent)"></i><b>Accent</b><span>--mm-accent #6D8ECA</span></div>
           </div>
+          <p class="mm-caption">Badges, pressed chips, dots, steps and the active tab pick up <code>--mm-accent</code> as a quiet highlight: #6D8ECA in light mode, #E3F988 in dark. Everything else stays greyscale.</p>
         </div>
         <div class="doc-spec">
           <h3>Spacing <code>--mm-1 to --mm-12</code></h3>
@@ -205,10 +248,15 @@
 
     <!-- ================================================================ COMPONENTS -->
     <section class="doc-section" id="components">
-      <header>
-        <h2>Components</h2>
+      <header class="doc-head-wide">
+        <div class="doc-title-row">
+          <h2>Components</h2>
+          <div class="mm-search doc-comp-search"><input class="mm-input" type="search" id="comp-search" placeholder="Search components, like toggle or pill" aria-label="Search components" autocomplete="off"></div>
+        </div>
         <p>Forty-odd pieces, all plain HTML with a class. Interactive states use real attributes like <code>aria-pressed</code>, <code>aria-current</code> and <code>:checked</code>, so the mockup is also a decent accessibility sketch.</p>
       </header>
+
+      <p class="mm-small" id="comp-none" hidden></p>
 
       <div class="doc-grid">
         <div class="doc-spec"><h3>Buttons <code>.mm-btn</code></h3>
@@ -394,16 +442,28 @@
 
     <!-- ================================================================ SCREENS -->
     <section class="doc-section doc-screens" id="screens" data-device="phone" data-fold="collapsed">
-      <header>
-        <h2>Screens</h2>
-        <p>Five starter flows built only from the classes above. Pick a device to see every flow at that size: iPhone (390 x 844), iPhone Duo (474 x 696 folded, 904 x 640 open), or tablet (834 x 1194). Copy any screen's markup, change the words, and you have a flow.</p>
+      <header class="doc-head-wide">
+        <div class="doc-title-row">
+          <h2>Screens</h2>
+          <select class="mm-select doc-device" id="screen-size" aria-label="Screen size">
+            <option value="phone">iPhone, 390 x 844</option>
+            <option value="duo-collapsed">iPhone Duo folded, 474 x 696</option>
+            <option value="duo-expanded">iPhone Duo open, 904 x 640</option>
+            <option value="tablet">Tablet, 834 x 1194</option>
+          </select>
+        </div>
+        <p>Five starter flows built only from the classes above. Pick a screen size to see every flow at that size. Copy any screen's markup, change the words, and you have a flow.</p>
+        <nav class="mm-chips doc-flow-links" aria-label="Flows">
+          <a class="mm-chip" href="#flow-onboarding">Onboarding</a>
+          <a class="mm-chip" href="#flow-browse-and-detail">Browse and detail</a>
+          <a class="mm-chip" href="#flow-chatbot-ai-agent">Chatbot AI agent</a>
+          <a class="mm-chip" href="#flow-book-and-pay">Book and pay</a>
+          <a class="mm-chip" href="#flow-account-and-system-states">Account and system states</a>
+        </nav>
       </header>
 
-      <div class="mm-segmented doc-device" role="group" aria-label="Device"><button aria-pressed="true" data-device="phone">iPhone</button><button aria-pressed="false" data-device="duo">iPhone Duo</button><button aria-pressed="false" data-device="tablet">Tablet</button></div>
-      <div class="mm-segmented doc-duo" role="group" aria-label="iPhone Duo state"><button aria-pressed="true" data-fold="collapsed">Collapsed</button><button aria-pressed="false" data-fold="expanded">Expanded</button></div>
-
       <!-- Flow 1 -->
-      <div class="mm-flow-section">
+      <div class="mm-flow-section" id="flow-onboarding">
         <h2>Flow 1: Onboarding</h2>
         <p>Sign up or log in, verify, set preferences, grant permissions, invite.</p>
         <div class="doc-flowwrap"><div class="mm-flow">
@@ -492,7 +552,7 @@
       </div>
 
       <!-- Flow 2 -->
-      <div class="mm-flow-section">
+      <div class="mm-flow-section" id="flow-browse-and-detail">
         <h2>Flow 2: Browse and detail</h2>
         <p>The everyday loop: home, search, a list, one item.</p>
         <div class="doc-flowwrap"><div class="mm-flow">
@@ -571,7 +631,7 @@
       </div>
 
       <!-- Flow 3 -->
-      <div class="mm-flow-section">
+      <div class="mm-flow-section" id="flow-chatbot-ai-agent">
         <h2>Flow 3: Chatbot AI agent</h2>
         <p>A notification becomes a proposal, the user approves, and the result stays undoable.</p>
         <div class="doc-flowwrap"><div class="mm-flow">
@@ -652,7 +712,7 @@
       </div>
 
       <!-- Flow 4 -->
-      <div class="mm-flow-section">
+      <div class="mm-flow-section" id="flow-book-and-pay">
         <h2>Flow 4: Book and pay</h2>
         <p>A scheduling and checkout pattern for any service app.</p>
         <div class="doc-flowwrap"><div class="mm-flow">
@@ -718,7 +778,7 @@
       </div>
 
       <!-- Flow 5 -->
-      <div class="mm-flow-section">
+      <div class="mm-flow-section" id="flow-account-and-system-states">
         <h2>Flow 5: Account and system states</h2>
         <p>Profile, settings, notifications, and what a screen looks like when it is empty, loading or broken.</p>
         <div class="doc-flowwrap"><div class="mm-flow">
@@ -812,28 +872,61 @@
   </main>
 </div>
 
+<dialog class="doc-pop mm" id="component-pop" aria-labelledby="pop-title">
+  <div class="doc-pop-head">
+    <div class="mm-stack mm-gap-1"><span class="mm-heading" id="pop-title"></span><code id="pop-classes"></code></div>
+    <button class="mm-btn mm-btn--sm mm-btn--ghost" id="pop-close">Close</button>
+  </div>
+  <div class="doc-pop-stage" id="pop-stage"></div>
+  <div class="mm-segmented" role="tablist" aria-label="Show" id="pop-tabs">
+    <button role="tab" aria-pressed="true" data-view="prompt">Prompt</button>
+    <button role="tab" aria-pressed="false" data-view="code">Source code</button>
+  </div>
+  <div class="doc-pop-box">
+    <pre id="pop-text"></pre>
+    <button class="doc-copy" id="pop-copy" aria-label="Copy">
+      <svg class="doc-clip" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="5" y="5" width="8.5" height="8.5" rx="1.8"/><path d="M10.5 5V3.8A1.3 1.3 0 0 0 9.2 2.5H3.8a1.3 1.3 0 0 0-1.3 1.3v5.4a1.3 1.3 0 0 0 1.3 1.3H5"/></svg>
+      <svg class="doc-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>
+    </button>
+  </div>
+</dialog>
+
 <script>
   // Theme switch (docs only; the kit itself needs no JavaScript)
   const setTheme = (t) => {
     if (t === 'dark') document.body.setAttribute('data-theme', 'dark'); else document.body.removeAttribute('data-theme');
     document.querySelectorAll('[data-set-theme]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.setTheme === t)));
+    const top = document.querySelector('[data-theme-toggle]');
+    if (top) top.textContent = t === 'dark' ? 'Light' : 'Dark';
+    try { localStorage.setItem('mm-theme', t); } catch {}
   };
+  let saved = null;
+  try { saved = localStorage.getItem('mm-theme'); } catch {}
+  setTheme(saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   document.querySelectorAll('[data-set-theme]').forEach(b => b.addEventListener('click', () => setTheme(b.dataset.setTheme)));
   document.querySelector('[data-theme-toggle]').addEventListener('click', () => setTheme(document.body.dataset.theme === 'dark' ? 'light' : 'dark'));
 
-  // Device switch for the Screens flows
-  document.querySelectorAll('.doc-device [data-device]').forEach(b => b.addEventListener('click', () => {
+  // Screen size for the Screens flows; iPhone Duo also carries its fold state
+  document.getElementById('screen-size').addEventListener('change', (e) => {
     const sec = document.getElementById('screens');
-    sec.dataset.device = b.dataset.device;
-    document.querySelectorAll('.doc-device [data-device]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-  }));
+    const [device, fold] = e.target.value.split('-');
+    sec.dataset.device = device;
+    if (fold) sec.dataset.fold = fold;
+    fitScreens();
+  });
 
-  // Folded or expanded state for iPhone Duo
-  document.querySelectorAll('.doc-duo [data-fold]').forEach(b => b.addEventListener('click', () => {
+  // Fit the Screens frames to the window, keeping each device's real ratio
+  const FRAMES = { phone: [390, 844], collapsed: [474, 696], expanded: [904, 640], tablet: [834, 1194] };
+  const fitScreens = () => {
     const sec = document.getElementById('screens');
-    sec.dataset.fold = b.dataset.fold;
-    document.querySelectorAll('.doc-duo [data-fold]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-  }));
+    const [w, h] = FRAMES[sec.dataset.device === 'duo' ? sec.dataset.fold : sec.dataset.device];
+    const wrap = sec.querySelector('.doc-flowwrap');
+    // A little smaller than the window allows, so the next screen peeks in from the right
+    const fit = Math.min(0.75, (innerHeight - 240) / h, (wrap.clientWidth - 80) / w);
+    sec.style.setProperty('--doc-fit', Math.max(0.3, fit).toFixed(3));
+  };
+  addEventListener('resize', fitScreens);
+  fitScreens();
 
   // Pressed state for chips and segmented buttons in the demo
   document.addEventListener('click', (e) => {
@@ -842,6 +935,213 @@
     const chip = e.target.closest('.mm-chip');
     if (chip) chip.setAttribute('aria-pressed', String(chip.getAttribute('aria-pressed') !== 'true'));
   });
+
+  // Component pop-up: click one element in a component card to preview it alone,
+  // with a prompt written for that element and its source code.
+  const CSS_URL = 'https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css';
+  const RULES_URL = 'https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/AGENTS.md';
+  const NAMES = {
+    btn: 'button', link: 'text link', fab: 'floating action button', field: 'text field', input: 'input', select: 'select menu',
+    textarea: 'text area', inputbar: 'input bar', search: 'search field', chips: 'chip group', chip: 'chip',
+    segmented: 'segmented control', toggle: 'toggle switch', check: 'checkbox', radio: 'radio button', choice: 'labelled choice',
+    slider: 'slider', keypad: 'number keypad', otp: 'code input', card: 'card', ph: 'placeholder', icon: 'icon placeholder',
+    avatar: 'avatar', avatars: 'avatar stack', badge: 'badge', dot: 'dot', divider: 'divider', 'section-head': 'section header',
+    list: 'list', 'list-row': 'list row', stat: 'stat', progress: 'progress bar', ring: 'progress ring', bars: 'bar chart',
+    kv: 'key-value list', accordion: 'accordion', timeline: 'timeline', week: 'week strip', table: 'table', thread: 'message thread',
+    bubble: 'message bubble', typing: 'typing indicator', proposal: 'proposed action', suggestions: 'suggestion chips',
+    wave: 'voice waveform', banner: 'banner', toast: 'toast', notification: 'notification', sheet: 'bottom sheet', dialog: 'dialog',
+    menu: 'menu', tooltip: 'tooltip', empty: 'empty state', skeleton: 'loading skeleton', spinner: 'spinner', live: 'live activity',
+    navbar: 'navigation bar', tabbar: 'tab bar', sidenav: 'side navigation', steps: 'step progress', dots: 'carousel dots',
+    note: 'annotation pin', notes: 'annotation list', statusbar: 'status bar',
+  };
+  const MODS = { sm: 'small', lg: 'large', block: 'full-width', ink: 'ink', secondary: 'secondary', ghost: 'ghost', danger: 'danger',
+    icon: 'icon', filled: 'filled', outline: 'outline', x: 'photo', wide: 'wide', square: 'square', round: 'round', portrait: 'portrait',
+    divided: 'divided', boxed: 'boxed', me: 'sent', thin: 'thin', title: 'title', circle: 'circle', static: 'inline', compact: 'compact' };
+  // Wrappers whose parts don't stand alone: clicking a part picks the whole wrapper.
+  // A labelled choice isn't one: its toggle, checkbox or radio can be picked alone, its label picks the row.
+  const WHOLE = new Set(['field', 'search', 'inputbar', 'segmented', 'otp', 'keypad', 'tabbar', 'navbar', 'steps', 'dots', 'bars',
+    'ring', 'progress', 'kv', 'accordion', 'stat', 'list-row', 'timeline', 'week', 'table', 'menu', 'typing', 'wave', 'avatars', 'tooltip',
+    'toast', 'notification', 'live', 'section-head', 'notes']);
+  const baseOf = (el) => [...el.classList].map(c => c.match(/^mm-([a-z-]+?)(?:--|$)/)?.[1]).find(b => b && NAMES[b]);
+
+  // A row holding one component plus a text label, like a dot next to "Unread", reads as one piece
+  const labelledPart = (row) => {
+    if (!row.classList?.contains('mm-row')) return null;
+    const parts = [...row.children].filter(c => baseOf(c));
+    const rest = [...row.children].filter(c => !baseOf(c));
+    const plain = rest.length && rest.every(c => !c.querySelector('[class*="mm-"]') && c.textContent.trim());
+    return parts.length === 1 && plain ? parts[0] : null;
+  };
+
+  const pickFrom = (target, card) => {
+    let inner = null, whole = null;
+    for (let el = target; el && el !== card; el = el.parentElement) {
+      if (el.tagName === 'H3') return null;
+      if (labelledPart(el)) { whole = el; continue; }
+      const b = baseOf(el);
+      if (!b) continue;
+      if (!inner) inner = el;
+      if (WHOLE.has(b)) whole = el;
+    }
+    return whole || inner;
+  };
+
+  const nameOf = (el) => {
+    const part = labelledPart(el);
+    if (part) return `${nameOf(part)} with label`;
+    const base = baseOf(el);
+    if (base === 'choice') {
+      const ctl = el.querySelector('.mm-toggle, .mm-check, .mm-radio');
+      return ctl ? `labelled ${nameOf(ctl)}` : NAMES.choice;
+    }
+    const mods = [...el.classList].map(c => c.match(new RegExp(`^mm-${base}--([a-z]+)$`))?.[1]).filter(Boolean)
+      .map(m => (base === 'badge' && m === 'ink' ? 'highlighted' : MODS[m] || m));
+    if (el.disabled) mods.unshift('disabled');
+    return [...mods, NAMES[base]].join(' ');
+  };
+  const labelOf = (el) => {
+    const t = el.textContent.replace(/\s+/g, ' ').trim();
+    if (labelledPart(el)) return t.length <= 40 ? t : '';
+    return t && t.length <= 40 && ['btn', 'chip', 'badge', 'link', 'bubble', 'tooltip'].includes(baseOf(el)) ? t : '';
+  };
+
+  // Print markup with one child per line, keeping short elements on one line.
+  const VOID = new Set(['input', 'br', 'hr', 'img', 'meta', 'link', 'source', 'wbr']);
+  const pretty = (node, depth = 0) => {
+    const pad = '  '.repeat(depth);
+    if (node.nodeType === 3) { const t = node.textContent.replace(/\s+/g, ' ').trim(); return t ? pad + t : ''; }
+    if (node.nodeType !== 1) return '';
+    const flat = node.outerHTML.replace(/\s*\n\s*/g, '');
+    if (flat.length + pad.length <= 90 || VOID.has(node.tagName.toLowerCase())) return pad + flat;
+    const open = flat.slice(0, flat.indexOf('>') + 1);
+    const kids = [...node.childNodes].map(c => pretty(c, depth + 1)).filter(Boolean);
+    return `${pad}${open}\n${kids.join('\n')}\n${pad}</${node.tagName.toLowerCase()}>`;
+  };
+
+  const pop = document.getElementById('component-pop');
+  let view = 'prompt', current = null;
+  const showView = () => {
+    document.querySelectorAll('#pop-tabs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+    document.getElementById('pop-text').textContent = current ? current[view] : '';
+  };
+  const openPick = (el) => {
+    const clone = el.cloneNode(true);
+    [clone, ...clone.querySelectorAll('*')].forEach(n => {
+      n.removeAttribute('id');
+      n.removeAttribute('data-pickable');
+      n.classList.remove('doc-picked');
+      if (n.getAttribute('class') === '') n.removeAttribute('class');
+    });
+    const code = pretty(clone).replace(/ (checked|disabled|selected|open|hidden|required)=""/g, ' $1');
+    const name = nameOf(el);
+    const label = labelOf(el);
+    const article = /^[aeiou]/.test(name) ? 'an' : 'a';
+    current = {
+      code,
+      prompt: `Add ${article} ${labelledPart(el) && label ? `${nameOf(labelledPart(el))} with the label "${label}"` : `${name}${label ? ` labelled "${label}"` : ''}`} from the Megamind Labs UI kit to my screen.
+Load the stylesheet once: <link rel="stylesheet" href="${CSS_URL}">
+Use the kit's classes as they are and follow its rules: ${RULES_URL}
+Change the wording to fit my screen. Reference markup:
+
+${code}`,
+    };
+    document.getElementById('pop-title').textContent = name[0].toUpperCase() + name.slice(1);
+    document.getElementById('pop-classes').textContent = [...clone.classList].map(c => '.' + c).join(' ');
+    const stage = document.getElementById('pop-stage');
+    stage.replaceChildren(clone);
+    view = 'prompt';
+    showView();
+    pop.showModal();
+  };
+
+  // Disabled controls ignore the mouse (pointer-events: none), so find them by position
+  const disabledAt = (card, x, y) => [...card.querySelectorAll('[data-pickable]:disabled, [data-pickable].is-disabled')].find(n => {
+    const r = n.getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+  });
+  const pickAt = (e, card) => disabledAt(card, e.clientX, e.clientY) || pickFrom(e.target, card);
+
+  // One rounded ring drawn around the hovered element, so square elements still get rounded corners
+  const ring = Object.assign(document.createElement('div'), { className: 'doc-pick-ring' });
+  document.body.append(ring);
+  let ringed = null;
+  const ringAround = (el) => {
+    if (el === ringed) return;
+    ringed = el;
+    if (!el) { ring.style.display = 'none'; return; }
+    const r = el.getBoundingClientRect();
+    const radius = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0;
+    Object.assign(ring.style, {
+      display: 'block',
+      left: r.left + scrollX - 5 + 'px', top: r.top + scrollY - 5 + 'px',
+      width: r.width + 10 + 'px', height: r.height + 10 + 'px',
+      borderRadius: radius >= r.height / 2 ? '999px' : Math.max(10, radius + 5) + 'px',
+    });
+  };
+
+  document.querySelectorAll('#components .doc-spec').forEach(card => {
+    card.querySelectorAll('[class*="mm-"]').forEach(el => { if (baseOf(el)) el.dataset.pickable = ''; });
+    card.addEventListener('mousemove', (e) => ringAround(pickAt(e, card)));
+    card.addEventListener('mouseleave', () => ringAround(null));
+    // Capture phase, so a click opens the pop-up instead of toggling the demo
+    card.addEventListener('click', (e) => {
+      const el = pickAt(e, card);
+      if (!el) return;
+      e.preventDefault();
+      e.stopPropagation();
+      openPick(el);
+    }, true);
+  });
+  // Component search: matches card titles, class names, the names of the parts inside, and common synonyms
+  const ALIASES = { dialog: 'modal popup alert', toast: 'snackbar', chip: 'pill tag filter', badge: 'pill tag label status',
+    segmented: 'tabs switcher', tabbar: 'bottom navigation tabs', navbar: 'header top bar back', sheet: 'drawer modal bottom sheet',
+    ph: 'image photo picture map chart', avatar: 'profile user person', progress: 'loading loader', spinner: 'loader loading',
+    skeleton: 'loading shimmer', toggle: 'switch', check: 'checkbox tick', radio: 'option', input: 'text box form', field: 'form label',
+    textarea: 'multiline', select: 'dropdown picker', menu: 'dropdown context', otp: 'pin verification code', keypad: 'numpad pin',
+    bubble: 'chat message', thread: 'chat messages conversation', banner: 'alert error warning notice', btn: 'cta action',
+    stat: 'metric kpi number', bars: 'graph chart', ring: 'donut circle chart', kv: 'details receipt summary', note: 'annotation' };
+  const searchCards = [...document.querySelectorAll('#components .doc-spec')].map(card => {
+    const bases = new Set([...card.querySelectorAll('[class*="mm-"]')].map(baseOf).filter(Boolean));
+    const words = [card.querySelector('h3').textContent, ...[...bases].map(b => `${NAMES[b]} ${ALIASES[b] || ''}`)];
+    return { card, text: words.join(' ').toLowerCase() };
+  });
+  const search = document.getElementById('comp-search');
+  search.addEventListener('input', () => {
+    const terms = search.value.toLowerCase().split(/\s+/).filter(Boolean);
+    let shown = 0;
+    searchCards.forEach(({ card, text }) => {
+      const hit = terms.every(t => text.includes(t));
+      card.hidden = !hit;
+      if (hit) shown++;
+    });
+    const none = document.getElementById('comp-none');
+    none.hidden = shown > 0;
+    none.textContent = `No components match "${search.value.trim()}". Try a broader word, like button or list.`;
+  });
+  // Press / to jump to the search
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== '/' || e.target.closest('input, textarea, select, [contenteditable]') || pop.open) return;
+    e.preventDefault();
+    search.scrollIntoView({ block: 'center' });
+    search.focus();
+  });
+
+  document.getElementById('pop-tabs').addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    view = b.dataset.view;
+    showView();
+  });
+  document.getElementById('pop-copy').addEventListener('click', (e) => {
+    const btn = e.currentTarget;
+    navigator.clipboard?.writeText(current[view]).then(() => {
+      btn.classList.add('is-copied');
+      btn.setAttribute('aria-label', 'Copied');
+      setTimeout(() => { btn.classList.remove('is-copied'); btn.setAttribute('aria-label', 'Copy'); }, 1500);
+    });
+  });
+  document.getElementById('pop-close').addEventListener('click', () => pop.close());
+  pop.addEventListener('click', (e) => { if (e.target === pop) pop.close(); });
+  pop.addEventListener('close', () => ringAround(null));
 
   // Copy snippet
   document.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', () => {

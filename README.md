@@ -126,9 +126,11 @@ Everything is a variable on `:root`. Override them after the stylesheet.
 }
 ```
 
-Add `data-theme="dark"` to any element (a single screen or the whole page) for the inverted palette.
+Add `data-theme="dark"` to any element (a single screen or the whole page) for the dark palette. Small details (badges, pressed chips, dots, steps, the active tab) use a subtle accent from `--mm-accent`: #6D8ECA in light mode, #E3F988 in dark. Everything else stays greyscale.
 
 ## Using it with AI tools
+
+Open `generate.html` to describe a screen in words or by voice and have Claude build it from the kit while you watch. It uses your own Anthropic API key, which stays in your browser. When the screen is done, copy the markup, a React component or a full HTML page, or download it.
 
 Paste the contents of [`PROMPT.md`](PROMPT.md) into Claude, v0, Lovable, Cursor or similar, then describe the screens you want. The prompt teaches the tool the class names and the rules of the system, so the output stays on-kit.
 

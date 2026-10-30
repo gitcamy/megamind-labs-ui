@@ -9,7 +9,7 @@ Use this when the user asks for wireframes, mockups, screens or flows. Build gre
 - Use only `mm-*` classes and the CSS variables listed in the reference at https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/reference/classes.md. Do not write new CSS except small inline layout tweaks (width, alignment, margin).
 
 ## Rules of the system
-- Greyscale only. Never introduce color, gradients, shadows or real icons.
+- Greyscale only. Never introduce color, gradients, shadows or real icons. The one exception is `--mm-accent`, which the kit applies by itself to badges, pressed chips, dots, steps and the active tab; never set it or any other color by hand.
 - Anything not designed yet is a placeholder: `mm-ph` for images, charts and maps (add `mm-ph--x` for photos), `mm-icon` for icons, `mm-avatar` with initials for people. Put a short label inside placeholders, like "Chart: spend by week".
 - Ink (filled black) is reserved for the single primary action, the active state, and the key number on a screen. One `mm-card--ink` per screen at most.
 - Danger uses `mm-btn--danger` (dashed). Errors use `mm-field is-error` or `mm-banner`. Never red.
@@ -51,7 +51,7 @@ A screen is a vertical flex column with 12px gaps. Use `<div class="mm-spacer"><
 - Feedback: `mm-banner`, `mm-toast` (text plus button), `mm-notification` (with `mm-notification-app`), `mm-live`, `mm-empty`, `mm-skeleton` (`--title`, `--block`, `--circle`), `mm-spinner`.
 - Overlays inside a screen: `mm-scrim` then `mm-sheet` or `mm-dialog`. Menus: `mm-menu`. Tooltips: `mm-tooltip`.
 - Annotation: `<span class="mm-note" style="top:..;left:..">1</span>` on a positioned element, explained in `<ol class="mm-notes"><li data-n="1">...</li></ol>` next to the artboard.
-- Inverted theme: `data-theme="dark"` on any screen.
+- Dark theme: `data-theme="dark"` on the body or any screen. Components invert, and the accent switches to its dark value.
 
 ## Before you finish
 Check that every screen has one clear primary action, nothing overflows its frame, there is no color, and all copy is real.
