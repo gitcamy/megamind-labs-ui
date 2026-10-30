@@ -17,7 +17,7 @@ The MCP server is live at `https://megamind-labs-ui-mcp.megamind-labs.workers.de
 
 **Gemini (web app):** at [gemini.google.com](https://gemini.google.com), click the Settings icon, then Connected Apps. Under Custom apps, paste the URL above and click Next. Start a chat, type `@` and pick the app. Google's help page says this needs a personal Google account (work and school accounts aren't supported yet), is English only, and is available in the US for people 18 or older.
 
-**Antigravity:** add this to `~/.gemini/config/mcp_config.json` (create it if it doesn't exist). Antigravity uses `serverUrl`, not `url`. Then open Settings → Customizations → Installed MCP Servers and click Refresh, or type `/mcp` in the `agy` CLI. No sign-in is needed.
+**Antigravity:** in Settings → Customizations → Installed MCP Servers, click Add Server and paste the URL. Or add this to `~/.gemini/config/mcp_config.json` (create it if it doesn't exist; Antigravity uses `serverUrl`, not `url`), then click Refresh or type `/mcp` in the `agy` CLI:
 
 ```json
 { "mcpServers": { "megamind-labs-ui": { "serverUrl": "https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp" } } }
@@ -29,7 +29,13 @@ The MCP server is live at `https://megamind-labs-ui-mcp.megamind-labs.workers.de
 claude mcp add --transport http megamind-labs-ui https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp
 ```
 
-**Cursor:** add to `~/.cursor/mcp.json`:
+**Codex:**
+
+```bash
+codex mcp add megamind-labs-ui --url https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp
+```
+
+**Cursor:** in Cursor Settings → Features → MCP, click Add New MCP Server (type: `sse`, name: `megamind-labs-ui`, URL: `https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp`). Or add to `~/.cursor/mcp.json`:
 
 ```json
 { "mcpServers": { "megamind-labs-ui": { "url": "https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp" } } }
