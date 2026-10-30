@@ -160,16 +160,13 @@
             <div class="mm-card" id="agent-panel" hidden style="gap: 10px">
               <span class="mm-caption">MCP Server URL</span>
               <div class="doc-code" id="snippet-agent-url"><button class="mm-btn mm-btn--sm mm-btn--secondary" data-copy="snippet-agent-url">Copy</button><span id="agent-url-text">https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp</span></div>
-              <span class="mm-caption" style="margin-top: 2px">How to connect</span>
-              <div class="mm-segmented" role="group" aria-label="Agent" id="agent-tabs">
-                <button aria-pressed="true" data-agent="claude">Claude</button>
-                <button aria-pressed="false" data-agent="chatgpt">ChatGPT</button>
-                <button aria-pressed="false" data-agent="cursor">Cursor</button>
+              <span class="mm-caption" style="margin-top: 2px">Or, if using CLI tools</span>
+              <div class="mm-segmented" role="group" aria-label="CLI tool" id="agent-tabs">
+                <button aria-pressed="true" data-agent="claude">Claude Code</button>
                 <button aria-pressed="false" data-agent="codex">Codex</button>
                 <button aria-pressed="false" data-agent="antigravity">Antigravity</button>
               </div>
-              <span class="mm-small" id="agent-hint"></span>
-              <div class="doc-code" id="snippet-agent-cmd" hidden><button class="mm-btn mm-btn--sm mm-btn--secondary" data-copy="snippet-agent-cmd">Copy</button><span id="agent-cmd-text"></span></div>
+              <div class="doc-code" id="snippet-agent-cmd"><button class="mm-btn mm-btn--sm mm-btn--secondary" data-copy="snippet-agent-cmd">Copy</button><span id="agent-cmd-text"></span></div>
             </div>
           </div>
         </div>
@@ -1210,14 +1207,12 @@ ${code}`,
     setTimeout(() => (btn.textContent = 'Copy'), 1500);
   }));
 
-  // Connect your agent: the logo rotates until it's opened, then each tab shows what to paste
+  // Connect your agent: the logo rotates until it's opened, then each tab shows the CLI command
   const MCP_URL = 'https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp';
   const AGENTS = {
-    claude: { logo: 'claude', hint: 'In Claude, open Settings > Connectors, choose Add custom connector, paste the URL above, then ask for a sign-up flow in a new chat. Using the Claude Code CLI? Run this instead:', cmd: `claude mcp add --transport http megamind-labs-ui ${MCP_URL}` },
-    chatgpt: { logo: 'openai', hint: 'In ChatGPT, open Settings > Plugins > Browse directory > Add custom MCP server. Paste the URL above, choose No authentication, then Create as a plugin.' },
-    cursor: { logo: 'cursor', hint: 'In Cursor, open Settings > Features > MCP, click Add New MCP Server (type: SSE), and paste the URL above.' },
-    codex: { logo: 'openai', hint: 'In the Codex app, open Settings > MCP servers, add a custom server (Streamable HTTP), paste the URL above and save. Using the Codex CLI? Run this instead:', cmd: `codex mcp add megamind-labs-ui --url ${MCP_URL}` },
-    antigravity: { logo: 'gemini', hint: 'In Antigravity, open Settings > Customizations > Installed MCP Servers, click Add Server, paste the URL above and click Refresh. Using the Antigravity CLI? Run this instead:', cmd: `agy mcp add megamind-labs-ui ${MCP_URL}` },
+    claude: { logo: 'claude', cmd: `claude mcp add --transport http megamind-labs-ui ${MCP_URL}` },
+    codex: { logo: 'openai', cmd: `codex mcp add megamind-labs-ui --url ${MCP_URL}` },
+    antigravity: { logo: 'gemini', cmd: `agy mcp add megamind-labs-ui ${MCP_URL}` },
   };
   const logos = [...document.querySelectorAll('.doc-agent-logo [data-logo]')];
   const showLogo = (logo) => logos.forEach(l => l.classList.toggle('is-active', l.dataset.logo === logo));
@@ -1225,14 +1220,7 @@ ${code}`,
   const startRow = document.querySelector('.doc-start');
   const showAgent = (key) => {
     const agent = AGENTS[key];
-    document.getElementById('agent-hint').textContent = agent.hint;
-    const cmdBox = document.getElementById('snippet-agent-cmd');
-    if (agent.cmd) {
-      document.getElementById('agent-cmd-text').textContent = agent.cmd;
-      cmdBox.hidden = false;
-    } else {
-      cmdBox.hidden = true;
-    }
+    document.getElementById('agent-cmd-text').textContent = agent.cmd;
     showLogo(agent.logo);
     reserveAgentSpace();
   };
