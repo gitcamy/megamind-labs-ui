@@ -14,7 +14,8 @@ const textOf = (s) => s.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 const SHAPES = ["mm-icon", "mm-dot", "mm-chevron", "mm-spinner", "mm-skeleton", "mm-progress", "mm-steps", "mm-dots", "mm-bars", "mm-typing", "mm-wave"];
 const VOID_TAGS = /^(area|base|br|col|embed|hr|img|input|link|meta|source|track|wbr)$/i;
 
-// The inner HTML of each element that has `cls`, matched by tag depth so nested elements stay inside.
+// Each element that has `cls`, matched by tag depth so nested elements stay inside: its opening tag,
+// its inner HTML, and what follows its closing tag.
 function elementsWithClass(html, cls) {
   const found = [];
   const open = new RegExp(`<([a-z][a-z0-9]*)\\b[^>]*\\sclass\\s*=\\s*"(?:[^"]*\\s)?${cls}(?:\\s[^"]*)?"[^>]*>`, "gi");
@@ -26,7 +27,8 @@ function elementsWithClass(html, cls) {
     let depth = 1;
     let t;
     while (depth && (t = tags.exec(html))) depth += t[1] ? -1 : 1;
-    found.push(html.slice(m.index + m[0].length, t ? t.index : html.length));
+    const end = t ? t.index + t[0].length : html.length;
+    found.push({ open: m[0], inner: html.slice(m.index + m[0].length, t ? t.index : html.length), after: html.slice(end) });
   }
   return found;
 }
@@ -121,13 +123,21 @@ export function validateScreen(html, kit) {
   if (/\b(fa-[a-z-]+|material-icons|material-symbols|bi-[a-z-]+)\b/.test(html)) add(errors, "placeholders", "Icon fonts are not allowed. Use mm-icon.");
 
   // Shapes stay empty, and key-value rows hold a label and a value.
-  const filled = SHAPES.filter((cls) => elementsWithClass(html, cls).some((inner) => textOf(inner)));
+  const filled = SHAPES.filter((cls) => elementsWithClass(html, cls).some((el) => textOf(el.inner)));
   if (filled.length)
     add(errors, "shapes", `${filled.join(", ")} are drawn as fixed shapes and must stay empty. Put any label in a separate element beside them.`);
   const badRows = elementsWithClass(html, "mm-kv")
-    .flatMap(childrenOf)
+    .flatMap((el) => childrenOf(el.inner))
     .filter((row) => !/^<div\b/i.test(row) || childrenOf(row.replace(/^<div\b[^>]*>|<\/div>$/gi, "")).length !== 2).length;
   if (badRows) add(errors, "shapes", `${badRows} mm-kv row(s) are not a <div> with exactly two children, a label and a value.`);
+
+  // A placeholder shrunk below its label's size. The label spills out, so use the thumbnail size.
+  const squeezed = elementsWithClass(html, "mm-ph").filter((el) => {
+    const width = el.open.match(/[\s;"]width\s*:\s*(\d+)px/i);
+    return width && Number(width[1]) < 96 && !/\bmm-ph--thumb\b/.test(el.open) && textOf(el.inner);
+  }).length;
+  if (squeezed)
+    add(warnings, "placeholders", `${squeezed} mm-ph are narrower than 96px with a label that won't fit. Use mm-ph mm-ph--x mm-ph--thumb for list photos.`);
 
   // Real copy.
   if (/lorem ipsum|dolor sit amet/i.test(html)) add(errors, "copy", "Replace lorem ipsum with real copy.");
@@ -147,6 +157,10 @@ export function validateScreen(html, kit) {
       .filter((c) => c.includes("mm-btn") && !c.some((x) => /^mm-btn--(secondary|ghost|danger|icon)$/.test(x))).length;
     if (primaries === 0) add(warnings, "primary", `${name} has no primary button.`);
     if (primaries > 1) add(warnings, "primary", `${name} has ${primaries} filled buttons. Keep one primary action and make the rest --secondary or --ghost.`);
+    const isPrimary = (tag) => /\bmm-btn\b/.test(tag) && !/\bmm-btn--(secondary|ghost|danger|icon)\b/.test(tag);
+    const inkBesidePrimary = elementsWithClass(chunk, "mm-card--ink").some((el) => isPrimary(el.after.match(/^\s*(<[^>]*>)/)?.[1] ?? ""));
+    if (inkBesidePrimary)
+      add(warnings, "ink", `${name} has an mm-card--ink right before the primary button, so two black blocks compete. Make the card mm-card--filled.`);
   });
 
   return { ok: errors.length === 0, screens: starts.length, errors, warnings };

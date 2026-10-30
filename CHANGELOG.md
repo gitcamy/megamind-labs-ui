@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- New `mm-ph--thumb`: a 56px list-row photo placeholder with its label hidden. Placeholders now clip anything that doesn't fit.
+- `mm-link` written as a `<button>` no longer stretches across a card and centers its text.
+
 - Dark mode is now a first-class theme (renamed from Inverted). The docs remember your choice and follow the system setting on first visit.
 - New `--mm-accent` token: #6D8ECA in light mode, #E3F988 in dark. It highlights badges, pressed chips, dots, steps, the active tab and annotation pins. Everything else stays greyscale.
 - New `generate.html`: describe a screen by typing or speaking, and Claude builds it from the kit. Add a sketch or screenshot for context, ask for changes, then copy the markup, React or a full HTML page, or download it. Past screens are kept in your browser and listed under the menu.

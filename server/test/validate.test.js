@@ -62,3 +62,15 @@ test("an inlined kit stylesheet counts as setup and is not new CSS", () => {
   assert.equal(r.ok, true);
   assert.deepEqual(r.warnings.filter((w) => w.rule === "css" || w.rule === "greyscale"), []);
 });
+
+test("squeezed placeholders and ink beside the primary are flagged", () => {
+  const html = `<div class="mm-screen mm-screen--phone">
+    <div class="mm-list-row"><div class="mm-ph mm-ph--x" style="width:56px;min-height:56px">Photo: linen throw</div></div>
+    <div class="mm-card mm-card--ink"><p class="mm-hero">£166.00</p></div>
+    <button class="mm-btn mm-btn--block">Pay £166.00</button></div>`;
+  const r = validateScreen(html, kit);
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.warnings.map((w) => w.rule).sort(), ["ink", "placeholders"]);
+  const fixed = html.replace('mm-ph mm-ph--x" style="width:56px;min-height:56px"', 'mm-ph mm-ph--x mm-ph--thumb"').replace("mm-card--ink", "mm-card--filled");
+  assert.deepEqual(validateScreen(fixed, kit).warnings, []);
+});

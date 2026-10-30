@@ -10,8 +10,8 @@ Use this when the user asks for wireframes, mockups, screens or flows. Build gre
 
 ## Rules of the system
 - Greyscale only. Never introduce color, gradients, shadows or real icons. The one exception is `--mm-accent`, which the kit applies by itself to badges, pressed chips, dots, steps and the active tab; never set it or any other color by hand.
-- Anything not designed yet is a placeholder: `mm-ph` for images, charts and maps (add `mm-ph--x` for photos), `mm-icon` for icons, `mm-avatar` with initials for people. Put a short label inside `mm-ph`, like "Chart: spend by week". `mm-icon` stays empty.
-- Ink (filled black) is reserved for the single primary action, the active state, and the key number on a screen. One `mm-card--ink` per screen at most.
+- Anything not designed yet is a placeholder: `mm-ph` for images, charts and maps (add `mm-ph--x` for photos), `mm-icon` for icons, `mm-avatar` with initials for people. Put a short label inside `mm-ph`, like "Chart: spend by week". For a photo in a list row use `mm-ph mm-ph--x mm-ph--thumb` (56px, label hidden) instead of shrinking `mm-ph` by hand. `mm-icon` stays empty.
+- Ink (filled black) is reserved for the single primary action, the active state, and the key number on a screen. One `mm-card--ink` per screen at most, and never right next to the primary button: a summary that sits with the primary button, like an order total above "Pay", is `mm-card--filled`.
 - Danger uses `mm-btn--danger` (dashed). Errors use `mm-field is-error` or `mm-banner`. Never red.
 - Write real, specific copy in sentence case. No lorem ipsum. Buttons say exactly what happens ("Send invite", not "Submit").
 - Every screen must fit its frame. Use `mm-screen-body` for content that should scroll.

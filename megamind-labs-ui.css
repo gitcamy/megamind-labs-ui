@@ -253,7 +253,7 @@
 .mm-btn--icon::before { content: ""; width: 16px; height: 16px; border-radius: var(--mm-r-xs); background: var(--mm-fill); }
 .mm-btn:disabled, .mm-btn.is-disabled { opacity: 0.35; pointer-events: none; }
 
-.mm-link { font-size: var(--mm-text-md); font-weight: 500; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--mm-line); background: none; border: 0; padding: 0; cursor: pointer; }
+.mm-link { font-size: var(--mm-text-md); font-weight: 500; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--mm-line); background: none; border: 0; padding: 0; cursor: pointer; width: fit-content; text-align: left; }
 
 .mm-fab { position: absolute; right: var(--mm-5); bottom: 76px; width: 52px; height: 52px; border-radius: 50%; border: 0; background: var(--mm-ink); color: var(--mm-on-ink); font-size: 22px; font-weight: 400; cursor: pointer; }
 
@@ -342,13 +342,15 @@
   display: grid; place-items: center; text-align: center;
   min-height: 96px; padding: var(--mm-3);
   border-radius: var(--mm-r-md); background: var(--mm-fill);
-  font-size: var(--mm-text-xs); color: var(--mm-muted);
+  font-size: var(--mm-text-xs); color: var(--mm-muted); overflow: hidden;
 }
 .mm-ph--x { background: linear-gradient(to top right, transparent calc(50% - 0.5px), var(--mm-line) 50%, transparent calc(50% + 0.5px)), linear-gradient(to top left, transparent calc(50% - 0.5px), var(--mm-line) 50%, transparent calc(50% + 0.5px)), var(--mm-fill); }
 .mm-ph--square { aspect-ratio: 1; min-height: 0; }
 .mm-ph--wide { aspect-ratio: 16 / 9; min-height: 0; }
 .mm-ph--portrait { aspect-ratio: 3 / 4; min-height: 0; }
 .mm-ph--round { border-radius: 50%; aspect-ratio: 1; min-height: 0; }
+/* A 56px list thumbnail. Too small to read, so its label is hidden; the row's title says what it is. */
+.mm-ph--thumb { width: 56px; height: 56px; min-height: 0; padding: 0; flex: none; border-radius: var(--mm-r-sm); font-size: 0; }
 
 /* Icon placeholder. Size with --mm-size. */
 .mm-icon { --mm-size: 20px; flex: none; width: var(--mm-size); height: var(--mm-size); border-radius: var(--mm-r-sm); background: var(--mm-fill); display: inline-block; }
