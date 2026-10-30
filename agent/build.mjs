@@ -58,13 +58,6 @@ const reference = [
   ]),
 ].join("\n");
 
-const frontmatter = `---
-name: megamind-labs-ui
-description: Build greyscale wireframe screens, flows and mockups with the Megamind Labs UI kit (mm- CSS classes). Use when the user asks for screens, wireframes or UI mockups.
----
-
-`;
-
 const agents = `# Megamind Labs UI
 
 ${trigger}
@@ -92,7 +85,6 @@ const llms = `# Megamind Labs UI
 `;
 
 const outputs = {
-  "plugins/megamind-labs-ui/skills/megamind-labs-ui/SKILL.md": frontmatter + trigger + "\n\n" + rules,
   "AGENTS.md": agents,
   "PROMPT.md": prompt,
   "llms.txt": llms,
