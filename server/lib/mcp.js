@@ -2,12 +2,13 @@
 // the tool's own model writes the screens, so nothing here calls an LLM or costs per use.
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { loadKit, describeComponent, CSS_URL } from "./kit.js";
+import { loadKit, describeComponent, listComponents, CSS_URL } from "./kit.js";
+import { scaffoldFlow, SIZES } from "./scaffold.js";
 import { validateScreen } from "./validate.js";
 
 const INSTRUCTIONS = `Megamind Labs UI is a greyscale, CSS-only wireframe kit.
 When the user asks for wireframes, mockups, screens or flows, call get_rules before writing any markup and follow it exactly.
-Use get_component to look up a part, and get_starter for a page skeleton.
+Use list_components to see every part, get_component to look one up, and get_starter or scaffold_flow for a page skeleton.
 Before you show the result, call validate_screen with your HTML and fix every error it reports.`;
 
 const text = (t) => ({ content: [{ type: "text", text: t }] });
@@ -72,6 +73,38 @@ export function createMcpServer() {
           .replace(/href="\.\.\/megamind-labs-ui\.css"/, `href="${CSS_URL}"`)
       );
     }
+  );
+
+  server.registerTool(
+    "list_components",
+    {
+      title: "List the components",
+      description: "Returns every component group in the kit with its class count and a usage note. Use it to see what exists before reaching for get_component.",
+      annotations: READ_ONLY,
+    },
+    async () => {
+      const rows = listComponents(await loadKit());
+      return text(rows.map((r) => `${r.name} (${r.classes}): ${r.note || "see get_rules"}`).join("\n"));
+    }
+  );
+
+  server.registerTool(
+    "scaffold_flow",
+    {
+      title: "Scaffold a flow",
+      description:
+        "Returns a complete HTML page for a flow, with one correctly sized artboard per screen you name. Each screen has a status bar (phone frames), a title and a primary button to replace. Fill in the content, then run validate_screen.",
+      inputSchema: {
+        title: z.string().min(1).max(80).describe('Flow name, like "Sign up and verify a phone number"'),
+        summary: z.string().min(1).max(200).describe("One line on what the flow gets done"),
+        screens: z
+          .array(z.object({ name: z.string().min(1).max(60), size: z.enum(Object.keys(SIZES)).optional().describe("Defaults to phone") }))
+          .min(1)
+          .max(12),
+      },
+      annotations: READ_ONLY,
+    },
+    async (flow) => text(scaffoldFlow(flow, CSS_URL))
   );
 
   server.registerTool(

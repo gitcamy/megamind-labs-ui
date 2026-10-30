@@ -1,6 +1,8 @@
 // Checks a screen against the rules in AGENTS.md. Text checks only, so it runs anywhere without a browser.
 // Errors break a rule of the system. Warnings are worth a second look.
 
+import { nearestClass } from "./kit.js";
+
 const NAMED_COLORS =
   /\b(red|green|blue|yellow|orange|purple|pink|teal|cyan|magenta|lime|navy|maroon|olive|indigo|violet|crimson|coral|salmon|gold|tomato|turquoise|aqua|fuchsia)\b/i;
 const VAGUE_BUTTONS = /^(submit|ok|okay|click here|button|go|yes|no|continue here)$/i;
@@ -46,7 +48,13 @@ export function validateScreen(html, kit) {
   // Only the kit's classes. Anything else means new CSS or a typo.
   const classes = classListOf(html);
   const unknown = [...new Set(classes.filter((c) => (c.startsWith("mm-") || c === "mm") && !kit.classes.has(c)))];
-  if (unknown.length) add(errors, "classes", `These classes are not in the kit: ${unknown.join(", ")}.`);
+  if (unknown.length) {
+    const hint = (c) => {
+      const near = nearestClass(kit, c);
+      return near ? `${c} (did you mean ${near}?)` : c;
+    };
+    add(errors, "classes", `These classes are not in the kit: ${unknown.map(hint).join(", ")}.`);
+  }
   const unknownStates = [...new Set(classes.filter((c) => c.startsWith("is-") && !kit.states.has(c)))];
   if (unknownStates.length) add(warnings, "classes", `These state classes are not in the kit: ${unknownStates.join(", ")}.`);
   const foreign = [...new Set(classes.filter((c) => !c.startsWith("mm") && !c.startsWith("is-")))];
