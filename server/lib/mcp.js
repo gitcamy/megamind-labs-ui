@@ -2,14 +2,20 @@
 // the tool's own model writes the screens, so nothing here calls an LLM or costs per use.
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { loadKit, describeComponent, listComponents, CSS_URL } from "./kit.js";
+import { loadKit, describeComponent, listComponents, stylesheetTag, STYLESHEET_MODES } from "./kit.js";
 import { scaffoldFlow, SIZES } from "./scaffold.js";
 import { validateScreen } from "./validate.js";
 
 const INSTRUCTIONS = `Megamind Labs UI is a greyscale, CSS-only wireframe kit.
 When the user asks for wireframes, mockups, screens or flows, call get_rules before writing any markup and follow it exactly.
 Use list_components to see every part, get_component to look one up, and get_starter or scaffold_flow for a page skeleton.
-Before you show the result, call validate_screen with your HTML and fix every error it reports.`;
+Before you show the result, call validate_screen with your HTML and fix every error it reports.
+If the page is shown in a chat preview, such as a Claude artifact, pass stylesheet: "inline" to get_starter or scaffold_flow, because those previews block outside stylesheets.`;
+
+const STYLESHEET = z
+  .enum(STYLESHEET_MODES)
+  .optional()
+  .describe('"link" (default) for a file opened in a browser or editor. "inline" for chat previews like Claude artifacts, which block outside stylesheets.');
 
 const text = (t) => ({ content: [{ type: "text", text: t }] });
 const READ_ONLY = { readOnlyHint: true, openWorldHint: false };
@@ -64,15 +70,16 @@ export function createMcpServer(origin) {
     "get_starter",
     {
       title: "Get a starter page",
-      description: "Returns a complete HTML page with the stylesheet linked and one flow of two phone screens, ready to edit.",
+      description: "Returns a complete HTML page with the stylesheet and one flow of two phone screens, ready to edit.",
+      inputSchema: { stylesheet: STYLESHEET },
       annotations: READ_ONLY,
     },
-    async () => {
+    async ({ stylesheet }) => {
       const kit = await loadKit();
       return text(
         kit.starter
           .replace(/<!--\s*Swap for the CDN link[^>]*-->\s*/i, "")
-          .replace(/href="\.\.\/megamind-labs-ui\.css"/, `href="${CSS_URL}"`)
+          .replace(/<link rel="stylesheet" href="\.\.\/megamind-labs-ui\.css">/, () => stylesheetTag(kit, stylesheet))
       );
     }
   );
@@ -103,10 +110,11 @@ export function createMcpServer(origin) {
           .array(z.object({ name: z.string().min(1).max(60), size: z.enum(Object.keys(SIZES)).optional().describe("Defaults to phone") }))
           .min(1)
           .max(12),
+        stylesheet: STYLESHEET,
       },
       annotations: READ_ONLY,
     },
-    async (flow) => text(scaffoldFlow(flow, CSS_URL))
+    async ({ stylesheet, ...flow }) => text(scaffoldFlow(flow, stylesheetTag(await loadKit(), stylesheet)))
   );
 
   server.registerTool(
@@ -114,7 +122,7 @@ export function createMcpServer(origin) {
     {
       title: "Check a screen",
       description:
-        "Checks HTML against the kit's rules: only kit classes, no color, placeholders instead of images and icons, real copy, one ink card and one primary action per screen. Call it before showing a screen and fix every error.",
+        "Checks HTML against the kit's rules: only kit classes, no color, placeholders instead of images and icons, no text inside shapes like mm-icon or mm-steps, real copy, one ink card and one primary action per screen. Call it before showing a screen and fix every error.",
       inputSchema: { html: z.string().min(1).max(400_000).describe("The screen or the whole page") },
       annotations: READ_ONLY,
     },

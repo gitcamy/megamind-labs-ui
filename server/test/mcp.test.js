@@ -44,6 +44,17 @@ test("get_starter links the CDN stylesheet and validates", async () => {
   assert.equal(r.structuredContent.ok, true);
 });
 
+test("get_starter and scaffold_flow can inline the stylesheet", async () => {
+  const starter = (await rpc("tools/call", { name: "get_starter", arguments: { stylesheet: "inline" } })).content[0].text;
+  const flow = (await rpc("tools/call", { name: "scaffold_flow", arguments: { title: "Check out", summary: "Pay for a cart.", screens: [{ name: "Cart" }], stylesheet: "inline" } })).content[0].text;
+  for (const page of [starter, flow]) {
+    assert.doesNotMatch(page, /<link rel="stylesheet"/);
+    assert.match(page, /<style>[\s\S]*\.mm-screen/);
+    const r = await rpc("tools/call", { name: "validate_screen", arguments: { html: page } });
+    assert.equal(r.structuredContent.ok, true);
+  }
+});
+
 test("list_components names the groups", async () => {
   const r = await rpc("tools/call", { name: "list_components", arguments: {} });
   assert.match(r.content[0].text, /^card \(\d+\)/m);

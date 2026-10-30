@@ -10,6 +10,49 @@ const VAGUE_BUTTONS = /^(submit|ok|okay|click here|button|go|yes|no|continue her
 const classListOf = (html) => [...html.matchAll(/\sclass\s*=\s*"([^"]*)"/gi)].flatMap((m) => m[1].split(/\s+/).filter(Boolean));
 const textOf = (s) => s.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
+// Parts drawn as fixed shapes. Text inside them spills out, like a label inside a 4px step bar.
+const SHAPES = ["mm-icon", "mm-dot", "mm-chevron", "mm-spinner", "mm-skeleton", "mm-progress", "mm-steps", "mm-dots", "mm-bars", "mm-typing", "mm-wave"];
+const VOID_TAGS = /^(area|base|br|col|embed|hr|img|input|link|meta|source|track|wbr)$/i;
+
+// The inner HTML of each element that has `cls`, matched by tag depth so nested elements stay inside.
+function elementsWithClass(html, cls) {
+  const found = [];
+  const open = new RegExp(`<([a-z][a-z0-9]*)\\b[^>]*\\sclass\\s*=\\s*"(?:[^"]*\\s)?${cls}(?:\\s[^"]*)?"[^>]*>`, "gi");
+  for (const m of html.matchAll(open)) {
+    const tag = m[1].toLowerCase();
+    if (VOID_TAGS.test(tag)) continue;
+    const tags = new RegExp(`<(/?)${tag}\\b[^>]*>`, "gi");
+    tags.lastIndex = m.index + m[0].length;
+    let depth = 1;
+    let t;
+    while (depth && (t = tags.exec(html))) depth += t[1] ? -1 : 1;
+    found.push(html.slice(m.index + m[0].length, t ? t.index : html.length));
+  }
+  return found;
+}
+
+// The direct child elements of some inner HTML, as their own outer HTML.
+function childrenOf(inner) {
+  const kids = [];
+  const tags = /<(\/?)([a-z][a-z0-9]*)\b[^>]*?(\/?)>/gi;
+  let depth = 0;
+  let start = 0;
+  for (const t of inner.matchAll(tags)) {
+    const selfClosing = t[3] || VOID_TAGS.test(t[2]);
+    if (t[1]) {
+      if (--depth === 0) kids.push(inner.slice(start, t.index + t[0].length));
+    } else if (depth === 0 && selfClosing) kids.push(t[0]);
+    else if (!selfClosing) {
+      if (depth === 0) start = t.index;
+      depth++;
+    }
+  }
+  return kids;
+}
+
+// A <style> block that is the kit itself, pasted in for previews that block outside stylesheets.
+const isKitSheet = (css) => /\.mm-screen\b/.test(css) && /--mm-ink\s*:/.test(css) && /\.mm-btn\b/.test(css);
+
 function hexIsGrey(hex) {
   let h = hex.slice(1);
   if (h.length === 3 || h.length === 4) h = [...h.slice(0, 3)].map((c) => c + c).join("");
@@ -37,9 +80,12 @@ export function validateScreen(html, kit) {
   const warnings = [];
   const add = (list, rule, detail) => list.push({ rule, detail });
 
+  const allSheets = [...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/gi)].map((m) => m[1]);
+  const kitInline = allSheets.some(isKitSheet);
+
   // Setup, only when a whole page was passed in.
   if (/<html[\s>]/i.test(html)) {
-    if (!/megamind-labs-ui(\.min)?\.css/i.test(html)) add(errors, "setup", "The page does not link megamind-labs-ui.css.");
+    if (!kitInline && !/megamind-labs-ui(\.min)?\.css/i.test(html)) add(errors, "setup", "The page does not link megamind-labs-ui.css.");
     const body = html.match(/<body([^>]*)>/i)?.[1] ?? "";
     if (!/class\s*=\s*"[^"]*\bmm\b[^"]*\bmm-canvas\b|class\s*=\s*"[^"]*\bmm-canvas\b[^"]*\bmm\b/.test(body))
       add(errors, "setup", 'Put class="mm mm-canvas" on <body>.');
@@ -62,7 +108,7 @@ export function validateScreen(html, kit) {
 
   // Greyscale only.
   const styles = [...html.matchAll(/\sstyle\s*=\s*"([^"]*)"/gi)].map((m) => m[1]).join(";");
-  const sheets = [...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/gi)].map((m) => m[1]).join("\n");
+  const sheets = allSheets.filter((s) => !isKitSheet(s)).join("\n");
   const colors = [...new Set(colorProblems(styles + "\n" + sheets))];
   if (colors.length) add(errors, "greyscale", `Color found: ${colors.join(", ")}. Use the --mm-* grey tokens.`);
   if (/gradient\(/i.test(styles + sheets)) add(errors, "greyscale", "Gradients are not allowed.");
@@ -73,6 +119,15 @@ export function validateScreen(html, kit) {
   if (/<img\b/i.test(html)) add(errors, "placeholders", "Use mm-ph (add mm-ph--x for photos) instead of <img>.");
   if (/<svg\b/i.test(html)) add(warnings, "placeholders", "Use mm-icon instead of real SVG icons.");
   if (/\b(fa-[a-z-]+|material-icons|material-symbols|bi-[a-z-]+)\b/.test(html)) add(errors, "placeholders", "Icon fonts are not allowed. Use mm-icon.");
+
+  // Shapes stay empty, and key-value rows hold a label and a value.
+  const filled = SHAPES.filter((cls) => elementsWithClass(html, cls).some((inner) => textOf(inner)));
+  if (filled.length)
+    add(errors, "shapes", `${filled.join(", ")} are drawn as fixed shapes and must stay empty. Put any label in a separate element beside them.`);
+  const badRows = elementsWithClass(html, "mm-kv")
+    .flatMap(childrenOf)
+    .filter((row) => !/^<div\b/i.test(row) || childrenOf(row.replace(/^<div\b[^>]*>|<\/div>$/gi, "")).length !== 2).length;
+  if (badRows) add(errors, "shapes", `${badRows} mm-kv row(s) are not a <div> with exactly two children, a label and a value.`);
 
   // Real copy.
   if (/lorem ipsum|dolor sit amet/i.test(html)) add(errors, "copy", "Replace lorem ipsum with real copy.");
