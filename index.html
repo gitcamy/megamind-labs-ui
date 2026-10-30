@@ -1143,7 +1143,7 @@ ${code}`,
     chatgpt: { logo: 'openai', hint: 'In ChatGPT, open Settings > Plugins > Browse directory > Add > Add custom MCP server. Paste this URL, choose No authentication, then Create as a plugin. In a new chat, type @ and pick it:', text: MCP_URL },
     cursor: { logo: 'cursor', hint: 'Add this to ~/.cursor/mcp.json, then ask Cursor for screens:', text: JSON.stringify({ mcpServers: { 'megamind-labs-ui': { url: MCP_URL } } }, null, 2) },
     codex: { logo: 'openai', hint: 'Run this in your terminal, then ask Codex for screens:', text: `codex mcp add megamind-labs-ui --url ${MCP_URL}` },
-    gemini: { logo: 'gemini', hint: 'Run this in your terminal, then ask Gemini CLI for screens:', text: `gemini mcp add --transport http megamind-labs-ui ${MCP_URL}` },
+    gemini: { logo: 'gemini', hint: 'In gemini.google.com, click the Settings icon, then Connected Apps. Under Custom apps, paste this URL and click Next. In a chat, type @ and pick it. Needs a personal Google account:', text: MCP_URL },
   };
   const logos = [...document.querySelectorAll('.doc-agent-logo [data-logo]')];
   const showLogo = (logo) => logos.forEach(l => l.classList.toggle('is-active', l.dataset.logo === logo));
