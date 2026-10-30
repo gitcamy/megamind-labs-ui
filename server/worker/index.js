@@ -1,5 +1,13 @@
 // Cloudflare Worker for the MCP endpoint. Reuses the same handler the Vercel route uses.
 import { POST, GET, DELETE, OPTIONS } from "../api/mcp.js";
+import { useBundledKit } from "../lib/kit.js";
+import rules from "../../AGENTS.md";
+import reference from "../../reference/classes.md";
+import starter from "../../screens/starter.html";
+import css from "../../megamind-labs-ui.css";
+
+// Ship the kit with the Worker, so a deploy never serves rules from a stale CDN cache.
+useBundledKit({ rules, reference, starter, css });
 
 const HANDLERS = { POST, GET, DELETE, OPTIONS };
 
