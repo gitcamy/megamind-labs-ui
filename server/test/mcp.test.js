@@ -17,6 +17,7 @@ test("initializes with instructions", async () => {
   const r = await rpc("initialize", { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "test", version: "1" } });
   assert.equal(r.serverInfo.name, "megamind-labs-ui");
   assert.match(r.instructions, /get_rules/);
+  assert.equal(r.serverInfo.icons[0].src, "http://localhost/icon.png");
 });
 
 test("lists the tools and prompt", async () => {

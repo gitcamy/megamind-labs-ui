@@ -2,3 +2,7 @@ name = "megamind-labs-ui-mcp"
 main = "worker/index.js"
 compatibility_date = "2026-10-01"
 compatibility_flags = ["nodejs_compat"]
+
+# Serves the connector icon (/icon.png) and /favicon.ico. Everything else goes to the Worker.
+[assets]
+directory = "./worker/assets"
