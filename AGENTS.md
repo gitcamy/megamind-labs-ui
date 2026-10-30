@@ -48,7 +48,7 @@ A screen is a vertical flex column with 12px gaps. Use `<div class="mm-spacer"><
 - Cards: `mm-card` (`--filled`, `--ink`) with `mm-card-title`. Section titles: `mm-section-head` with two spans.
 - Data: `mm-stat` > `mm-stat-label` + `mm-stat-value` + `mm-stat-meta`; `mm-delta--up/--down`; `mm-progress` with `style="--mm-value:34%"` and an inner `<span>`; `mm-ring` with `style="--mm-value:68"`; `mm-bars` of spans with `--mm-value` heights (one `is-active`); `mm-kv` rows of two spans; `mm-table`; `mm-timeline` (ol, `li.is-done`); `mm-week` (seven spans with `<small>` weekday).
 - Conversation: `mm-thread` > `mm-bubble` / `mm-bubble--me` / `mm-bubble-meta`, `mm-typing` (three spans), `mm-proposal` (an assistant's suggested action with confirm and dismiss buttons), `mm-suggestions` (chips), `mm-wave` (voice).
-- Feedback: `mm-banner`, `mm-toast` (text plus button), `mm-notification` (with `mm-notification-app`), `mm-live`, `mm-empty`, `mm-skeleton` (`--title`, `--block`, `--circle`), `mm-spinner`.
+- Feedback: `mm-banner`, `mm-toast` (text plus button), `mm-notification` (with `mm-notification-app`), `mm-live`, `mm-empty`, `mm-skeleton` (`--title`, `--block`, `--square`, `--thumb`, `--circle`), `mm-spinner`.
 - Overlays inside a screen: `mm-scrim` then `mm-sheet` or `mm-dialog`. Menus: `mm-menu`. Tooltips: `mm-tooltip`.
 - Annotation: `<span class="mm-note" style="top:..;left:..">1</span>` on a positioned element, explained in `<ol class="mm-notes"><li data-n="1">...</li></ol>` next to the artboard.
 - Dark theme: `data-theme="dark"` on the body or any screen. Components invert, and the accent switches to its dark value.
