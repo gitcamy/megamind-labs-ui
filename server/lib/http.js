@@ -63,7 +63,7 @@ export async function requireUser(request) {
     ({ data: profile } = await db().from("profiles").upsert({ id: user.id }).select("*").single());
   }
   if (profile.plan === "free" && DISPOSABLE.has(user.email?.split("@")[1]?.toLowerCase())) {
-    throw new HttpError(403, "disposable_email", "Sign in with a permanent email address to use the free generations.");
+    throw new HttpError(403, "disposable_email", "Sign in with a permanent email address to use the free screens.");
   }
   return { user, profile };
 }

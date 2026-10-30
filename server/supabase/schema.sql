@@ -51,15 +51,13 @@ create trigger on_auth_user_created after insert on auth.users
 create or replace function public.reserve_generation(
   p_user uuid,
   p_period_start timestamptz,
-  p_max_count int,
-  p_max_cost numeric,
+  p_allowance numeric,
   p_per_hour int,
   p_per_day int
 ) returns bigint
 language plpgsql security definer set search_path = public as $$
 declare
   v_id bigint;
-  v_count int;
   v_cost numeric;
 begin
   perform 1 from profiles where id = p_user for update;
@@ -79,10 +77,10 @@ begin
     raise exception 'daily_limit';
   end if;
 
-  select count(*) filter (where status <> 'failed' or output_tokens > 0), coalesce(sum(cost_usd), 0)
-    into v_count, v_cost
+  -- The allowance is what the tokens used this period cost, so it never runs out early or late.
+  select coalesce(sum(cost_usd), 0) into v_cost
     from generations where user_id = p_user and created_at >= p_period_start;
-  if v_count >= p_max_count or v_cost >= p_max_cost then
+  if v_cost >= p_allowance then
     raise exception 'quota';
   end if;
 

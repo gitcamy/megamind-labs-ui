@@ -4,5 +4,8 @@
     "api/generate.js": { "maxDuration": 300 },
     "api/mcp.js": { "maxDuration": 30 }
   },
-  "rewrites": [{ "source": "/mcp", "destination": "/api/mcp" }]
+  "rewrites": [{ "source": "/mcp", "destination": "/api/mcp" }],
+  "headers": [
+    { "source": "/hosted.js", "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }] }
+  ]
 }

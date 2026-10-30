@@ -45,7 +45,9 @@
   .gen-canvas { flex: 1 1 auto; min-height: 0; display: grid; place-items: center; padding: 32px; overflow: hidden; position: relative; }
   .gen-frame { position: relative; }
   .gen-frame iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; background: transparent; }
-  .gen-key { gap: 10px; }
+  .gen-account { gap: 10px; }
+  .gen-account [hidden] { display: none; }
+  .gen-account .mm-list-row { cursor: pointer; }
 
   /* Start view: no screen yet, so only the prompt, centred */
   .gen.is-start { grid-template-columns: minmax(0, 1fr); place-items: center; overflow-y: auto; }
@@ -116,11 +118,29 @@
         <button class="mm-chip">Team analytics dashboard on desktop</button>
       </div>
 
-      <div class="mm-card mm-card--filled gen-key" id="key-card" hidden>
-        <span class="mm-card-title">Add your Anthropic API key</span>
-        <span class="mm-small">The key stays in this browser and is only sent to api.anthropic.com. Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>.</span>
-        <div class="mm-field"><input class="mm-input" id="key-input" type="password" placeholder="sk-ant-..." autocomplete="off"></div>
-        <div class="mm-row"><button class="mm-btn mm-btn--sm" id="key-save">Save key</button><button class="mm-btn mm-btn--sm mm-btn--ghost" id="key-cancel">Cancel</button></div>
+      <div class="mm-card mm-card--filled gen-account" id="account-card" hidden>
+        <div class="mm-stack mm-gap-3" id="signin-view">
+          <span class="mm-card-title">Sign in to build screens</span>
+          <span class="mm-small">Try it free: about 6 screens on us. No card needed. Your description stays here while you sign in.</span>
+          <button type="button" class="mm-btn mm-btn--sm mm-btn--secondary" id="signin-google">Continue with Google</button>
+          <form class="mm-stack mm-gap-2" id="signin-form">
+            <div class="mm-field"><input class="mm-input" id="signin-email" type="email" placeholder="you@company.com" autocomplete="email" required></div>
+            <div id="captcha"></div>
+            <div class="mm-row"><button type="submit" class="mm-btn mm-btn--sm" id="signin-send">Email me a sign-in link</button><button type="button" class="mm-btn mm-btn--sm mm-btn--ghost" data-close-account>Cancel</button></div>
+          </form>
+          <span class="mm-small" id="signin-sent" hidden>Check your inbox for a sign-in link. Open it in this browser and you'll land back here.</span>
+        </div>
+        <div class="mm-stack mm-gap-3" id="paywall-view" hidden>
+          <span class="mm-card-title" id="paywall-title">You've used your free allowance</span>
+          <span class="mm-small">Pick a plan to keep building. Cancel any time.</span>
+          <div class="mm-list mm-list--boxed" id="plans"></div>
+          <div class="mm-row"><button type="button" class="mm-btn mm-btn--sm" id="checkout">Sign up</button><button type="button" class="mm-btn mm-btn--sm mm-btn--ghost" data-close-account>Not now</button></div>
+        </div>
+        <div class="mm-stack mm-gap-3" id="offline-view" hidden>
+          <span class="mm-card-title">The generator isn't switched on yet</span>
+          <span class="mm-small">It's being set up. In the meantime, connect your own AI tool from the Get started page and build screens there for free.</span>
+          <div class="mm-row"><a class="mm-btn mm-btn--sm" href="index.html#start">Connect your agent</a><button type="button" class="mm-btn mm-btn--sm mm-btn--ghost" data-close-account>Close</button></div>
+        </div>
       </div>
 
       <form class="gen-compose" id="compose">
@@ -129,7 +149,7 @@
         <div class="mm-row">
           <button type="button" class="gen-icon" id="attach" aria-label="Add an image" title="Add an image, like a sketch or a screenshot"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 9.5l-6.2 6.2a4 4 0 0 1-5.7-5.7l6.6-6.6a2.7 2.7 0 0 1 3.8 3.8l-6.5 6.5a1.3 1.3 0 0 1-1.9-1.9l5.9-5.9"/></svg></button>
           <input type="file" id="file-input" accept="image/png,image/jpeg,image/gif,image/webp" multiple hidden>
-          <span class="mm-caption mm-grow" id="key-status"></span>
+          <span class="mm-caption mm-grow" id="account-status"></span>
           <button type="button" class="gen-icon" id="mic" aria-label="Speak" aria-pressed="false" title="Speak your description"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7.25" y="2.5" width="5.5" height="9.5" rx="2.75"/><path d="M4.5 9.5a5.5 5.5 0 0 0 11 0M10 15v2.5"/></svg></button>
           <button type="submit" class="mm-btn mm-btn--sm" id="send">Generate screen</button>
         </div>
@@ -159,9 +179,14 @@
 
 <script type="module">
   const CDN_CSS = 'https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css';
-  const CDN_AGENTS = 'https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/AGENTS.md';
-  const SDK_URL = 'https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@0.135.0/+esm';
-  const MODEL = 'claude-opus-5-5';
+  // The hosted generator (server/ in this repo). Fill these in once it's deployed.
+  const HOSTED = {
+    api: 'https://YOUR-HOST',
+    supabaseUrl: '',
+    supabaseAnonKey: '',
+    turnstileSiteKey: '',   // set when captcha is on in Supabase Auth
+  };
+  const HOSTED_READY = !HOSTED.api.includes('YOUR-HOST') && !!HOSTED.supabaseUrl && !!HOSTED.supabaseAnonKey;
   const DEVICES = {
     phone: { cls: 'mm-screen--phone', w: 390, h: 844, label: 'Phone, 390 x 844' },
     tablet: { cls: 'mm-screen--tablet', w: 820, h: 1180, label: 'Tablet, 820 x 1180' },
@@ -220,53 +245,118 @@
     return t;
   };
 
-  // ---------------------------------------------------------------- API key
-  const keyCard = $('key-card');
-  let pendingPrompt = null;
-  const updateKeyStatus = () => {
-    $('key-status').innerHTML = store.get('mm-anthropic-key')
-      ? 'Using your API key. <button type="button" class="mm-link" style="font-size:12px" id="key-change">Change</button>'
-      : '';
-    $('key-change')?.addEventListener('click', () => { keyCard.hidden = false; $('key-input').focus(); });
+  // ---------------------------------------------------------------- account
+  // Sign in, a free token allowance, then a plan. The server checks every limit; this only shows them.
+  const accountCard = $('account-card');
+  const views = ['signin-view', 'paywall-view', 'offline-view'];
+  const showAccount = (view) => {
+    accountCard.hidden = !view;
+    views.forEach((v) => ($(v).hidden = v !== view));
   };
-  $('key-save').addEventListener('click', () => {
-    const v = $('key-input').value.trim();
-    if (!v) return $('key-input').focus();
-    store.set('mm-anthropic-key', v);
-    $('key-input').value = '';
-    keyCard.hidden = true;
-    updateKeyStatus();
-    const p = pendingPrompt; pendingPrompt = null;
-    if (p === 'resubmit') $('compose').requestSubmit();
-    else if (p) generate(p.prompt, p.images);
-  });
-  $('key-cancel').addEventListener('click', () => { keyCard.hidden = true; pendingPrompt = null; });
-  updateKeyStatus();
+  document.querySelectorAll('[data-close-account]').forEach((b) => b.addEventListener('click', () => showAccount(null)));
 
-  // ---------------------------------------------------------------- system prompt
-  let systemPrompt = null;
-  const loadRules = async () => {
-    for (const url of ['AGENTS.md', CDN_AGENTS]) {
-      try { const r = await fetch(url); if (r.ok) return await r.text(); } catch {}
+  let hosted = null;
+  let account = null;   // { plan, label, lifetime, leftPercent, screensLeft, screensTotal }
+  let plans = [];
+  let captchaToken;
+
+  // Keep the description across the sign-in and payment redirects
+  const keepDraft = () => store.set('mm-draft', $('prompt').value);
+  const restoreDraft = () => { const d = store.get('mm-draft'); if (d && !$('prompt').value) $('prompt').value = d; store.set('mm-draft', null); };
+
+  const link = (id, text) => `<button type="button" class="mm-link" style="font-size:12px" id="${id}">${text}</button>`;
+  const renderStatus = () => {
+    const el = $('account-status');
+    if (!HOSTED_READY || !hosted) { el.textContent = ''; return; }
+    if (!account) el.innerHTML = `Try it free. ${link('status-signin', 'Sign in')}`;
+    else {
+      const about = account.screensLeft === 1 ? 'about 1 screen' : `about ${account.screensLeft} screens`;
+      const count = `${account.lifetime ? 'Free' : 'This month'}: ${account.leftPercent}% left, ${about}`;
+      el.innerHTML = `${count} · ${account.lifetime ? link('status-plans', 'See plans') : link('status-billing', 'Billing')} · ${link('status-signout', 'Sign out')}`;
     }
-    throw new Error('Could not load the kit rules (AGENTS.md).');
+    $('status-signin')?.addEventListener('click', () => showAccount('signin-view'));
+    $('status-plans')?.addEventListener('click', () => showPaywall(false));
+    $('status-billing')?.addEventListener('click', () => hosted.manageBilling().catch((e) => bubble(e.message)));
+    $('status-signout')?.addEventListener('click', async () => { await hosted.signOut(); account = null; renderStatus(); });
   };
-  const getSystem = async () => {
-    if (systemPrompt) return systemPrompt;
-    const rules = await loadRules();
-    systemPrompt = `${rules}
 
-## How to answer in this generator
-You are the screen generator inside the Megamind Labs UI docs. The person describes one screen; you build it from the kit.
-- The stylesheet is already loaded and the page wraps your screen. Do not output <html>, <head>, <body>, <link>, <style> or <script>.
-- Reply with one plain sentence saying what you built or changed, then one \`\`\`html code block.
-- The code block starts with <!-- title: Short screen name --> on its own line, then exactly one root element: <div class="mm-screen ..."> ... </div>.
-- Use a phone frame (mm-screen--phone) unless the person asks for tablet or desktop, or describes something that only works on a wide screen. Keep the frame across changes unless they ask to switch.
-- On a phone frame, start with mm-statusbar. On tablet and desktop frames, use mm-sidenav or mm-split where it helps.
-- When the person asks for a change, return the whole updated screen, not a diff.
-- Screens are light. Only when the person asks for dark, put data-theme="dark" on the root mm-screen element, and keep it across changes until they ask for light.`;
-    return systemPrompt;
+  const refreshAccount = async () => {
+    if (!hosted || !(await hosted.user())) { account = null; return renderStatus(); }
+    try {
+      const me = await hosted.me();
+      account = me.account;
+      plans = me.plans;
+    } catch (e) {
+      account = null;
+      if (e.code === 'disposable_email' || e.code === 'unconfirmed') bubble(e.message);
+    }
+    renderStatus();
   };
+  const outOfScreens = () => account && account.leftPercent <= 0;
+
+  const showPaywall = (out = true) => {
+    $('paywall-title').textContent = !out ? 'Plans' : account?.lifetime ? "You've used your free allowance" : "You've used this month's allowance";
+    const current = account?.plan;
+    $('plans').replaceChildren(...plans.map((pl, i) => {
+      const row = document.createElement('label');
+      row.className = 'mm-list-row mm-choice';
+      row.innerHTML = `<input type="radio" name="plan" class="mm-radio" value="${pl.id}"${i === 0 ? ' checked' : ''}><div class="mm-list-text"><span class="mm-list-title">${pl.label}${pl.id === current ? ' (your plan)' : ''}</span><span class="mm-list-sub">About ${pl.screens} screens a month</span></div><span class="mm-list-value">$${pl.price}<small>/mo</small></span>`;
+      return row;
+    }));
+    $('checkout').textContent = current && current !== 'free' ? 'Change plan' : 'Sign up';
+    showAccount('paywall-view');
+  };
+  $('checkout').addEventListener('click', async () => {
+    keepDraft();
+    try {
+      // Paid plans change in Stripe's billing page; free accounts go to checkout
+      if (account?.plan && account.plan !== 'free') return await hosted.manageBilling();
+      const plan = document.querySelector('#plans input:checked')?.value;
+      if (plan) await hosted.upgrade(plan);
+    } catch (e) { bubble(e.message); }
+  });
+
+  $('signin-google').addEventListener('click', () => { keepDraft(); hosted.signInWithGoogle(); });
+  $('signin-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    keepDraft();
+    $('signin-send').disabled = true;
+    const { error } = await hosted.signInWithEmail($('signin-email').value.trim(), captchaToken);
+    $('signin-send').disabled = false;
+    if (error) { bubble(error.message); return; }
+    $('signin-form').hidden = true;
+    $('signin-google').hidden = true;
+    $('signin-sent').hidden = false;
+  });
+
+  const startAccount = async () => {
+    restoreDraft();
+    if (!HOSTED_READY) return renderStatus();
+    try {
+      const { createHosted } = await import(`${HOSTED.api}/hosted.js`);
+      hosted = await createHosted({ api: HOSTED.api, supabaseUrl: HOSTED.supabaseUrl, supabaseAnonKey: HOSTED.supabaseAnonKey });
+    } catch {
+      return renderStatus();
+    }
+    if (HOSTED.turnstileSiteKey) {
+      const s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+      s.onload = () => window.turnstile.render('#captcha', { sitekey: HOSTED.turnstileSiteKey, callback: (t) => (captchaToken = t) });
+      document.head.append(s);
+    }
+    hosted.onAuthChange((user) => { if (user && !$('signin-view').hidden) showAccount(null); refreshAccount(); });
+    await refreshAccount();
+    const params = new URLSearchParams(location.search);
+    if (params.get('checkout') === 'done') {
+      setStarted(true);
+      bubble(account ? `You're on ${account.label}: about ${account.screensTotal} screens a month.` : "You're all set. Your plan is active.");
+    }
+    if (params.has('checkout')) {
+      params.delete('checkout');
+      history.replaceState(null, '', `generate.html${params.size ? `?${params}` : ''}`);
+    }
+  };
+  startAccount();
 
   // ---------------------------------------------------------------- parsing
   const parseReply = (text) => {
@@ -344,18 +434,17 @@ You are the screen generator inside the Megamind Labs UI docs. The person descri
 
   let runId = 0;     // bumps when you switch screens, so a stopped run can't write into the next one
   const generate = async (prompt, images = []) => {
-    const apiKey = store.get('mm-anthropic-key');
-    if (!apiKey) {
-      // Keep the draft and its images in the box; it sends once the key is saved
-      files = images; renderFiles();
-      pendingPrompt = 'resubmit';
-      keyCard.hidden = false;
-      $('key-input').focus();
-      return;
-    }
+    // Keep the draft and its images in the box when sign-in or a plan comes first
+    const holdDraft = (view) => {
+      $('prompt').value = prompt; files = images; renderFiles();
+      if (view === 'paywall-view') showPaywall(); else showAccount(view);
+    };
+    if (!hosted) return holdDraft('offline-view');
+    if (!account) return holdDraft('signin-view');
+    if (outOfScreens()) return holdDraft('paywall-view');
 
     setStarted(true);
-    bubble(prompt, true, images);
+    const mine = bubble(prompt, true, images);
     $('prompt').value = '';
     const wait = typing();
     setBusy(true);
@@ -366,25 +455,18 @@ You are the screen generator inside the Megamind Labs UI docs. The person descri
     let text = '';
     let reply = null;
     try {
-      const [{ default: Anthropic }, system] = await Promise.all([import(SDK_URL), getSystem()]);
-      const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
       const content = images.length
         ? [...images.map((im) => ({ type: 'image', source: { type: 'base64', media_type: im.type, data: im.data } })), { type: 'text', text: prompt }]
         : prompt;
       const messages = [...state.history, { role: 'user', content }];
+      // Only this turn's images are sent; earlier ones become a note, like in saved screens
+      const sendable = messages.map((m, i) => (i < messages.length - 1 && Array.isArray(m.content)
+        ? { ...m, content: m.content.map((b) => (b.type === 'image' ? { type: 'text', text: '(An image was attached for context.)' } : b)) }
+        : m));
 
-      const stream = client.beta.messages.stream({
-        model: MODEL,
-        max_tokens: 32000,
-        output_config: { effort: 'medium' },
-        betas: ['server-side-fallback-2026-07-01'],
-        fallbacks: 'default',
-        system: [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }],
-        messages,
-      });
-      state.stream = stream;
-
-      stream.on('text', (delta) => {
+      const controller = new AbortController();
+      state.stream = controller;
+      const final = await hosted.generate(sendable, { signal: controller.signal, onText: (delta) => {
         if (stale()) return;
         text += delta;
         const p = parseReply(text);
@@ -398,11 +480,10 @@ You are the screen generator inside the Megamind Labs UI docs. The person descri
           setTitle();
           queueRender();
         }
-      });
-
-      const final = await stream.finalMessage();
+      } });
       if (stale()) return;
       wait.remove();
+      if (final.account) { account = final.account; renderStatus(); }
 
       if (final.stop_reason === 'refusal') {
         throw new Error("Claude declined this request. Try describing the screen differently.");
@@ -420,20 +501,20 @@ You are the screen generator inside the Megamind Labs UI docs. The person descri
     } catch (err) {
       if (stale()) return;
       wait.remove();
-      const aborted = err?.name === 'APIUserAbortError' || /abort/i.test(err?.message || '');
+      const aborted = err?.name === 'AbortError';
       state.markup = previous.markup;
       state.title = previous.title;
       render();
       if (aborted) {
         bubble('Stopped. Your last finished screen is still here.');
-      } else if (err?.status === 401) {
-        store.set('mm-anthropic-key', null);
-        updateKeyStatus();
-        bubble('That API key was rejected. Add a different key to keep going.');
-        pendingPrompt = { prompt, images };
-        keyCard.hidden = false;
-      } else if (err?.status === 429) {
-        bubble('Too many requests right now. Wait a moment, then try again.');
+        refreshAccount();
+      } else if (['signed_out', 'quota'].includes(err?.code)) {
+        // Nothing was built, so put the request back in the box for after sign-in or payment
+        mine.remove();
+        if (err.code === 'signed_out') account = null; else refreshAccount();
+        renderStatus();
+        if (!thread.children.length) setStarted(false);
+        holdDraft(err.code === 'quota' ? 'paywall-view' : 'signin-view');
       } else {
         bubble(err?.message || 'Something went wrong. Try again.');
       }

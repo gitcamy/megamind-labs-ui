@@ -28,7 +28,7 @@ test("drops extra fields like cache_control", () => {
 
 test("caps images", () => {
   const img = { type: "image", source: { type: "base64", media_type: "image/png", data: "AAAA" } };
-  bad([{ role: "user", content: [img, img, img, img, { type: "text", text: "x" }] }], /3 images/);
+  bad([{ role: "user", content: [img, img, img, img, img, { type: "text", text: "x" }] }], /4 images/);
   bad([{ role: "user", content: [{ ...img, source: { ...img.source, data: "A".repeat(1_400_000) } }] }], /1 MB/);
 });
 

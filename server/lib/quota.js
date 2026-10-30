@@ -1,5 +1,5 @@
 import { db, HttpError } from "./http.js";
-import { PLANS, RATE, LIMITS, periodStart, costOf } from "./plans.js";
+import { PLANS, RATE, LIMITS, periodStart, costOf, screensFor } from "./plans.js";
 
 const IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/gif", "image/webp"]);
 
@@ -25,8 +25,7 @@ export async function reserve(profile) {
   const { data, error } = await db().rpc("reserve_generation", {
     p_user: profile.id,
     p_period_start: periodStart(profile).toISOString(),
-    p_max_count: plan.generations,
-    p_max_cost: plan.maxCostUsd,
+    p_allowance: plan.allowanceUsd,
     p_per_hour: RATE.perHour,
     p_per_day: RATE.perDay,
   });
@@ -38,8 +37,8 @@ export async function reserve(profile) {
       402,
       "quota",
       plan.lifetime
-        ? `You've used your ${plan.generations} free screens. Pick a plan to keep building.`
-        : `You've used this month's ${plan.generations} screens. Upgrade, or wait for your plan to renew.`
+        ? "You've used your free screens. Pick a plan to keep building."
+        : "You've used this month's allowance. Upgrade, or wait for your plan to renew."
     );
   }
   if (code) throw new HttpError(REASONS[code][0], code, REASONS[code][1]);
@@ -69,10 +68,16 @@ export async function usage(profile) {
   const { data, error } = await db().rpc("usage_since", { p_user: profile.id, p_since: since.toISOString() });
   if (error) throw error;
   const row = Array.isArray(data) ? data[0] : data;
-  // Show whichever cap is closer, so the counter never says "12 left" when the cost cap is about to stop them.
-  const byCost = Math.floor((Number(row?.cost ?? 0) / plan.maxCostUsd) * plan.generations);
-  const used = Math.min(plan.generations, Math.max(row?.used ?? 0, byCost));
-  return { plan: profile.plan, label: plan.label, used, limit: plan.generations, lifetime: !!plan.lifetime, since };
+  const left = Math.max(0, plan.allowanceUsd - Number(row?.cost ?? 0));
+  return {
+    plan: profile.plan,
+    label: plan.label,
+    lifetime: !!plan.lifetime,
+    leftPercent: Math.round((left / plan.allowanceUsd) * 100),
+    screensLeft: screensFor(left),
+    screensTotal: screensFor(plan.allowanceUsd),
+    since,
+  };
 }
 
 // Accepts only the shape the generator page sends: alternating turns of text, plus a few images.

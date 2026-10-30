@@ -1,12 +1,19 @@
-// Plans and limits for the hosted generator. Each plan has two caps: a generation count people see,
-// and a cost cap that stays under what the plan earns after Stripe fees, in case screens run long.
+// Plans for the hosted generator. Each plan is a fixed token allowance, priced in dollars of Anthropic
+// usage so input, output and cached tokens each count at what they cost. Everyone always gets their whole
+// allowance; short screens leave more of it for later. Keep each allowance under what the plan earns
+// after Stripe fees.
 export const MODEL = "claude-sonnet-5-5";
 
 export const PLANS = {
-  free: { label: "Free", price: 0, generations: 3, maxCostUsd: 0.6, lifetime: true },
-  starter: { label: "Starter", price: 5.99, generations: 40, maxCostUsd: 4.0, priceEnv: "STRIPE_PRICE_STARTER" },
-  pro: { label: "Pro", price: 10.99, generations: 100, maxCostUsd: 7.5, priceEnv: "STRIPE_PRICE_PRO" },
+  free: { label: "Free", price: 0, allowanceUsd: 0.5, lifetime: true },
+  starter: { label: "Starter", price: 5.99, allowanceUsd: 3.5, priceEnv: "STRIPE_PRICE_STARTER" },
+  pro: { label: "Pro", price: 10.99, allowanceUsd: 7.0, priceEnv: "STRIPE_PRICE_PRO" },
 };
+
+// What a typical screen costs, only for the "about N screens" shown to people. Update it from the
+// generations table once there is real usage.
+export const TYPICAL_SCREEN_USD = 0.08;
+export const screensFor = (usd) => Math.max(0, Math.floor(usd / TYPICAL_SCREEN_USD));
 
 // Per person, on every plan.
 export const RATE = { perHour: 10, perDay: 40 };
@@ -17,7 +24,7 @@ export const LIMITS = {
   promptChars: 2000,
   assistantChars: 60000,
   turns: 24,
-  images: 3,
+  images: 4,
   imageBytes: 1_000_000,
 };
 

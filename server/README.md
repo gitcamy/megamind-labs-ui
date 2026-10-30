@@ -3,7 +3,7 @@
 One Vercel project with two jobs:
 
 - **MCP server** at `/mcp`. Free and costs nothing to run. People connect their own AI tool (Claude, Cursor, Claude Code, ChatGPT), and that tool's model writes the screens using the kit's rules.
-- **Hosted generator API** at `/api/*`. For people without an AI tool. They sign in, get 3 free screens, then pick a plan. It runs on your Anthropic key, so every call is metered and capped.
+- **Hosted generator API** at `/api/*`. For people without an AI tool. They sign in, get a free allowance of about 6 screens, then pick a plan. It runs on your Anthropic key, so every call is metered and capped.
 
 Both read `AGENTS.md`, `reference/classes.md` and the stylesheet from jsDelivr, so they stay in step with the repo.
 
@@ -37,20 +37,22 @@ Tools: `get_rules`, `get_reference`, `get_component`, `get_starter`, `validate_s
 
 ## Hosted generator plans
 
-| Plan | Price | Screens | Cost cap | Resets |
+| Plan | Price | Token allowance (in usage $) | About | Resets |
 | --- | --- | --- | --- | --- |
-| Free | $0 | 3 | $0.60 | never |
-| Starter | $5.99/mo | 40 | $4.00 | each billing period |
-| Pro | $10.99/mo | 100 | $7.50 | each billing period |
+| Free | $0 | $0.50 | 6 screens | never |
+| Starter | $5.99/mo | $3.50 | 43 screens | each billing period |
+| Pro | $10.99/mo | $7.00 | 87 screens | each billing period |
 
-All plans run on Claude Sonnet 5.5 at medium effort. Change them in `lib/plans.js`. The cost cap stops someone whose screens run long from costing more than the plan earns, and the counter people see uses whichever cap is closer.
+Each plan is a fixed allowance of tokens, priced at what Anthropic charges for them, so input, output and cached tokens each count at their real cost. People always get the whole allowance: small screens and changes use little of it, long ones use more. The page shows how much is left and roughly how many screens that is, using `TYPICAL_SCREEN_USD` in `lib/plans.js`. All plans run on Claude Sonnet 5.5 at medium effort.
+
+A request that starts with allowance left always finishes, so the last one can go slightly over (by one screen's cost at most).
 
 ### What protects your Anthropic bill
 
 1. The key is only on the server. The page never sees it.
 2. Every request needs a Supabase sign-in with a confirmed email. Free use is counted per account, and throwaway email domains can't use the free tier.
-3. `reserve_generation` in Postgres locks the account row, then checks: nothing else running, 10 an hour, 40 a day, and the plan's screen count and cost cap. Parallel requests can't get past it.
-4. The server writes the system prompt and only accepts alternating text turns plus up to 3 images under 1 MB. Requests are capped at 2,000 characters, 24 turns and 16k output tokens, so the endpoint can't be used as a general Claude proxy.
+3. `reserve_generation` in Postgres locks the account row, then checks: nothing else running, 10 an hour, 40 a day, and the allowance left on their plan. Parallel requests can't get past it.
+4. The server writes the system prompt and only accepts alternating text turns plus up to 4 images under 1 MB. Requests are capped at 2,000 characters, 24 turns and 16k output tokens, so the endpoint can't be used as a general Claude proxy.
 5. Usage is billed from the real token counts, including when someone stops a screen partway.
 6. `DAILY_BUDGET_USD` pauses the generator for everyone once a day's total spend reaches it.
 7. Set a monthly spend limit on the key's Console workspace. That's the backstop that can't be bypassed.
