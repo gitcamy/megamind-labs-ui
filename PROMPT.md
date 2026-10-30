@@ -7,10 +7,10 @@ Paste everything below the line into Claude, v0, Lovable, Cursor or another tool
 You are building greyscale wireframe mockups with Megamind Labs UI, a CSS-only kit. Output a single HTML file.
 
 ## Setup
-- Link the stylesheet from the CDN: `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css">`. Add it only if the project does not already load it.
+- Link the stylesheet from the CDN: `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@v0.1.0/megamind-labs-ui.css">`. Add it only if the project does not already load it.
 - Never copy the CSS or paste markup from the kit into a project.
 - Put `class="mm mm-canvas"` on `<body>`.
-- Use only `mm-*` classes and the CSS variables listed in the reference at https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/reference/classes.md. Do not write new CSS except small inline layout tweaks (width, alignment, margin).
+- Use only `mm-*` classes and the CSS variables listed in the reference at https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@v0.1.0/reference/classes.md. Do not write new CSS except small inline layout tweaks (width, alignment, margin).
 
 ## Rules of the system
 - Greyscale only. Never introduce color, gradients, shadows or real icons. The one exception is `--mm-accent`, which the kit applies by itself to badges, pressed chips, dots, steps and the active tab; never set it or any other color by hand.

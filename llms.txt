@@ -2,7 +2,7 @@
 
 > A CSS-only, greyscale wireframe kit. Link one stylesheet, put `class="mm mm-canvas"` on the body, and build screens from `mm-*` classes.
 
-- [Rules for building screens](https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/AGENTS.md): setup, the rules of the system, presenting flows, and the component list.
-- [Class and token reference](https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/reference/classes.md): every `mm-*` class and CSS variable.
-- [Stylesheet](https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css): the single file to link.
+- [Rules for building screens](https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@v0.1.0/AGENTS.md): setup, the rules of the system, presenting flows, and the component list.
+- [Class and token reference](https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@v0.1.0/reference/classes.md): every `mm-*` class and CSS variable.
+- [Stylesheet](https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@v0.1.0/megamind-labs-ui.css): the single file to link.
 - [Source](https://github.com/gitcamy/megamind-labs-ui): repository, starter screens and the React wrappers.

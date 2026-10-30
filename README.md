@@ -27,7 +27,7 @@ Made by [Megamind Labs](https://megamindlabs.ai), a design and product studio. W
 **Plain HTML:** link the stylesheet, add `class="mm mm-canvas"` to `<body>`, and build with the classes.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@v0.1.0/megamind-labs-ui.css">
 
 <body class="mm mm-canvas">
   <div class="mm-screen mm-screen--phone">

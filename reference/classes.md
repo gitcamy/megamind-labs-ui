@@ -2,7 +2,7 @@
 
 Generated from megamind-labs-ui.css (v0.1.0). Do not edit by hand; run `node agent/build.mjs`.
 
-Stylesheet: https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@main/megamind-labs-ui.css
+Stylesheet: https://cdn.jsdelivr.net/gh/gitcamy/megamind-labs-ui@v0.1.0/megamind-labs-ui.css
 
 ## Design tokens
 
