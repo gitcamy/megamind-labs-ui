@@ -8,7 +8,39 @@ A greyscale wireframe kit for getting projects working before you design them. S
 
 Made by [Megamind Labs](https://megamindlabs.ai).
 
-## Use it
+## Connect your AI tool
+
+Megamind Labs UI is an MCP server. Connect it to your AI tool, then ask for screens: "Wireframe a sign-up flow with Megamind Labs UI." Your tool's own model writes the screens, following the kit's rules, and checks them before showing you.
+
+```
+https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp
+```
+
+**Claude (web and desktop):** Settings → Connectors → Add custom connector → paste the URL above.
+
+**Claude Code:**
+
+```bash
+claude mcp add --transport http megamind-labs-ui https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp
+```
+
+**Codex:**
+
+```bash
+codex mcp add megamind-labs-ui --url https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp
+```
+
+**Cursor:** add to `~/.cursor/mcp.json`:
+
+```json
+{ "mcpServers": { "megamind-labs-ui": { "url": "https://megamind-labs-ui-mcp.megamind-labs.workers.dev/mcp" } } }
+```
+
+ChatGPT, Gemini, Antigravity and VS Code are covered in [`server/README.md`](server/README.md#connect-the-mcp-server).
+
+Tools: `get_rules`, `get_reference`, `list_components`, `get_component`, `get_starter`, `scaffold_flow`, `validate_screen`. There is also a `wireframe` prompt.
+
+## Use the stylesheet directly
 
 **Plain HTML:** link the stylesheet and put `class="mm mm-canvas"` on `<body>`.
 
@@ -20,9 +52,7 @@ Made by [Megamind Labs](https://megamindlabs.ai).
 
 **React:** copy `react/MegamindLabsUI.jsx` into your project and import the stylesheet once.
 
-**Other AI tools:** paste [`PROMPT.md`](PROMPT.md) into Claude, v0, Lovable or Cursor, or connect the MCP server (setup in [`server/README.md`](server/README.md)). Agents can also read [`AGENTS.md`](AGENTS.md) and [`llms.txt`](llms.txt).
-
-**Generator:** open `generate.html`, describe a screen by typing or voice, and Claude builds it from the kit. It uses your own Anthropic API key, which stays in your browser. Copy the result as markup, React or a full page.
+**Without MCP:** paste [`PROMPT.md`](PROMPT.md) into your AI tool. Agents can also read [`AGENTS.md`](AGENTS.md) and [`llms.txt`](llms.txt).
 
 ## Theming
 
