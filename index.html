@@ -30,7 +30,7 @@
   .doc-deck > [data-pose="3"] { --i: 3; }
   .doc-deck.is-dealing > .mm-screen { animation: doc-deal 1.6s cubic-bezier(.22, 1.1, .36, 1) both; }
   @keyframes doc-deal {
-    from { transform: translate(calc(var(--x, 0px) + 100vw), calc(var(--y, 0px) - 20vh + var(--i) * 12vh)) rotate(calc(var(--r, 0deg) + 28deg)); }
+    from { transform: translate(calc(var(--x, 0px) + var(--doc-fly, 100vw)), calc(var(--y, 0px) - 20vh + var(--i) * 12vh)) rotate(calc(var(--r, 0deg) + 28deg)); }
   }
   .doc-flow-links { margin-top: 8px; }
   #screens .mm-flow-section[hidden] { display: none; }
@@ -111,17 +111,33 @@
   .doc-agent-logo svg.is-active { opacity: 1; }
   @media (max-width: 900px) {
     .doc-main { padding: 40px 20px 80px; }
+    /* Clear the sticky top bar when a menu link jumps to a section */
+    .doc-section, #screens .mm-flow-section { scroll-margin-top: 96px; }
     .doc-hero h1 { font-size: 40px; }
     .doc-deck { padding: 16px 24px; justify-self: center; }
     .doc-spec--wide { grid-column: auto; }
     .doc-flowwrap { margin-right: -20px; }
     .doc-flowwrap .mm-flow { padding-right: 20px; }
   }
+  /* Phones: the deck is drawn at a smaller scale so it fits the width and leaves room to scroll on.
+     Zoom shrinks the travel too, so the fly-in distance is scaled back up to start off-screen */
+  @media (max-width: 600px) {
+    .doc-deck { zoom: 0.55; --doc-fly: 182vw; padding: 24px 48px; }
+  }
 </style>
 </head>
 <body class="mm" data-generator="off">
 
-<div class="doc-top"><div class="doc-logo"><svg class="doc-mark" viewBox="0 0 340 340" aria-hidden="true"><path d="M226.178 0L113.089 0V18.8481L75.3926 18.8481V37.6963L37.6963 37.6963L37.6963 75.3926H18.8481L18.8481 94.2407H0L0 207.33H18.8481L18.8481 245.026H37.6963V263.874H56.5444V282.722H94.2407V301.57L188.481 301.57V282.722H226.178L226.178 263.874H245.026V226.178H263.874L263.874 131.937H245.026V113.089H226.178V94.2407L207.33 94.2407L207.33 75.3926L113.089 75.3926V94.2407H94.2407V113.089H75.3926L75.3926 188.481L94.2407 188.481V207.33H113.089L113.089 226.178H169.633V207.33H188.481V150.785H150.785V188.481H113.089L113.089 131.937H131.937V113.089L188.481 113.089V131.937H207.33V150.785H226.178V226.178H207.33V245.026H188.481V263.874L94.2407 263.874V245.026L75.3926 245.026V226.178H56.5444V207.33H37.6963L37.6963 113.089L56.5444 113.089L56.5444 75.3926H75.3926V56.5444L113.089 56.5444L113.089 37.6963L207.33 37.6963V56.5444L245.026 56.5444V75.3926H263.874V94.2407H282.722V131.937H301.57L301.57 245.026H282.722V263.874H263.874V301.57H245.026V310.994V320.418H226.202V339.267H245.05H263.898V320.418H282.722V301.57H301.57V282.722H320.418V245.026H339.267L339.267 113.089H320.418V75.3926L301.57 75.3926V56.5444L282.722 56.5444V37.6963H263.874V18.8481L226.178 18.8481V0Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/></svg>Megamind Labs UI Kit</div><button class="mm-btn mm-btn--sm mm-btn--secondary" data-theme-toggle>Dark</button></div>
+<div class="doc-top"><div class="doc-logo"><svg class="doc-mark" viewBox="0 0 340 340" aria-hidden="true"><path d="M226.178 0L113.089 0V18.8481L75.3926 18.8481V37.6963L37.6963 37.6963L37.6963 75.3926H18.8481L18.8481 94.2407H0L0 207.33H18.8481L18.8481 245.026H37.6963V263.874H56.5444V282.722H94.2407V301.57L188.481 301.57V282.722H226.178L226.178 263.874H245.026V226.178H263.874L263.874 131.937H245.026V113.089H226.178V94.2407L207.33 94.2407L207.33 75.3926L113.089 75.3926V94.2407H94.2407V113.089H75.3926L75.3926 188.481L94.2407 188.481V207.33H113.089L113.089 226.178H169.633V207.33H188.481V150.785H150.785V188.481H113.089L113.089 131.937H131.937V113.089L188.481 113.089V131.937H207.33V150.785H226.178V226.178H207.33V245.026H188.481V263.874L94.2407 263.874V245.026L75.3926 245.026V226.178H56.5444V207.33H37.6963L37.6963 113.089L56.5444 113.089L56.5444 75.3926H75.3926V56.5444L113.089 56.5444L113.089 37.6963L207.33 37.6963V56.5444L245.026 56.5444V75.3926H263.874V94.2407H282.722V131.937H301.57L301.57 245.026H282.722V263.874H263.874V301.57H245.026V310.994V320.418H226.202V339.267H245.05H263.898V320.418H282.722V301.57H301.57V282.722H320.418V245.026H339.267L339.267 113.089H320.418V75.3926L301.57 75.3926V56.5444L282.722 56.5444V37.6963H263.874V18.8481L226.178 18.8481V0Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/></svg>Megamind Labs UI Kit</div><button class="mm-btn mm-btn--sm mm-btn--secondary" id="top-menu-toggle" aria-expanded="false" aria-controls="top-menu">Menu</button>
+  <nav class="mm-sidenav doc-top-menu" id="top-menu" aria-label="Sections" hidden>
+    <a href="#start">Get started</a>
+    <a href="#foundations">Foundations</a>
+    <a href="#components">Components</a>
+    <a href="#screens">Screens</a>
+    <label class="mm-choice mm-between doc-top-theme">Dark mode<input type="checkbox" class="mm-toggle" data-theme-toggle></label>
+  </nav>
+</div>
+<a class="mm-btn mm-btn--sm mm-btn--secondary doc-to-top" href="#" id="to-top" aria-label="Back to top">Back to top</a>
 
 <div class="doc">
   <aside class="doc-side">
@@ -949,14 +965,14 @@
     if (t === 'dark') document.body.setAttribute('data-theme', 'dark'); else document.body.removeAttribute('data-theme');
     document.querySelectorAll('[data-set-theme]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.setTheme === t)));
     const top = document.querySelector('[data-theme-toggle]');
-    if (top) top.textContent = t === 'dark' ? 'Light' : 'Dark';
+    if (top) top.checked = t === 'dark';
     try { localStorage.setItem('mm-theme', t); } catch {}
   };
   let saved = null;
   try { saved = localStorage.getItem('mm-theme'); } catch {}
   setTheme(saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   document.querySelectorAll('[data-set-theme]').forEach(b => b.addEventListener('click', () => setTheme(b.dataset.setTheme)));
-  document.querySelector('[data-theme-toggle]').addEventListener('click', () => setTheme(document.body.dataset.theme === 'dark' ? 'light' : 'dark'));
+  document.querySelector('[data-theme-toggle]').addEventListener('change', (e) => setTheme(e.target.checked ? 'dark' : 'light'));
 
   // Screen size for the Screens flows; iPhone Duo also carries its fold state
   document.getElementById('screen-size').addEventListener('change', (e) => {
@@ -1251,8 +1267,21 @@ ${code}`,
     }, 2000);
   }
 
+  // Small screens: a Menu dropdown in the top bar, and a Back to top button once the hero is passed
+  const topMenu = document.getElementById('top-menu');
+  const topToggle = document.getElementById('top-menu-toggle');
+  const setTopMenu = (open) => { topMenu.hidden = !open; topToggle.setAttribute('aria-expanded', String(open)); topToggle.textContent = open ? 'Close' : 'Menu'; };
+  topToggle.addEventListener('click', () => setTopMenu(topMenu.hidden));
+  topMenu.addEventListener('click', (e) => { if (e.target.closest('a')) setTopMenu(false); });
+  document.addEventListener('click', (e) => { if (!topMenu.hidden && !e.target.closest('.doc-top')) setTopMenu(false); });
+  const toTop = document.getElementById('to-top');
+  toTop.addEventListener('click', (e) => { e.preventDefault(); scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); });
+  const onScroll = () => toTop.classList.toggle('is-shown', scrollY > innerHeight);
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
   // Sidebar active link
-  const links = [...document.querySelectorAll('.doc-side .mm-sidenav a')];
+  const links = [...document.querySelectorAll('.doc-side .mm-sidenav a, .doc-top-menu a')];
   const io = new IntersectionObserver((entries) => entries.forEach(en => {
     if (en.isIntersecting) links.forEach(a => a.setAttribute('aria-current', a.getAttribute('href') === '#' + en.target.id ? 'page' : 'false'));
   }), { rootMargin: '-40% 0px -55% 0px' });
