@@ -37,4 +37,12 @@ a.doc-logo { color: inherit; text-decoration: none; }
   .doc { grid-template-columns: 1fr; }
   .doc-side { display: none; }
   .doc-top { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: var(--mm-border); background: var(--mm-paper); position: sticky; top: 0; z-index: 20; }
+  /* Section menu: drops down under the top bar */
+  .doc-top-menu { position: absolute; top: 100%; left: 0; right: 0; padding: 8px 12px 12px; background: var(--mm-paper); border-bottom: var(--mm-border); box-shadow: var(--mm-shadow); }
+  .doc-top-menu[hidden] { display: none; }
+  .doc-top-theme { margin-top: 8px; padding: 12px 12px 4px; border-top: var(--mm-border); font-weight: 500; }
+  .doc-to-top { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 20; background: var(--mm-accent); border-color: var(--mm-accent); color: var(--mm-on-ink); box-shadow: var(--mm-shadow); opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .2s, transform .2s; }
+  .doc-to-top.is-shown { opacity: 1; pointer-events: auto; transform: none; }
 }
+.doc-to-top { display: none; }
+@media (max-width: 900px) { .doc-to-top { display: inline-flex; } }
